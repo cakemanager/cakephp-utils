@@ -1,0 +1,23 @@
+{
+    "name": "your-name-here/Utils",
+    "description": "Utils plugin for CakePHP",
+    "type": "cakephp-plugin",
+    "require": {
+        "php": ">=5.4",
+        "cakephp/cakephp": "3.0.x-dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Utils\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Utils\\Test\\": "tests",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+        }
+    }
+}
