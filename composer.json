@@ -10,8 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
-        "cakephp/cakephp": "3.0.x-dev"
+        "php": ">=5.4"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
