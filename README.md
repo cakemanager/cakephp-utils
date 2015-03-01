@@ -3,6 +3,25 @@ Utils Plugin for Cake 3.x
 
 The Utils plugin offers you many components and behaviors to make developing easier. This plugin is required by the [CakeManager plugin](http://github.com/cakemanager/cakephp-cakemanager), but it's good in use as individual plugin!
 
+Usage
+-----
+
+Run: `composer require cakemanager/cakephp-utils`
+
+In `app/Config/bootstrap.php` add: `Plugin::load('Utils');`
+
+### Components
+
+- Authorizer - Component to work easily with authorization in your application-controllers.
+- Menu - Adds menu-items in sections to pass to your view.
+
+### Behaviors
+
+- Metas - Behavior to add meta-data to your current model.
+- Stateable - Generates multiple states (like concept, deleted, active) and with save-method and finders.
+- Uploadable - Great behavior to upload files automatically.
+- WhoDidIt - Saves the user who created the row, and modified the row.
+
 Documentation
 -------------
 
