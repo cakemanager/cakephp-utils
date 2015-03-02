@@ -2,7 +2,6 @@ Uploadable-Behavior
 ==================
 
 With the Uploadable-behavior you are able to upload files easily.
-Via this states you are able to save / change them, and get a list via the finders of CakePHP.
 
 Loading
 -------
