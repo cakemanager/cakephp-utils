@@ -109,14 +109,14 @@ This path would be converted to: `webroot/uploads/Users/5/` (asuming our user-id
 
 The following templates are avaiable:
 
-- {ROOT} - is the defined ROOT-variable 
-- {WEBROOT} - is the defined WEBROOT-variable
-- {field} - is the chosen field (read docs later on)
-- {model} - is the current model (like Users / Uploads / Bookmarks)
-- {DS} - Directory Seperator
-- // - Directory Seperator
-- / - Directory Seperator
-- \\\ - Directory Seperator
+- `{ROOT}` - is the defined ROOT-variable 
+- `{WEBROOT}` - is the defined WEBROOT-variable
+- `{field}` - is the chosen field (read docs later on)
+- `{model}` - is the current model (like Users / Uploads / Bookmarks)
+- `{DS}` - Directory Seperator
+- `//` - Directory Seperator
+- `/` - Directory Seperator
+- `\\` - Directory Seperator
 
 Example:
 
@@ -151,9 +151,9 @@ With the `filename` configuration you are able to change the default filename of
 
 The following templates are avaiable:
 
-- {ORIGINAL} - is the defined ROOT-variable 
-- {field} - is the chosen field of the entity
-- {extension} - is the extension of the uploaded file
+- `{ORIGINAL}` - is the defined ROOT-variable 
+- `{field}` - is the chosen field of the entity
+- `{extension}` - is the extension of the uploaded file
 
 In this case we would be able to change the filename to a field of the entity:
 
