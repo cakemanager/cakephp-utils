@@ -8,7 +8,7 @@ Loading
 -------
 You can load the behavior in your model via:
 
-    $this->addBehavior('CakeManager.Stateable', []);
+    $this->addBehavior('Utils.Stateable', []);
 
 
 Configurations
@@ -19,11 +19,12 @@ There are multiple configurations for the behavior. They will be explained.
 
 The field is the field where the state should be saved. Default set to `state`.
 
-    $this->Stateable->config('field', 'custom_field');
+    $this->Stateable->config('field', 'status');
+    // our 'state' will now be saved under the field 'status'
 
 ### States
 
-This is an array of the available states. The key of the array is the name of the state, the value of the area is the integer of the state.
+This is an array of the available states. The key of the array is the name of the state, the value of the array is the integer of the state. This value will be saved in your table
 
 The default states are:
 
@@ -33,6 +34,8 @@ The default states are:
           'deleted' => -1,
       ],
   
+So, if your item has been saved with the state `active`, the integer `1` will be stored in your table.
+
 Change the states by: 
 
       $this->Stateable->config('states', [
@@ -51,7 +54,6 @@ If you want to add states in a form, you have to add the following in your contr
 
       // action
       $states = $this->Bookmarks->stateList();
-      
       $this->set(compact('states'));
  
 The `stateList()`-method flips the states-array of the behavior. So, if you add the following to your view:
