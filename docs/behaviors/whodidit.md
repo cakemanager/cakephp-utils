@@ -10,7 +10,7 @@ You can load the behavior by the follwing code:
 
     public function initialize(array $config) {
         // code
-        $this->addBehavior('CakeManager.WhoDidIt');
+        $this->addBehavior('Utils.WhoDidIt');
     }
 
 Registering the data
@@ -54,7 +54,7 @@ You can change the model in the config of your behavior:
 
 ### Setting the fields
 
-Sometimes you don't need every data of the user, it makes your queries much slower. So, you are able to define the fields you want of an user. When leaving empty, it will return all columns.
+Sometimes you don't need every data of the user, it makes your queries much bigger and slower. So, you are able to define the fields you want of an user. When leaving empty, it will return all columns.
 
     public function initialize(array $config) {
         // code
