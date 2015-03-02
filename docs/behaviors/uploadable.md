@@ -80,6 +80,7 @@ Example:
 
 > Note: When the uploaded file has the same name (and extension) as the previous file, it will be overridden.
 
+> Note: This feature is not implemented properly yet!
 
 ### Remove File On Delete
 
@@ -95,6 +96,7 @@ Example:
       ]
     ]);
     
+> Note: This feature is not implemented properly yet!
 
 ### Path
 
@@ -108,14 +110,65 @@ This path would be converted to: `webroot/uploads/Users/5/` (asuming our user-id
 
 The following templates are avaiable:
 
-- {ROOT}
-- {WEBROOT}
-- {field}
-- {model}
-- {DS}
-- //
-- /
-- \\
+- {ROOT} - is the defined ROOT-variable 
+- {WEBROOT} - is the defined WEBROOT-variable
+- {field} - is the chosen field (read docs later on)
+- {model} - is the current model (like Users / Uploads / Bookmarks)
+- {DS} - Directory Seperator
+- // - Directory Seperator
+- / - Directory Seperator
+- \\\ - Directory Seperator
+
+Example:
+
+    $this->addBehavior('Utils.Uploadable', [
+      'avatar' => [
+        'path' => '{ROOT}{DS}{WEBROOT}{DS}custom{DS}directory{DS}{model}{DS}{field}{DS}'
+        ],
+      ]
+    ]);
+
+
+### Field
+
+The `field` configuration is the field of the entity to use. Default we use the `field` in our path to create a folder per `id`.
+
+Example:
+
+    $this->addBehavior('Utils.Uploadable', [
+      'avatar' => [
+        'field' => 'username',
+        'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}'
+        ],
+      ]
+    ]);
+    
+In this example the following path would be generated: `webroot/uploads/Users/myusername/`
+
+
+### Filename
+
+With the `filename` configuration you are able to change the default filename of the user. Default the value is `{ORIGINAL}`.
+
+The following templates are avaiable:
+
+- {ORIGINAL} - is the defined ROOT-variable 
+- {field} - is the chosen field of the entity
+- {extension} - is the extension of the uploaded file
+
+In this case we would be able to change the filename to a field of the entity:
+
+    $this->addBehavior('Utils.Uploadable', [
+      'avatar' => [
+        'field' => 'id',
+        'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
+        'fileName' => '{field}.{extension}'
+        ],
+      ]
+    ]);
+
+This example will place all avatars of all users in the path `webroot/uploads/Users/`, and saves the file as `5.png` (example).
+
 
 To Do
 -----
@@ -123,5 +176,6 @@ To Do
 The following features will be added soon:
 
 - Delete files on delete of entity
+- Delete files on update of entity
 - Validation methods
 - Tests
