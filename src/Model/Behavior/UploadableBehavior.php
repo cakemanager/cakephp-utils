@@ -50,15 +50,6 @@ class UploadableBehavior extends Behavior
     protected $_Table = null;
 
     /**
-     * Testmethod
-     */
-    public function test()
-    {
-
-        $this->normalizeAll();
-    }
-
-    /**
      * BeforeSave Callback
      *
      * @param type $event
@@ -231,13 +222,14 @@ class UploadableBehavior extends Behavior
 
         $upload_path = $this->_getPath($entity, $field, ['file' => true]);
 
+
         // creating the path if not exists
         if (!file_exists($this->_getPath($entity, $field, ['file' => false]))) {
-            mkdir($this->_getPath($entity, $field, ['file' => false]), 0777, true);
+            $this->_mkdir($this->_getPath($entity, $field, ['file' => false]), 0777, true);
         }
 
         // upload the file and return true
-        if (move_uploaded_file($_upload['tmp_name'], $upload_path)) {
+        if ($this->_move_uploaded_file($_upload['tmp_name'], $upload_path)) {
             return true;
         }
 
@@ -358,6 +350,30 @@ class UploadableBehavior extends Behavior
         $builtFileName = str_replace(array_keys($replacements), array_values($replacements), $fileName);
 
         return $builtFileName;
+    }
+
+    /**
+     * Move Uploaded File Layer
+     *
+     * @param string $source
+     * @param string $path
+     * @return
+     */
+    public function _move_uploaded_file($source, $path)
+    {
+        return move_uploaded_file($source, $path);
+    }
+
+    /**
+     * MkDir Layer
+     *
+     * @param type $pathname
+     * @param type $mode
+     * @param type $recursive
+     */
+    public function _mkdir($pathname, $mode, $recursive)
+    {
+        return mkdir($pathname, $mode, $recursive);
     }
 
 }

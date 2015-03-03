@@ -1,14 +1,20 @@
 <?php
+
 namespace Utils\Test\TestCase\Model\Behavior;
 
 use Utils\Model\Behavior\UploadableBehavior;
 use Cake\TestSuite\TestCase;
+use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * CakeManager\Model\Behavior\UploadableBehavior Test Case
  */
 class UploadableBehaviorTest extends TestCase
 {
+
+    public $fixtures = ['plugin.utils.articles'];
 
     /**
      * setUp method
@@ -18,6 +24,15 @@ class UploadableBehaviorTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
+        $connection = ConnectionManager::get('test');
+
+        $this->Articles = $this->getMock('Cake\ORM\Table', [
+            '_mkdir',
+            '_move_uploaded_file'
+                ], [
+            ['table' => 'articles', 'connection' => $connection]
+        ]);
     }
 
     /**
@@ -27,18 +42,224 @@ class UploadableBehaviorTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Uploadable);
+        unset($this->Articles);
 
         parent::tearDown();
     }
 
     /**
-     * Test initial setup
+     * Test the method getFieldList
+     *
+     * Will return the normalized list of fields who will be uploadable
+     *
+     */
+    public function testGetFieldList()
+    {
+
+        // adding 3 different fields
+        $this->Articles->addBehavior('Utils.Uploadable', [
+            'fieldWithoutSettings',
+            'fieldWithCustomSettings1' => [
+                'fields'             => [
+                    'directory' => 'customDirectory',
+                    'type'      => 'customType',
+                    'size'      => 'customSize',
+                ],
+                'removeFileOnUpdate' => true,
+                'removeFileOnDelete' => false,
+            ],
+            'fieldWithCustomSettings2' => [
+                'field'    => 'user_id',
+                'path'     => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
+                'fileName' => '{field}.{extension}',
+            ],
+        ]);
+
+        $behavior = $this->Articles->behaviors()->get('Uploadable');
+
+        $action = $behavior->getFieldList();
+
+        // testing field 1
+        $this->assertEquals("fieldWithoutSettings", $action['fieldWithoutSettings']['fields']['directory']);
+        $this->assertFalse($action['fieldWithoutSettings']['fields']['type']);
+        $this->assertFalse($action['fieldWithoutSettings']['fields']['size']);
+        $this->assertFalse($action['fieldWithoutSettings']['removeFileOnUpdate']);
+        $this->assertTrue($action['fieldWithoutSettings']['removeFileOnDelete']);
+        $this->assertEquals("id", $action['fieldWithoutSettings']['field']);
+        $this->assertEquals("{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}", $action['fieldWithoutSettings']['path']);
+        $this->assertEquals("{ORIGINAL}", $action['fieldWithoutSettings']['fileName']);
+
+        // testing field 2
+        $this->assertEquals("customDirectory", $action['fieldWithCustomSettings1']['fields']['directory']);
+        $this->assertEquals("customType", $action['fieldWithCustomSettings1']['fields']['type']);
+        $this->assertEquals("customSize", $action['fieldWithCustomSettings1']['fields']['size']);
+        $this->assertTrue($action['fieldWithCustomSettings1']['removeFileOnUpdate']);
+        $this->assertFalse($action['fieldWithCustomSettings1']['removeFileOnDelete']);
+
+        // testing field 3
+        $this->assertEquals("user_id", $action['fieldWithCustomSettings2']['field']);
+        $this->assertEquals("{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}", $action['fieldWithCustomSettings2']['path']);
+        $this->assertEquals("{field}.{extension}", $action['fieldWithCustomSettings2']['fileName']);
+    }
+
+    /**
+     * Test the normalizeAll method.
+     *
+     * This will do the same as the getFieldList method
+     *
+     */
+    public function testNormalizeAll()
+    {
+
+        $options = [
+            'fieldWithoutSettings',
+            'fieldWithCustomSettings1' => [
+                'fields'             => [
+                    'directory' => 'customDirectory',
+                    'type'      => 'customType',
+                    'size'      => 'customSize',
+                ],
+                'removeFileOnUpdate' => true,
+                'removeFileOnDelete' => false,
+            ],
+            'fieldWithCustomSettings2' => [
+                'field'    => 'user_id',
+                'path'     => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
+                'fileName' => '{field}.{extension}',
+            ],
+        ];
+
+        // adding 3 different fields
+        $this->Articles->addBehavior('Utils.Uploadable', $options);
+
+        $behavior = $this->Articles->behaviors()->get('Uploadable');
+
+        $action = $behavior->getFieldList(['normalize' => false]);
+
+        $_options = [
+            'fieldWithoutSettings'     => [],
+            'fieldWithCustomSettings1' => [
+                'fields'             => [
+                    'directory' => 'customDirectory',
+                    'type'      => 'customType',
+                    'size'      => 'customSize',
+                ],
+                'removeFileOnUpdate' => true,
+                'removeFileOnDelete' => false,
+            ],
+            'fieldWithCustomSettings2' => [
+                'field'    => 'user_id',
+                'path'     => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
+                'fileName' => '{field}.{extension}',
+            ],
+        ];
+
+        $this->assertEquals($_options, $action);
+
+        $action = $behavior->normalizeAll();
+
+        $this->assertNotEquals($_options, $action);
+    }
+
+    /**
+     * Test saving with loading the behavior but without setting up an field to upload
      *
      * @return void
      */
-    public function testInitialization()
+    public function testSaveWithoutFile()
     {
+
+        $this->Articles->addBehavior('Utils.Uploadable');
+
+        $data = [
+            'id'      => 1,
+            'user_id' => 1,
+            'title'   => 'My first article',
+            'body'    => 'Content',
+        ];
+
+        $entity = $this->Articles->newEntity($data);
+
+        $save = $this->Articles->save($entity);
+
+        $this->assertEquals(1, $save->get('id'));
+        $this->assertEquals(1, $save->get('user_id'));
+        $this->assertEquals('My first article', $save->get('title'));
+        $this->assertEquals('Content', $save->get('body'));
+
+        $this->Articles->removeBehavior('Uploadable');
+
+        $this->Articles->addBehavior('Utils.Uploadable', [
+            'file'
+        ]);
+
+        $data = [
+            'id'      => 2,
+            'user_id' => 2,
+            'title'   => 'My second article',
+            'body'    => 'Content',
+        ];
+
+        $entity = $this->Articles->newEntity($data);
+
+        $save = $this->Articles->save($entity);
+
+        $this->assertEquals(2, $save->get('id'));
+        $this->assertEquals(2, $save->get('user_id'));
+        $this->assertEquals('My second article', $save->get('title'));
+        $this->assertEquals('Content', $save->get('body'));
+    }
+
+    public function testSaveWithFile()
+    {
+        $connection = ConnectionManager::get('test');
+
+        $methods = ['_mkdir', '_move_uploaded_file'];
+
+        $table = $this->getMock('Utils\Test\TestCase\Model\Behavior\TestTable\ArticlesTable', $methods, [
+            ['table' => 'articles', 'connection' => $connection]
+        ]);
+
+        $table->addBehavior('Utils.Uploadable', [
+            'file' => [
+                'fields' => [
+                    'directory' => 'file_path'
+                ]
+            ]
+        ]);
+
+        $table->expects($this->any())
+                ->method('_mkdir')
+                ->will($this->returnValue(true));
+        $table->expects($this->any())
+                ->method('_move_uploaded_file')
+                ->will($this->returnValue(true));
+//                ->will($this->returnCallback('copy'));
+
+        $data = [
+            'id'      => 3,
+            'user_id' => 3,
+            'title'   => 'My first article',
+            'body'    => 'Content',
+            'file'    => [
+                'name'     => 'cakemanager.png',
+                'type'     => 'image/jpeg',
+                'tmp_name' => ROOT . DS . APP_DIR . DS . 'tests' . DS . 'TestCase' . DS . 'Model' . DS . 'Behavior' . DS . 'TestFile' . DS . 'cakemanager.png',
+                'error'    => 0,
+                'size'     => 845941,
+            ]
+        ];
+
+        $entity = $table->newEntity($data);
+        $save = $table->save($entity);
+
+        debug($save);
+
+        $get = $this->Articles->get(3);
+
+        debug($get);
+
         $this->markTestIncomplete('Not implemented yet.');
     }
+
 }
