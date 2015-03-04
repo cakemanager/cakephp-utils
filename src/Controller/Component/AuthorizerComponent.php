@@ -7,7 +7,11 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Utility\Hash;
 
 /**
- * Authorizer component
+ * Authorizer component class
+ *
+ * Component to handle authorization inside your controller.
+ *
+ * @link http://cakemanager-utils.readthedocs.org/en/latest/components/authorizer
  */
 class AuthorizerComponent extends Component
 {
@@ -18,23 +22,19 @@ class AuthorizerComponent extends Component
      * @var array
      */
     protected $_defaultConfig = [
-        'roleField'    => 'role_id',
+        'roleField' => 'role_id',
     ];
 
     /**
      * Holder for the Controller
+     *
      * @var Controller
      */
     protected $Controller = null;
 
     /**
-     * Holder for the AuthComponent
-     * @var type
-     */
-    protected $Auth = null;
-
-    /**
      * Holds all current request-info
+     *
      * @var type
      */
     protected $_current = [
@@ -43,12 +43,19 @@ class AuthorizerComponent extends Component
         'action'     => null,
         'roles'      => [],
     ];
+
+    /**
+     * Holds the selected action-data
+     *
+     * @var type
+     */
     protected $_selected = [
         'action' => null,
     ];
 
     /**
      * Data holder
+     *
      * @var array
      */
     protected static $_data = [];
@@ -59,32 +66,60 @@ class AuthorizerComponent extends Component
      * @param ComponentRegistry $registry
      * @param array $config
      */
-    public function __construct(ComponentRegistry $registry, array $config = array()) {
+    public function __construct(ComponentRegistry $registry, array $config = array())
+    {
         parent::__construct($registry, $config);
+
+        $this->setController($registry->getController());
+
+        $this->setCurrentParams();
     }
 
     /**
      * BeforeFilter Event
+     *
      * @param type $event
      */
-    public function beforeFilter($event) {
+    public function beforeFilter($event)
+    {
         $this->setController($event->subject());
-        $this->Auth = $this->Controller->Auth;
 
+        $this->setCurrentParams();
+    }
+
+    public function setCurrentParams()
+    {
         $this->_current['plugin'] = $this->Controller->request->params['plugin'];
         $this->_current['controller'] = $this->Controller->request->params['controller'];
         $this->_current['action'] = $this->Controller->request->params['action'];
+
+        return $this->_current;
     }
 
     /**
      * Setter for the Controller [protected]
      * @param type $controller
      */
-    public function setController($controller) {
+    public function setController($controller)
+    {
         $this->Controller = $controller;
     }
 
-    public function action($actions, $function) {
+    /**
+     * Sets authorization per action.
+     * The action variable can be a string or array of strings
+     *
+     * This method is requested in the controller like:
+     *
+     * $this->Authorizer->action(["My action"], function($auth) {
+     *      // authorization for the chosen actions
+     * });
+     *
+     * @param string|array $actions
+     * @param function $function
+     */
+    public function action($actions, $function)
+    {
 
         if (!is_array($actions)) {
             $actions = [$actions];
@@ -100,14 +135,28 @@ class AuthorizerComponent extends Component
             self::$_data = Hash::insert(self::$_data, $path, [
                         'function'     => $function,
                         'roles'        => [],
-                        'isAuthorized' => false,
             ]);
 
             $this->_runFunction($action);
         }
     }
 
-    public function allowRole($roles) {
+    /**
+     * This method is used inside the action-method
+     * to allow a role to the selected actions
+     *
+     * Example:
+     *
+     * $this->Authorizer->action(["My action"], function($auth) {
+     *      $auth->allowRole(1);
+     * });
+     *
+     * The role-variable can be an integer or array with integers.
+     *
+     * @param int|array $roles
+     */
+    public function allowRole($roles)
+    {
 
         if (!is_array($roles)) {
             $roles = [$roles];
@@ -123,7 +172,22 @@ class AuthorizerComponent extends Component
         }
     }
 
-    public function denyRole($roles) {
+    /**
+     * This method is used inside the action-method
+     * to deny a role from the selected actions
+     *
+     * Example:
+     *
+     * $this->Authorizer->action(["My action"], function($auth) {
+     *      $auth->denyRole(2);
+     * });
+     *
+     * The role-variable can be an integer or array with integers.
+     *
+     * @param int|array $roles
+     */
+    public function denyRole($roles)
+    {
 
         if (!is_array($roles)) {
             $roles = [$roles];
@@ -139,7 +203,25 @@ class AuthorizerComponent extends Component
         }
     }
 
-    public function setRole($roles, $value) {
+    /**
+     * This method is used inside the action-method
+     * to set a custom boolean to the selected role for the selected action
+     *
+     * Example:
+     *
+     * $this->Authorizer->action(["My action"], function($auth) {
+     *      $auth->setRole(2, $this->customMethod());
+     * });
+     *
+     * The role-variable can be an integer or array with integers.
+     *
+     * The value is an boolean.
+     *
+     * @param int|array $roles
+     * @param boolean $value
+     */
+    public function setRole($roles, $value)
+    {
 
         if (!is_array($roles)) {
             $roles = [$roles];
@@ -155,29 +237,23 @@ class AuthorizerComponent extends Component
         }
     }
 
-    public function isAuthorized($bool = true) {
+    /**
+     * The final method who will authorize the current request.
+     *
+     * Use the following in the isAuthorized-method to return if the user is authorized:
+     *
+     * public function isAuthorized($user) {
+     *  // your autorization with the action-method
+     *
+     *  return $this->Authorizer->authorize();
+     * }
+     *
+     * @return boolean
+     */
+    public function authorize()
+    {
 
-        $controller = $this->_current['controller'];
-        $action = $this->_current['action'];
-
-        $path = $controller . '.' . $action . '.isAuthorized';
-
-        if ($bool == false) {
-            self::$_data = Hash::insert(self::$_data, $path, false);
-            return;
-        }
-
-        // check if the IsAuthorized-Component is set
-        $behavior = $this->Controller->components()->has('IsAuthorized');
-
-        if ($behavior) {
-            self::$_data = Hash::insert(self::$_data, $path, true);
-        }
-    }
-
-    public function authorize() {
-
-        $user = $this->Auth->user();
+        $user = $this->Controller->Auth->user();
         $role = $user[$this->config('roleField')];
 
         $controller = $this->_current['controller'];
@@ -187,17 +263,36 @@ class AuthorizerComponent extends Component
 
         $state = $this->_getState($action, $role);
 
-        if ($state) {
-            $path = $controller . '.' . $action . '.isAuthorized';
-            if (Hash::get(self::$_data, $path)) {
-                return $this->Controller->IsAuthorized->authorize();
-            }
-        }
-
         return $state;
     }
 
-    protected function _getState($action, $role) {
+    /**
+     * Getter for the data-array
+     *
+     * @return type
+     */
+    public function getData() {
+        return self::$_data;
+    }
+
+    /**
+     * Clear method for the data-array
+     */
+    public function clearData()
+    {
+        self::$_data = [];
+    }
+
+    /**
+     * Checks if the role is allowed to the action.
+     * Returns boolean     *
+     *
+     * @param string $action is the action-name
+     * @param integer $role is the role-id
+     * @return boolean
+     */
+    protected function _getState($action, $role)
+    {
         $controller = $this->_current['controller'];
 
         $path = $controller . '.' . $action . '.roles.' . $role;
@@ -218,7 +313,13 @@ class AuthorizerComponent extends Component
         return $state;
     }
 
-    protected function _runFunction($action) {
+    /**
+     * Runs the given function from the action-method
+     *
+     * @param type $action
+     */
+    protected function _runFunction($action)
+    {
         $controller = $this->_current['controller'];
 
         $path = $controller . '.' . $action . '.function';
