@@ -2,11 +2,9 @@
 
 namespace Utils\Test\TestCase\Model\Behavior;
 
-use Utils\Model\Behavior\UploadableBehavior;
 use Cake\TestSuite\TestCase;
-use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Datasource\ConnectionManager;
+use Cake\Validation\Validator;
 
 /**
  * CakeManager\Model\Behavior\UploadableBehavior Test Case
@@ -212,29 +210,40 @@ class UploadableBehaviorTest extends TestCase
 
     public function testSaveWithFile()
     {
+
         $connection = ConnectionManager::get('test');
 
-        $methods = ['_mkdir', '_move_uploaded_file'];
-
-        $table = $this->getMock('Utils\Test\TestCase\Model\Behavior\TestTable\ArticlesTable', $methods, [
+        $table = $this->getMock('Cake\ORM\Table', [
+            '_nonExistingMethodElseTheMockWillMockAllMethods',
+                ], [
             ['table' => 'articles', 'connection' => $connection]
         ]);
 
-        $table->addBehavior('Utils.Uploadable', [
+        $table->alias("Articles");
+
+        $behaviorOptions = [
             'file' => [
                 'fields' => [
-                    'directory' => 'file_path'
-                ]
+                    'directory' => 'file_path',
+                    'type'      => 'file_type',
+                    'size'      => 'file_size',
+                ],
             ]
-        ]);
+        ];
 
-        $table->expects($this->any())
+        $behaviorMock = $this->getMock(
+                '\Utils\Model\Behavior\UploadableBehavior', [ '_mkdir', '_move_uploaded_file'], [$table, $behaviorOptions]
+        );
+
+        $behaviorMock->expects($this->any())
                 ->method('_mkdir')
                 ->will($this->returnValue(true));
-        $table->expects($this->any())
+        $behaviorMock->expects($this->any())
                 ->method('_move_uploaded_file')
                 ->will($this->returnValue(true));
-//                ->will($this->returnCallback('copy'));
+
+        $table->behaviors()->set('Uploadable', $behaviorMock);
+
 
         $data = [
             'id'      => 3,
@@ -243,23 +252,22 @@ class UploadableBehaviorTest extends TestCase
             'body'    => 'Content',
             'file'    => [
                 'name'     => 'cakemanager.png',
-                'type'     => 'image/jpeg',
-                'tmp_name' => ROOT . DS . APP_DIR . DS . 'tests' . DS . 'TestCase' . DS . 'Model' . DS . 'Behavior' . DS . 'TestFile' . DS . 'cakemanager.png',
+                'type'     => 'image/png',
+                'tmp_name' => 'somepath/cakemanager.png',
                 'error'    => 0,
-                'size'     => 845941,
+                'size'     => 11501,
             ]
         ];
 
         $entity = $table->newEntity($data);
         $save = $table->save($entity);
 
-        debug($save);
+        $get = $table->get(3);
 
-        $get = $this->Articles->get(3);
+        $this->assertEquals('uploads\articles\3\cakemanager.png', $get->get('file_path'));
+        $this->assertEquals("image/png", $get->get('file_type'));
+        $this->assertEquals(11501, $get->get('file_size'));
 
-        debug($get);
-
-        $this->markTestIncomplete('Not implemented yet.');
     }
 
 }

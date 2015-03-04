@@ -41,6 +41,7 @@ class UploadableBehavior extends Behavior
     protected $_presetConfigKeys = [
         'defaultFieldConfig',
     ];
+    protected $_savedFields = [];
 
     /**
      * Holder for the Table-Model
@@ -77,10 +78,16 @@ class UploadableBehavior extends Behavior
             if ($this->_ifUploaded($entity, $field)) {
 
                 if ($this->_uploadFile($entity, $field)) {
-                    $this->_Table->save($this->_setUploadColumns($entity, $field));
+
+                    if (!key_exists($field, $this->_savedFields)) {
+                        $this->_savedFields[$field] = true;
+                        $event->subject()->save($this->_setUploadColumns($entity, $field));
+                    }
                 }
             }
         }
+
+        $this->_savedFields = null;
     }
 
     /**
@@ -221,7 +228,6 @@ class UploadableBehavior extends Behavior
         $_upload = $entity->get($field);
 
         $upload_path = $this->_getPath($entity, $field, ['file' => true]);
-
 
         // creating the path if not exists
         if (!file_exists($this->_getPath($entity, $field, ['file' => false]))) {
