@@ -12,7 +12,7 @@ use Cake\Core\Configure;
 class WhoDidItBehaviorTest extends TestCase
 {
 
-    public $fixtures = ['plugin.cake_manager.articles', 'plugin.cake_manager.users'];
+    public $fixtures = ['plugin.utils.articles', 'plugin.utils.users'];
 
     /**
      * setUp method

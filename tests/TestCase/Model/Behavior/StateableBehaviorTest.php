@@ -11,7 +11,7 @@ use Cake\TestSuite\TestCase;
 class StateableBehaviorTest extends TestCase
 {
 
-    public $fixtures = ['plugin.cake_manager.articles'];
+    public $fixtures = ['plugin.utils.articles'];
 
     /**
      * setUp method
