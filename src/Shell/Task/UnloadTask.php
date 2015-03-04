@@ -44,8 +44,6 @@ class UnloadTask extends Shell
     {
         $finder = "Plugin::load('" . $plugin . "',";
 
-        debug($finder);
-
         $bootstrap = new File($this->bootstrap, false);
         $contents = $bootstrap->read();
         if (!preg_match("@\n\s*Plugin::loadAll@", $contents)) {
@@ -54,15 +52,13 @@ class UnloadTask extends Shell
 
             foreach ($_contents as $content) {
                 if (strpos($content, $finder) !== false) {
+
                     $loadString = $content;
+                    $loadString .= "\n";
+
+                    $bootstrap->replaceText(sprintf($loadString), null);
                 }
             }
-
-            $loadString .= "\n";
-
-            debug($loadString);
-
-            $bootstrap->replaceText(sprintf($loadString), "");
 
             $this->out('');
             $this->out(sprintf('%s modified', $this->bootstrap));
