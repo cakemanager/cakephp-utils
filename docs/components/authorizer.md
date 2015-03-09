@@ -3,24 +3,30 @@ Authorizer-Component
 
 The `AuthorizerComponent` allows us to create easy authorization. You have to be familiar with the ControllerAuthorization from CakePHP. For more info see [The CookBook](http://book.cakephp.org/3.0/en/controllers/components/authentication.html#authorization)
 
-This Component is role-based. You are not able (yet) to add specific auth-rules per user. (Except if you use the `setRole`-method.
+[doc_toc]
 
-Load the component with the following code:
+Loading
+--------
+
+You can load the component in your `AppController`:
 
     public function initialize() {
         // code
         $this->loadComponent('CakeManager.Authorizer');
     }
     
-Configurations
+Configuring
 --------------
 
 ### RoleField
-The value `roleField` is default set to `role_id` this is the column / field of the role_id of the user in the session (`$this->Auth->user()`).
+The value `roleField` is default set to `role_id`. This is the column / field to use of the user in the session (`$this->Auth->user()`). So if you are using another field to store the role's id, change it this way:
+
+    // in your AppControllers initialize-method
+    $this->Manager->config('Authorizer.roleField', 'group_id');
 
 Before (CookBook)
 ------
-This is an example from the CookBook:
+This is an example from the CookBook about how to authorize your controllers:
 
       public function isAuthorized($user)
       {
@@ -40,9 +46,9 @@ This is an example from the CookBook:
           return parent::isAuthorized($user);
       }
 
-We are using the `ControllerAuthorize`, so we have the method `isAuthorized` in our controller to define the authorization.
+This works great, but it's not very clear. This component contains some methods to clear it up. Lets look...
 
-Using the Component
+Usage
 -------------------
 Using the `Authorizer` gives us many tools to define our authorization clear. Look at this example:
 
@@ -128,4 +134,4 @@ This is the final method of the component. This method checks if the current use
 Further reading
 ---------------
 
-You can follow a quick tutorial [here](http://cakemanager.readthedocs.org/en/latest/Tutorials-And-Examples/Authorization);
+You can follow a quick tutorial [here](http://cakemanager.org/docs/1.0/tutorials-and-examples/authorization/);
