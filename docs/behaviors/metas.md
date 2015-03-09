@@ -6,6 +6,8 @@ Metas-Behavior
 The Metas-Behavior can be used to add custom meta-data to your entities without creating an extra column. 
 This can be useful when you build things that are extendable (like plugins).
 
+[doc_toc]
+
 Loading
 -------
 
@@ -13,7 +15,7 @@ You can load the behavior by the follwing code:
 
       public function initialize(array $config) {
           // code
-          $this->addBehavior('CakeManager.Metas');
+          $this->addBehavior('Utils.Metas');
       }
 
 Registering the Getters and Setters
