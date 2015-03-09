@@ -12,7 +12,7 @@ You can load the component in your `AppController`:
 
     public function initialize() {
         // code
-        $this->loadComponent('CakeManager.Menu');
+        $this->loadComponent('Utils.Menu');
     }
     
 Configuring
