@@ -3,6 +3,8 @@ WhoDidIt-Behavior
 
 The WhoDidIt-Behavior can be used to know who created, and who modified a specific post. 
 
+[doc_toc]
+
 Loading
 -------
 
