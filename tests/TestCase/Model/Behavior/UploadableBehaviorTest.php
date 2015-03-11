@@ -1,17 +1,28 @@
 <?php
-
+/**
+ * CakeManager (http://cakemanager.org)
+ * Copyright (c) http://cakemanager.org
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) http://cakemanager.org
+ * @link          http://cakemanager.org CakeManager Project
+ * @since         1.0
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
 namespace Utils\Test\TestCase\Model\Behavior;
 
 use Cake\TestSuite\TestCase;
 use Cake\Datasource\ConnectionManager;
-use Cake\Validation\Validator;
 
 /**
  * CakeManager\Model\Behavior\UploadableBehavior Test Case
+ * 
  */
 class UploadableBehaviorTest extends TestCase
 {
-
     public $fixtures = ['plugin.utils.articles'];
 
     /**
@@ -27,7 +38,7 @@ class UploadableBehaviorTest extends TestCase
 
         $this->Articles = $this->getMock('Cake\ORM\Table', [
             '_mkdir',
-            '_move_uploaded_file'
+            '_moveUploadedFile'
                 ], [
             ['table' => 'articles', 'connection' => $connection]
         ]);
@@ -58,17 +69,17 @@ class UploadableBehaviorTest extends TestCase
         $this->Articles->addBehavior('Utils.Uploadable', [
             'fieldWithoutSettings',
             'fieldWithCustomSettings1' => [
-                'fields'             => [
+                'fields' => [
                     'directory' => 'customDirectory',
-                    'type'      => 'customType',
-                    'size'      => 'customSize',
+                    'type' => 'customType',
+                    'size' => 'customSize',
                 ],
                 'removeFileOnUpdate' => true,
                 'removeFileOnDelete' => false,
             ],
             'fieldWithCustomSettings2' => [
-                'field'    => 'user_id',
-                'path'     => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
+                'field' => 'user_id',
+                'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
                 'fileName' => '{field}.{extension}',
             ],
         ]);
@@ -112,17 +123,17 @@ class UploadableBehaviorTest extends TestCase
         $options = [
             'fieldWithoutSettings',
             'fieldWithCustomSettings1' => [
-                'fields'             => [
+                'fields' => [
                     'directory' => 'customDirectory',
-                    'type'      => 'customType',
-                    'size'      => 'customSize',
+                    'type' => 'customType',
+                    'size' => 'customSize',
                 ],
                 'removeFileOnUpdate' => true,
                 'removeFileOnDelete' => false,
             ],
             'fieldWithCustomSettings2' => [
-                'field'    => 'user_id',
-                'path'     => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
+                'field' => 'user_id',
+                'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
                 'fileName' => '{field}.{extension}',
             ],
         ];
@@ -135,19 +146,19 @@ class UploadableBehaviorTest extends TestCase
         $action = $behavior->getFieldList(['normalize' => false]);
 
         $_options = [
-            'fieldWithoutSettings'     => [],
+            'fieldWithoutSettings' => [],
             'fieldWithCustomSettings1' => [
-                'fields'             => [
+                'fields' => [
                     'directory' => 'customDirectory',
-                    'type'      => 'customType',
-                    'size'      => 'customSize',
+                    'type' => 'customType',
+                    'size' => 'customSize',
                 ],
                 'removeFileOnUpdate' => true,
                 'removeFileOnDelete' => false,
             ],
             'fieldWithCustomSettings2' => [
-                'field'    => 'user_id',
-                'path'     => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
+                'field' => 'user_id',
+                'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
                 'fileName' => '{field}.{extension}',
             ],
         ];
@@ -170,10 +181,10 @@ class UploadableBehaviorTest extends TestCase
         $this->Articles->addBehavior('Utils.Uploadable');
 
         $data = [
-            'id'      => 1,
+            'id' => 1,
             'user_id' => 1,
-            'title'   => 'My first article',
-            'body'    => 'Content',
+            'title' => 'My first article',
+            'body' => 'Content',
         ];
 
         $entity = $this->Articles->newEntity($data);
@@ -192,10 +203,10 @@ class UploadableBehaviorTest extends TestCase
         ]);
 
         $data = [
-            'id'      => 2,
+            'id' => 2,
             'user_id' => 2,
-            'title'   => 'My second article',
-            'body'    => 'Content',
+            'title' => 'My second article',
+            'body' => 'Content',
         ];
 
         $entity = $this->Articles->newEntity($data);
@@ -225,37 +236,37 @@ class UploadableBehaviorTest extends TestCase
             'file' => [
                 'fields' => [
                     'directory' => 'file_path',
-                    'type'      => 'file_type',
-                    'size'      => 'file_size',
+                    'type' => 'file_type',
+                    'size' => 'file_size',
                 ],
             ]
         ];
 
         $behaviorMock = $this->getMock(
-                '\Utils\Model\Behavior\UploadableBehavior', [ '_mkdir', '_move_uploaded_file'], [$table, $behaviorOptions]
+                '\Utils\Model\Behavior\UploadableBehavior', [ '_mkdir', '_MoveUploadedFile'], [$table, $behaviorOptions]
         );
 
         $behaviorMock->expects($this->any())
                 ->method('_mkdir')
                 ->will($this->returnValue(true));
         $behaviorMock->expects($this->any())
-                ->method('_move_uploaded_file')
+                ->method('_MoveUploadedFile')
                 ->will($this->returnValue(true));
 
         $table->behaviors()->set('Uploadable', $behaviorMock);
 
 
         $data = [
-            'id'      => 3,
+            'id' => 3,
             'user_id' => 3,
-            'title'   => 'My first article',
-            'body'    => 'Content',
-            'file'    => [
-                'name'     => 'cakemanager.png',
-                'type'     => 'image/png',
+            'title' => 'My first article',
+            'body' => 'Content',
+            'file' => [
+                'name' => 'cakemanager.png',
+                'type' => 'image/png',
                 'tmp_name' => 'somepath/cakemanager.png',
-                'error'    => 0,
-                'size'     => 11501,
+                'error' => 0,
+                'size' => 11501,
             ]
         ];
 
@@ -267,7 +278,5 @@ class UploadableBehaviorTest extends TestCase
         $this->assertEquals('uploads\articles\3\cakemanager.png', $get->get('file_path'));
         $this->assertEquals("image/png", $get->get('file_type'));
         $this->assertEquals(11501, $get->get('file_size'));
-
     }
-
 }
