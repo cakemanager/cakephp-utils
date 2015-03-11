@@ -5,7 +5,7 @@ Commands:
 
 phpunit tests/TestCase/Controller/Component/MenuComponentTest.php 
 
-phpunit tests/TestCase/Controller/Component/IsAuthorizedComponentTest.php 
+phpunit tests/TestCase/Controller/Component/AuthorizerComponentTest.php 
 
 
 # BEHAVIORS
@@ -24,3 +24,5 @@ phpunit tests/TestCase/Model/Behavior/WhoDidItBehaviorTest.php
 phpunit tests/TestCase/AllComponentsSuite.php
 
 phpunit tests/TestCase/AllBehaviorsSuite.php
+
+phpunit tests/TestCase/AllTest.php

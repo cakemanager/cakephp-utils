@@ -1,18 +1,28 @@
 <?php
-
+/**
+ * CakeManager (http://cakemanager.org)
+ * Copyright (c) http://cakemanager.org
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) http://cakemanager.org
+ * @link          http://cakemanager.org CakeManager Project
+ * @since         1.0
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
 namespace Utils\Test\TestCase\Model\Behavior;
 
-use Utils\Model\Behavior\WhoDidItBehavior;
 use Cake\TestSuite\TestCase;
-use Cake\Core\Configure;
 
 /**
  * CakeManager\Model\Behavior\WhoDidItBehavior Test Case
+ * 
  */
 class WhoDidItBehaviorTest extends TestCase
 {
-
-    public $fixtures = ['plugin.cake_manager.articles', 'plugin.cake_manager.users'];
+    public $fixtures = ['plugin.utils.articles', 'plugin.utils.users'];
 
     /**
      * setUp method
@@ -25,7 +35,6 @@ class WhoDidItBehaviorTest extends TestCase
 
         $this->Model = \Cake\ORM\TableRegistry::get('Articles');
         $this->Model->addBehavior('Utils.WhoDidIt');
-
     }
 
     /**
@@ -79,7 +88,6 @@ class WhoDidItBehaviorTest extends TestCase
         $this->AssertEquals(1, $data->modified_by);
 
         $behavior->config('modified_by', 'modified_by');
-
     }
 
     /**
@@ -92,15 +100,15 @@ class WhoDidItBehaviorTest extends TestCase
 
         $_SESSION['Auth'] = [
             'User' => [
-                'id'       => 1,
+                'id' => 1,
                 'username' => 'testing account',
             ]
         ];
 
         $_data = [
-            'user_id'   => 1,
-            'title'     => 'Fourth Article',
-            'body'      => 'Fourth Article Body',
+            'user_id' => 1,
+            'title' => 'Fourth Article',
+            'body' => 'Fourth Article Body',
             'published' => 'Y',
         ];
 
@@ -126,7 +134,7 @@ class WhoDidItBehaviorTest extends TestCase
         // change the users id
         $_SESSION['Auth'] = [
             'User' => [
-                'id'       => 2,
+                'id' => 2,
                 'username' => 'testing account',
             ]
         ];
@@ -160,5 +168,4 @@ class WhoDidItBehaviorTest extends TestCase
 
         parent::tearDown();
     }
-
 }
