@@ -2,18 +2,25 @@ Menu-Component
 ==============
 
 The Menu-Component allows us to create dynamic menu's for multiple areas.
-The MenuComponent is default loaded by the CakeManager. Load the component with the following code:
+
+[doc_toc]
+
+Loading
+--------
+
+You can load the component in your `AppController`:
 
     public function initialize() {
         // code
-        $this->loadComponent('CakeManager.Menu');
+        $this->loadComponent('Utils.Menu');
     }
-Configuring Component
----------------------
+    
+Configuring
+-----------
 
 There are no configurations yet...
 
-Using the component
+Usage
 -------------------
 
 ### Areas

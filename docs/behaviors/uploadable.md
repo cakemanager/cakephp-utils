@@ -3,6 +3,8 @@ Uploadable-Behavior
 
 With the Uploadable-behavior you are able to upload files easily.
 
+[doc_toc]
+
 Loading
 -------
 You can load the behavior in your model via:
@@ -26,7 +28,7 @@ You have to do that when you add the behavior to the model:
 Also we have to customize our view:
 
     // add the type to the create-method
-    echo $this->Form->creat($entity, ['type' => 'file']);
+    echo $this->Form->create($entity, ['type' => 'file']);
 
     // add the avatar-input
     echo $this->Form->input('avatar', ['type' => 'field']);

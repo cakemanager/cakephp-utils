@@ -4,6 +4,8 @@ Stateable-Behavior
 With the Stateable-behavior you are able to sort your data in multiple states. 
 Via this states you are able to save / change them, and get a list via the finders of CakePHP.
 
+[doc_toc]
+
 Loading
 -------
 You can load the behavior in your model via:
