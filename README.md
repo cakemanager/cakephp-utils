@@ -6,26 +6,26 @@ The Utils plugin offers you many components and behaviors to make developing eas
 Usage
 -----
 
-Run: `composer require cakemanager/cakephp-utils`
+Run composer: `composer require cakemanager/cakephp-utils`
 
 In `app/Config/bootstrap.php` add: `Plugin::load('Utils');`
 
 ### Components
 
-- Authorizer - Component to work easily with authorization in your application-controllers.
-- Menu - Adds menu-items in sections to pass to your view.
+- [Authorizer](http://cakemanager.org/docs/utils/1.0/components/authorizer/) - Component to work easily with authorization in your application-controllers.
+- [Menu](http://cakemanager.org/docs/utils/1.0/components/menu/) - Adds menu-items in sections to pass to your view.
 
 ### Behaviors
 
-- Metas - Behavior to add meta-data to your current model.
-- Stateable - Generates multiple states (like concept, deleted, active) and with save-method and finders.
-- Uploadable - Great behavior to upload files automatically.
-- WhoDidIt - Saves the user who created the row, and modified the row.
+- [Metas](http://cakemanager.org/docs/utils/1.0/behaviors/metas/) - Behavior to add meta-data to your current model.
+- [Stateable](http://cakemanager.org/docs/utils/1.0/behaviors/stateable/) - Generates multiple states (like concept, deleted, active) and with save-method and finders.
+- [Uploadable](http://cakemanager.org/docs/utils/1.0/behaviors/uploadable/) - Great behavior to upload files automatically.
+- [WhoDidIt](http://cakemanager.org/docs/utils/1.0/behaviors/whodidit/) - Saves the user who created the row, and modified the row.
 
 Documentation
 -------------
 
-For documentation, as well as tutorials, see the [documentation](http://cakemanager-utils.readthedocs.org) on Read The Docs.
+For documentation, as well as tutorials, see the [documentation](http://cakemanager.org/docs/utils/1.0/) on [cakemanager.org](http://cakemanager.org).
 
 Support
 -------
