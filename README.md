@@ -31,7 +31,16 @@ For documentation, as well as tutorials, see the [documentation](http://cakemana
 Support
 -------
 
-For bugs and feature requests, please use the [issues](https://github.com/cakemanager/cakephp-utils/issues) section of this repository.
+- [CakeManager Website](http://cakemanager.org/) - Website of the CakeManager Team. Here you can find everything about us and our plugins.
+
+- [Gitter](https://gitter.im/cakemanager/cakephp-cakemanager) - Chat Tool for GitHub to talk about issues and new features.
+
+- [GitHub](https://github.com/cakemanager/cakephp-utils/issues) - When there's something wrong, please open a new issue!
+
+- [CakeManager Docs](http://cakemanager.org/docs/1.0/) - Documentation about the CakeManager Plugin.
+
+- [CakePHP Utils Plugin Docs](http://cakemanager.org/docs/utils/1.0/) - Documentation about the Utils Plugin.
+
 
 Contributing
 ------------
