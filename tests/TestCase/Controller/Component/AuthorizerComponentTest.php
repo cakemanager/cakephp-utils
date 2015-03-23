@@ -214,7 +214,7 @@ class AuthorizerComponentTest extends TestCase
     /**
      * Helper to return a component with a given url
      *
-     * @param type $url
+     * @param array $params
      */
     public function setUpRequest($params)
     {
