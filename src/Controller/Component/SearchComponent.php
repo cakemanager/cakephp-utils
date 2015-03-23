@@ -15,6 +15,7 @@
 namespace Utils\Controller\Component;
 
 use Cake\Controller\Component;
+use Cake\Utility\Hash;
 
 /**
  * Search component
@@ -113,7 +114,23 @@ class SearchComponent extends Component
 
         $options = array_merge($_options, $options);
 
-        $this->config('filters.' . $name, $options);
+        $this->config('filters.' . $name, $options, true);
+    }
+    
+    /**
+     * removeFilter
+     *
+     * Removes an filter.
+     *
+     * @param string $name Name of the filter.
+     * @return void
+     */
+    public function removeFilter($name)
+    {
+        $filters = $this->config('filters');
+        unset($filters[$name]);
+        
+        $this->config('filters', $filters, false);
     }
 
     /**
@@ -145,7 +162,7 @@ class SearchComponent extends Component
         $filters = $this->_normalize($this->config('filters'));
 
         foreach ($filters as $field => $options) {
-            if (!empty($params[$options['column']])) {
+            if (!empty(Hash::get($params, $options['column']))) {
                 $key = $this->_buildKey($field, $options);
                 $value = $this->_buildValue($field, $options, $params);
 
@@ -170,7 +187,7 @@ class SearchComponent extends Component
      */
     protected function _buildKey($field, $options)
     {
-        $string = $options['field'];
+        $string = $options['column'];
 
         // if the operator is `LIKE`
         if ($options['operator'] === 'LIKE') {
@@ -196,7 +213,7 @@ class SearchComponent extends Component
         if ($options['operator'] === 'LIKE') {
             $string .= '%';
         }
-        $string .= $params[$options['column']];
+        $string .= Hash::get($params, $options['column']);
         if ($options['operator'] === 'LIKE') {
             $string .= '%';
         }
@@ -216,7 +233,7 @@ class SearchComponent extends Component
     protected function _setValue($field, $options, $params)
     {
         $key = 'filters.' . $field . '.attributes.value';
-        $value = $params[$options['column']];
+        $value = Hash::get($params, $options['column']);
 
         $this->config($key, $value);
     }
