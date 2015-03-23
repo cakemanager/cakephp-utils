@@ -14,6 +14,7 @@ In `app/Config/bootstrap.php` add: `Plugin::load('Utils');`
 
 - [Authorizer](http://cakemanager.org/docs/utils/1.0/components/authorizer/) - Component to work easily with authorization in your application-controllers.
 - [Menu](http://cakemanager.org/docs/utils/1.0/components/menu/) - Adds menu-items in sections to pass to your view.
+- [Search](http://cakemanager.org/docs/utils/1.0/components/search/) - Creates filters for your queries so you are able to filter on your list with a generated form.
 
 ### Behaviors
 
