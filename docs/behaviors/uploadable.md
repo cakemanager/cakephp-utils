@@ -29,9 +29,9 @@ Also we have to customize our view:
 
     // add the type to the create-method
     echo $this->Form->create($entity, ['type' => 'file']);
-
+    
     // add the avatar-input
-    echo $this->Form->input('avatar', ['type' => 'field']);
+    echo $this->Form->input('avatar', ['type' => 'file']);
 
 Now we are done. you are ready to uplaod your file. In the next section all configurations under your field will be described.
 
