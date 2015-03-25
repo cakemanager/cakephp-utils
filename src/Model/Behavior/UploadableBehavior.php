@@ -39,7 +39,7 @@ class UploadableBehavior extends Behavior
             'removeFileOnUpdate' => false,
             'removeFileOnDelete' => true,
             'field' => 'id',
-            'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}',
+            'path' => '{ROOT}/{WEBROOT}/uploads/{model}/{field}/',
             'fileName' => '{ORIGINAL}',
         ]
     ];
@@ -319,8 +319,6 @@ class UploadableBehavior extends Behavior
             '{field}' => $entity->get($config['field']),
             '{model}' => Inflector::underscore($this->_Table->alias()),
             '{DS}' => DIRECTORY_SEPARATOR,
-            '//' => DIRECTORY_SEPARATOR,
-            '/' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
         );
 
@@ -328,6 +326,7 @@ class UploadableBehavior extends Behavior
 
         if (!$options['root']) {
             $builtPath = str_replace(ROOT . DS . 'webroot' . DS, '', $builtPath);
+            $builtPath = str_replace(ROOT . '/webroot/', '', $builtPath);
         }
 
         if ($options['file']) {
