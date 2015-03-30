@@ -1,20 +1,32 @@
 <?php
-
+/**
+ * CakeManager (http://cakemanager.org)
+ * Copyright (c) http://cakemanager.org
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) http://cakemanager.org
+ * @link          http://cakemanager.org CakeManager Project
+ * @since         1.0
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
 namespace Utils\Test\TestCase\Controller\Component;
 
-use Utils\Controller\Component\AuthorizerComponent;
 use Cake\Controller\ComponentRegistry;
-use Cake\TestSuite\TestCase;
 use Cake\Network\Request;
 use Cake\Network\Response;
+use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Utils\Controller\Component\AuthorizerComponent;
 
 /**
  * CakeManager\Controller\Component\AuthorizerComponent Test Case
+ *
  */
 class AuthorizerComponentTest extends TestCase
 {
-
     /**
      * setUp method
      *
@@ -25,10 +37,10 @@ class AuthorizerComponentTest extends TestCase
         parent::setUp();
 
         $this->Authorizer = $this->setUpRequest([
-            'prefix'     => null,
-            'plugin'     => 'utils',
+            'prefix' => null,
+            'plugin' => 'utils',
             'controller' => 'users',
-            'action'     => 'index'
+            'action' => 'index'
         ]);
     }
 
@@ -48,14 +60,12 @@ class AuthorizerComponentTest extends TestCase
     }
 
     /**
-     * Test the setCurrentParams method.
+     * testSetCurrentParams
      *
-     * This method will set the params (plugin, controller, action) by the controller.
-     *
+     * @return void
      */
     public function testSetCurrentParams()
     {
-
         $set = $this->Authorizer->setCurrentParams();
 
         $this->assertEquals("utils", $set['plugin']);
@@ -64,10 +74,9 @@ class AuthorizerComponentTest extends TestCase
     }
 
     /**
-     * Test the setController method.
+     * testSetController
      *
-     * This method sets the controller inside the component.
-     *
+     * @return void
      */
     public function testSetController()
     {
@@ -79,15 +88,13 @@ class AuthorizerComponentTest extends TestCase
 
         // Setup our component and fake test controller
         $request = new Request(['params' => [
-                'plugin'     => 'utils',
+                'plugin' => 'utils',
                 'controller' => 'bookmarks',
-                'action'     => 'view'
+                'action' => 'view'
         ]]);
         $response = new Response();
 
-        $controller = $this->getMock(
-                'Cake\Controller\Controller', ['redirect'], [$request, $response]
-        );
+        $controller = $this->getMock('Cake\Controller\Controller', ['redirect'], [$request, $response]);
 
         $this->Authorizer->setController($controller);
 
@@ -99,31 +106,31 @@ class AuthorizerComponentTest extends TestCase
     }
 
     /**
-     * Test the action method.
+     * testAction
      *
-     * This method is the beginning of the authorization
-     *
+     * @return void
      */
     public function testAction()
     {
         $this->assertEmpty($this->Authorizer->getData());
 
-        $this->Authorizer->action('index', function($auth) {
-
+        $this->Authorizer->action('index', function ($auth) {
+            
         });
 
         $this->assertNotEmpty($this->Authorizer->getData());
     }
 
     /**
-     * Test the allowRole method.
+     * testAllowRole
      *
+     * @return void
      */
     public function testAllowRole()
     {
         $this->assertEmpty($this->Authorizer->getData());
 
-        $this->Authorizer->action('index', function($auth) {
+        $this->Authorizer->action('index', function ($auth) {
             $auth->allowRole(1);
         });
 
@@ -138,14 +145,15 @@ class AuthorizerComponentTest extends TestCase
     }
 
     /**
-     * Test the denyRole method.
+     * testDenyRole
      *
+     * @return void
      */
     public function testDenyRole()
     {
         $this->assertEmpty($this->Authorizer->getData());
 
-        $this->Authorizer->action('index', function($auth) {
+        $this->Authorizer->action('index', function ($auth) {
             $auth->denyRole(2);
         });
 
@@ -160,14 +168,15 @@ class AuthorizerComponentTest extends TestCase
     }
 
     /**
-     * Test the setRole method.
+     * testSetRole
      *
+     * @return void
      */
     public function testSetRole()
     {
         $this->assertEmpty($this->Authorizer->getData());
 
-        $this->Authorizer->action('index', function($auth) {
+        $this->Authorizer->action('index', function ($auth) {
             $auth->setRole(1, true);
             $auth->setRole(2, false);
             $auth->setRole(3, false);
@@ -185,53 +194,51 @@ class AuthorizerComponentTest extends TestCase
     }
 
     /**
-     * Test the final Authorize method.
+     * testAuthorize
      *
-     * This method returns a boolean if the user is allowed to the page
-     *
+     * @return void
      */
     public function testAuthorize()
     {
         $this->Authorizer->Controller->Auth->setUser([
-            'id'      => 1,
+            'id' => 1,
             'role_id' => 1,
         ]);
 
-        $this->Authorizer->action('index', function($auth) {
+        $this->Authorizer->action('index', function ($auth) {
             $auth->allowRole(1);
         });
 
         $this->assertTrue($this->Authorizer->authorize());
 
-        $this->Authorizer->action('index', function($auth) {
+        $this->Authorizer->action('index', function ($auth) {
             $auth->denyRole(1);
         });
 
         $this->assertFalse($this->Authorizer->authorize());
-
     }
 
     /**
-     * Helper to return a component with a given url
+     * setUpRequest
      *
-     * @param array $params
+     * Helper-method to generate a request and returns the AuthorizerComponent.
+     *
+     * @param array $params Parameters to send for request.
+     * @return Authorizer
      */
     public function setUpRequest($params)
     {
-
         // Setup our component and fake test controller
         $request = new Request(['params' => $params]);
         $response = new Response();
 
-        $this->controller = $this->getMock(
-                'Cake\Controller\Controller', ['redirect'], [$request, $response]
-        );
+        $this->controller = $this->getMock('Cake\Controller\Controller', ['redirect'], [$request, $response]);
 
         $this->controller->loadComponent('Auth');
 
         $this->controller->Auth->setUser([
-            'id'       => 1,
-            'role_id'  => 1,
+            'id' => 1,
+            'role_id' => 1,
             'username' => 'cake',
         ]);
 
@@ -242,5 +249,4 @@ class AuthorizerComponentTest extends TestCase
 
         return $authorizer;
     }
-
 }

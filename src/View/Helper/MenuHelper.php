@@ -27,11 +27,23 @@ use Cake\View\Helper;
  */
 class MenuHelper extends Helper
 {
+
+    /**
+     * __construct
+     *
+     * @param \Cake\View\View $View View.
+     * @param array $config configurations.
+     */
     public function __construct(\Cake\View\View $View, array $config = array())
     {
         parent::__construct($View, $config);
     }
     
+    /**
+     * Helpers
+     *
+     * @var array
+     */
     public $helpers = [
         'Html'
     ];
@@ -51,6 +63,7 @@ class MenuHelper extends Helper
      * The binded template to an area is used to style the menu.
      *
      * @param string $area Area to build.
+     * @param string $helper Helper to use.
      * @param array $options Options.
      * @return string
      */

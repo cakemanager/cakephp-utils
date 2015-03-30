@@ -18,11 +18,19 @@ use Cake\TestSuite\TestCase;
 
 /**
  * CakeManager\Model\Behavior\WhoDidItBehavior Test Case
- * 
+ *
  */
 class WhoDidItBehaviorTest extends TestCase
 {
-    public $fixtures = ['plugin.utils.articles', 'plugin.utils.users'];
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.utils.articles',
+        'plugin.utils.users'
+    ];
 
     /**
      * setUp method
@@ -43,14 +51,13 @@ class WhoDidItBehaviorTest extends TestCase
      */
     public function testFind()
     {
-
         $data = $this->Model->get(1);
 
         $this->AssertEquals(1, $data->created_by->id);
         $this->AssertEquals(1, $data->modified_by->id);
 
-        $this->AssertEquals(7, count($data->created_by->toArray()));
-        $this->AssertEquals(7, count($data->modified_by->toArray()));
+        $this->AssertEquals(8, count($data->created_by->toArray()));
+        $this->AssertEquals(8, count($data->modified_by->toArray()));
     }
 
     /**
@@ -84,7 +91,7 @@ class WhoDidItBehaviorTest extends TestCase
 
         $data = $this->Model->get(1);
 
-        $this->AssertEquals(7, count($data->created_by->toArray()));
+        $this->AssertEquals(8, count($data->created_by->toArray()));
         $this->AssertEquals(1, $data->modified_by);
 
         $behavior->config('modified_by', 'modified_by');

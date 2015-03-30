@@ -14,15 +14,20 @@
  */
 namespace Utils\Test\TestCase\Model\Behavior;
 
-use Cake\TestSuite\TestCase;
 use Cake\Datasource\ConnectionManager;
+use Cake\TestSuite\TestCase;
 
 /**
  * CakeManager\Model\Behavior\UploadableBehavior Test Case
- * 
+ *
  */
 class UploadableBehaviorTest extends TestCase
 {
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
     public $fixtures = ['plugin.utils.articles'];
 
     /**
@@ -36,10 +41,7 @@ class UploadableBehaviorTest extends TestCase
 
         $connection = ConnectionManager::get('test');
 
-        $this->Articles = $this->getMock('Cake\ORM\Table', [
-            '_mkdir',
-            '_moveUploadedFile'
-                ], [
+        $this->Articles = $this->getMock('Cake\ORM\Table', ['_mkdir', '_moveUploadedFile'], [
             ['table' => 'articles', 'connection' => $connection]
         ]);
     }
@@ -57,14 +59,12 @@ class UploadableBehaviorTest extends TestCase
     }
 
     /**
-     * Test the method getFieldList
+     * testGetFieldList
      *
-     * Will return the normalized list of fields who will be uploadable
-     *
+     * @return void
      */
     public function testGetFieldList()
     {
-
         // adding 3 different fields
         $this->Articles->addBehavior('Utils.Uploadable', [
             'fieldWithoutSettings',
@@ -112,14 +112,12 @@ class UploadableBehaviorTest extends TestCase
     }
 
     /**
-     * Test the normalizeAll method.
+     * testNormalizeAll
      *
-     * This will do the same as the getFieldList method
-     *
+     * @return void
      */
     public function testNormalizeAll()
     {
-
         $options = [
             'fieldWithoutSettings',
             'fieldWithCustomSettings1' => [
@@ -171,13 +169,12 @@ class UploadableBehaviorTest extends TestCase
     }
 
     /**
-     * Test saving with loading the behavior but without setting up an field to upload
+     * testSaveWithoutFile
      *
      * @return void
      */
     public function testSaveWithoutFile()
     {
-
         $this->Articles->addBehavior('Utils.Uploadable');
 
         $data = [
@@ -219,14 +216,16 @@ class UploadableBehaviorTest extends TestCase
         $this->assertEquals('Content', $save->get('body'));
     }
 
+    /**
+     * testSaveWithFile
+     *
+     * @return void
+     */
     public function testSaveWithFile()
     {
-
         $connection = ConnectionManager::get('test');
 
-        $table = $this->getMock('Cake\ORM\Table', [
-            '_nonExistingMethodElseTheMockWillMockAllMethods',
-                ], [
+        $table = $this->getMock('Cake\ORM\Table', ['_nonExistingMethodElseTheMockWillMockAllMethods'], [
             ['table' => 'articles', 'connection' => $connection]
         ]);
 
@@ -241,17 +240,17 @@ class UploadableBehaviorTest extends TestCase
                 ],
             ]
         ];
+        
+        $mocks = ['_mkdir', '_MoveUploadedFile'];
 
-        $behaviorMock = $this->getMock(
-                '\Utils\Model\Behavior\UploadableBehavior', [ '_mkdir', '_MoveUploadedFile'], [$table, $behaviorOptions]
-        );
+        $behaviorMock = $this->getMock('\Utils\Model\Behavior\UploadableBehavior', $mocks, [$table, $behaviorOptions]);
 
         $behaviorMock->expects($this->any())
-                ->method('_mkdir')
-                ->will($this->returnValue(true));
+            ->method('_mkdir')
+            ->will($this->returnValue(true));
         $behaviorMock->expects($this->any())
-                ->method('_MoveUploadedFile')
-                ->will($this->returnValue(true));
+            ->method('_MoveUploadedFile')
+            ->will($this->returnValue(true));
 
         $table->behaviors()->set('Uploadable', $behaviorMock);
 

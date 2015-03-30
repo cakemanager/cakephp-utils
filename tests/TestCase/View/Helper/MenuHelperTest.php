@@ -14,9 +14,9 @@
  */
 namespace CakeManager\Test\TestCase\View\Helper;
 
-use Utils\View\Helper\MenuHelper;
 use Cake\TestSuite\TestCase;
 use Cake\View\View;
+use Utils\View\Helper\MenuHelper;
 
 /**
  * CakeManager\View\Helper\MenuHelper Test Case

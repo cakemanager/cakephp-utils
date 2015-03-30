@@ -1,10 +1,8 @@
-<?php
+<?php namespace Utils\Test\TestCase\Controller\Component;
 
-namespace Utils\Test\TestCase\Controller\Component;
-
-use Utils\Controller\Component\MenuComponent;
 use Cake\Controller\ComponentRegistry;
 use Cake\TestSuite\TestCase;
+use Utils\Controller\Component\MenuComponent;
 
 /**
  * CakeManager\Controller\Component\MenuComponent Test Case
@@ -17,23 +15,25 @@ class MenuComponentTest extends TestCase
      *
      * @return void
      */
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
 
-         // Setup our component and fake test controller
+        // Setup our component and fake test controller
         $collection = new ComponentRegistry();
         $this->Menu = new MenuComponent($collection);
 
-        $this->controller = $this->getMock(
-            'Cake\Controller\Controller',
-            ['redirect']
-        );
+        $this->controller = $this->getMock('Cake\Controller\Controller', ['redirect']);
         $this->Menu->setController($this->controller);
-
     }
 
-    public function testArea() {
-
+    /**
+     * testArea
+     *
+     * @return void
+     */
+    public function testArea()
+    {
         // test area starts with main
         $this->assertEquals('main', $this->Menu->area());
 
@@ -42,8 +42,13 @@ class MenuComponentTest extends TestCase
         $this->assertEquals('custom', $this->Menu->area(), "Area could not be set");
     }
 
-    public function testAdd() {
-
+    /**
+     * testAdd
+     *
+     * @return void
+     */
+    public function testAdd()
+    {
         // get empty menu
         $empty = $this->Menu->getMenu();
 
@@ -66,8 +71,13 @@ class MenuComponentTest extends TestCase
         $this->assertCount(2, $test01['main']);
     }
 
-    public function testClear() {
-
+    /**
+     * testClear
+     *
+     * @return void
+     */
+    public function testClear()
+    {
         $data = $this->Menu->getMenu();
 
         $this->assertCount(2, $data['main']);
@@ -79,8 +89,13 @@ class MenuComponentTest extends TestCase
         $this->assertCount(0, $data['main']);
     }
 
-    public function testRemove() {
-
+    /**
+     * testRemove
+     *
+     * @return void
+     */
+    public function testRemove()
+    {
         $this->Menu->clear();
 
         // get empty menu
@@ -114,10 +129,10 @@ class MenuComponentTest extends TestCase
      *
      * @return void
      */
-    public function tearDown() {
+    public function tearDown()
+    {
         unset($this->Menu);
 
         parent::tearDown();
     }
-
 }

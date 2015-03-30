@@ -19,10 +19,15 @@ use Cake\TestSuite\TestCase;
 
 /**
  * CakeManager\Model\Behavior\StateableBehavior Test Case
- * 
+ *
  */
 class StateableBehaviorTest extends TestCase
 {
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
     public $fixtures = ['plugin.utils.articles'];
 
     /**
@@ -37,9 +42,13 @@ class StateableBehaviorTest extends TestCase
         $this->Model = \Cake\ORM\TableRegistry::get('Articles');
     }
 
+    /**
+     * testLoadingBehavior
+     *
+     * @return void
+     */
     public function testLoadingBehavior()
     {
-
         $this->assertFalse($this->Model->behaviors()->has('Stateable'));
 
         $this->Model->addBehavior('Utils.Stateable');
@@ -47,9 +56,13 @@ class StateableBehaviorTest extends TestCase
         $this->assertTrue($this->Model->behaviors()->has('Stateable'));
     }
 
+    /**
+     * testStateList
+     *
+     * @return void
+     */
     public function testStateList()
     {
-
         $_list = [
             'concept' => 0,
             'active' => 1,
@@ -67,27 +80,39 @@ class StateableBehaviorTest extends TestCase
         $this->assertEquals($_list, $this->Model->stateList());
     }
 
+    /**
+     * testFindConcept
+     *
+     * @return void
+     */
     public function testFindConcept()
     {
-
         $data = $this->Model->find('concept')->toArray();
 
         $this->assertEquals(2, $data[0]['id']);
         $this->assertEquals("Second Article", $data[0]['title']);
     }
 
+    /**
+     * testFindActive
+     *
+     * @return void
+     */
     public function testFindActive()
     {
-
         $data = $this->Model->find('active')->toArray();
 
         $this->assertEquals(1, $data[0]['id']);
         $this->assertEquals("First Article", $data[0]['title']);
     }
 
+    /**
+     * testFindDeleted
+     *
+     * @return void
+     */
     public function testFindDeleted()
     {
-
         $data = $this->Model->find('deleted')->toArray();
 
         $this->assertEquals(3, $data[0]['id']);
