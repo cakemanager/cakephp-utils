@@ -7,16 +7,37 @@
 [![License](https://poser.pugx.org/cakemanager/cakephp-utils/license.svg)](https://packagist.org/packages/cakemanager/cakephp-utils)
 
 Utils Plugin for Cake 3.x
-===================
+=========================
 
-The Utils plugin offers you many components and behaviors to make developing easier. This plugin is required by the [CakeManager plugin](http://github.com/cakemanager/cakephp-cakemanager), but it's good in use as individual plugin!
+The Utils plugin offers you many components and behaviors to make developing easier. This plugin is required by the [Cak
+
+Installation
+------------
+
+You can install this plugin into your CakePHP application using [composer](http://getcomposer.org).
+
+The recommended way to install composer packages is:
+
+```
+composer require cakemanager/cakephp-whosonline
+```
+
+## Configuration
+
+You will need to add the following line to your application's bootstrap.php file:
+
+```php
+Plugin::load('WhosOnline', ['bootstrap' => true, 'routes' => true]);
+```
+
+Next you need migrations to create the table for the plugin in your shell:
+
+```bash
+cake migrations migrate --plugin="WhosOnline"
+```
 
 Usage
 -----
-
-Run composer: `composer require cakemanager/cakephp-utils`
-
-In `app/Config/bootstrap.php` add: `Plugin::load('Utils');`
 
 ### Components
 
