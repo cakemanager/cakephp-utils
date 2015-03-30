@@ -116,7 +116,7 @@ class SearchComponent extends Component
 
         $this->config('filters.' . $name, $options, true);
     }
-    
+
     /**
      * removeFilter
      *
@@ -129,7 +129,7 @@ class SearchComponent extends Component
     {
         $filters = $this->config('filters');
         unset($filters[$name]);
-        
+
         $this->config('filters', $filters, false);
     }
 
@@ -162,7 +162,8 @@ class SearchComponent extends Component
         $filters = $this->_normalize($this->config('filters'));
 
         foreach ($filters as $field => $options) {
-            if (!empty(Hash::get($params, $options['column']))) {
+            $hash = Hash::get($params, $options['column']);
+            if (!empty($hash)) {
                 $key = $this->_buildKey($field, $options);
                 $value = $this->_buildValue($field, $options, $params);
 
