@@ -44,10 +44,10 @@ class SearchHelperTest extends TestCase
                     'empty' => true
                 ],
                 'options' => [
-                    (int) 1 => 'category 1',
-                    (int) 2 => 'category 2',
-                    (int) 3 => 'category 3',
-                    (int) 4 => 'category 4'
+                    1 => 'category 1',
+                    2 => 'category 2',
+                    3 => 'category 3',
+                    4 => 'category 4'
                 ]
             ]
         ];

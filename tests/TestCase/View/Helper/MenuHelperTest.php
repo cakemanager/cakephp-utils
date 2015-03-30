@@ -14,7 +14,7 @@
  */
 namespace CakeManager\Test\TestCase\View\Helper;
 
-use CakeManager\View\Helper\MenuHelper;
+use Utils\View\Helper\MenuHelper;
 use Cake\TestSuite\TestCase;
 use Cake\View\View;
 
@@ -55,6 +55,5 @@ class MenuHelperTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->markTestIncomplete('Not implemented yet.');
     }
 }
