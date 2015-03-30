@@ -19,7 +19,7 @@ You can install this plugin into your CakePHP application using [composer](http:
 The recommended way to install composer packages is:
 
 ```
-composer require cakemanager/cakephp-whosonline
+composer require cakemanager/cakephp-utils
 ```
 
 ## Configuration
@@ -27,13 +27,7 @@ composer require cakemanager/cakephp-whosonline
 You will need to add the following line to your application's bootstrap.php file:
 
 ```php
-Plugin::load('WhosOnline', ['bootstrap' => true, 'routes' => true]);
-```
-
-Next you need migrations to create the table for the plugin in your shell:
-
-```bash
-cake migrations migrate --plugin="WhosOnline"
+Plugin::load('Utils');
 ```
 
 Usage
