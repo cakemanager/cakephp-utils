@@ -1,6 +1,8 @@
 Installation
 ============
 
+[doc_toc]
+
 Composer
 --------
 
