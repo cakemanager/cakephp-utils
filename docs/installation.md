@@ -10,7 +10,7 @@ You can install this plugin into your CakePHP application using composer.
 
 The recommended way to install composer packages is:
 
-        composer require cakemanager/cakephp-utils
+        composer require cakemanager/cakephp-utils:1.0.x-dev
 
 For the stable use, use the `1.0` branch.
 
