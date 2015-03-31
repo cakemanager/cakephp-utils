@@ -10,6 +10,8 @@ The recommended way to install composer packages is:
 
         composer require cakemanager/cakephp-utils
 
+For the stable use, use the `1.0` branch.
+
 Configuration
 
 You will need to add the following line to your application's bootstrap.php file:
