@@ -1,4 +1,4 @@
-
+- [Installation](/docs/utils/1.0/installation)
 - Components
   - [Authorizer](/docs/utils/1.0/components/authorizer)
   - [Menu](/docs/utils/1.0/components/menu)
