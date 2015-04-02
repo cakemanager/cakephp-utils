@@ -20,8 +20,9 @@ Configuring
 
 There are no configurations yet...
 
+
 Usage
--------------------
+-----
 
 ### Areas
 A web-page can contain multiple areas for menu's. Think about a main-area, a header, and a footer.
@@ -69,6 +70,25 @@ You can remove items using it's id:
 
     $this->Menu->remove('Bookmarks');
 
+
+### Getting items
+You can get the current menu-list by the `getMenu`-method:
+
+    // get the whole menu with all areas
+    $this->Menu->getMenu();
+
+    // get specific area
+    $this->Menu->getMenu('main');
+
+### Controller
+Adding menu-items can be done in your `AppController`. For that, the `MenuComponent` calls an `initMenuItems`-method. So, when you add 
+the following to your `AppController`, menu-items will be added:
+
+    public function initMenuItems() {
+        
+        // your items here
+
+    }
 
 Using the menu-data
 -------------------
