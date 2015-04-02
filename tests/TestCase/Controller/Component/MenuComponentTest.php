@@ -1,6 +1,7 @@
 <?php namespace Utils\Test\TestCase\Controller\Component;
 
 use Cake\Controller\ComponentRegistry;
+use Cake\Event\Event;
 use Cake\TestSuite\TestCase;
 use Utils\Controller\Component\MenuComponent;
 
@@ -22,11 +23,25 @@ class MenuComponentTest extends TestCase
         // Setup our component and fake test controller
         $collection = new ComponentRegistry();
         $this->Menu = new MenuComponent($collection);
-
-        $this->controller = $this->getMock('Cake\Controller\Controller', ['redirect']);
-        $this->Menu->setController($this->controller);
+        
+        $this->Controller = $this->getMock('Cake\Controller\Controller', ['redirect', 'initMenuItems']);
+        $this->Menu->setController($this->Controller);
     }
 
+    /**
+     * testBeforeFilter
+     *
+     * @return void
+     */
+    public function testBeforeFilter()
+    {
+        $event = new Event('Controller.beforeFilter', $this->Controller);
+        
+        $this->Controller->expects($this->once())->method('initMenuItems');
+        
+        $this->Menu->beforeFilter($event);
+    }
+        
     /**
      * testArea
      *

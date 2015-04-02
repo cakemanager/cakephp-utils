@@ -94,6 +94,24 @@ class MenuComponent extends Component
     }
 
     /**
+     * BeforeFilter Event
+     *
+     * This method will check if the `initMenuItems`-method exists in the
+     * `AppController`. That method contains menu-items to add.
+     *
+     * @param \Cake\Event\Event $event Event.
+     * @return void
+     */
+    public function beforeFilter($event)
+    {
+        $this->setController($event->subject());
+
+        if (method_exists($this->Controller, 'initMenuItems')) {
+            $this->Controller->initMenuItems($event);
+        }
+    }
+
+    /**
      * area
      *
      * Method to set or get the current area.
