@@ -66,3 +66,20 @@ Sometimes you don't need every data of the user, it makes your queries much bigg
     }
     
 The example above will only return the users `id`, `role_id` and `email`.
+
+### Changing the propertyNames
+
+At default the CreatedBy-data will be overruled on the `created_by` key. That means that it's possible you are getting errors when saving an entity.
+You are able to change the propertynames via this code:
+
+    public function initialize(array $config) {
+        // code
+        $this->addBehavior('CakeManager.WhoDidIt', [
+            'createdByPropertyName' => 'created_by_custom',
+            'modifiedByPropertyName' => 'modified_by_custom',
+        ]);
+    }
+
+In this case the user who created the item is accessible via `$data->created_by_custom->id`, and not via `$data->created_by->id`.
+The `created_by` key will contain the original column-value, so that will be the users id.
+This example is for the `modified_by` too. 

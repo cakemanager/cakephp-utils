@@ -40,6 +40,8 @@ class WhoDidItBehavior extends Behavior
     protected $_defaultConfig = [
         'created_by' => 'created_by',
         'modified_by' => 'modified_by',
+        'createdByPropertyName' => 'created_by',
+        'modifiedByPropertyName' => 'modified_by',
         'userModel' => 'CakeManager.Users',
         'fields' => [],
     ];
@@ -67,6 +69,7 @@ class WhoDidItBehavior extends Behavior
             $this->Table->belongsTo('CreatedBy', [
                 'foreignKey' => $this->config('created_by'),
                 'className' => $this->config('userModel'),
+                'propertyName' => $this->config('createdByPropertyName')
             ]);
         }
 
@@ -74,6 +77,7 @@ class WhoDidItBehavior extends Behavior
             $this->Table->belongsTo('ModifiedBy', [
                 'foreignKey' => $this->config('modified_by'),
                 'className' => $this->config('userModel'),
+                'propertyName' => $this->config('modifiedByPropertyName')
             ]);
         }
     }

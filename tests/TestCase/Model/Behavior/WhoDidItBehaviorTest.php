@@ -71,7 +71,7 @@ class WhoDidItBehaviorTest extends TestCase
         $behavior->config('fields', ['id', 'email']);
 
         $data = $this->Model->get(1);
-
+        
         $this->AssertEquals(2, count($data->created_by->toArray()));
         $this->AssertEquals(2, count($data->modified_by->toArray()));
 
@@ -160,6 +160,25 @@ class WhoDidItBehaviorTest extends TestCase
         $this->AssertEquals("Thirth Article Edited", $result->title);
         $this->AssertEquals(1, $result->created_by->id);
         $this->AssertEquals(2, $result->modified_by->id);
+    }
+
+    /**
+     * Test if the relations have different propertynames
+     */
+    public function testDifferentPropertyNames()
+    {
+        $this->Model->removeBehavior('WhoDidIt');
+        $this->Model->addBehavior('Utils.WhoDidIt', [
+            'createdByPropertyName' => 'created_by_prop',
+            'modifiedByPropertyName' => 'modified_by_prop'
+        ]);
+
+        $data = $this->Model->get(1);
+
+        $this->AssertNotNull($data->created_by_prop);
+        $this->AssertEquals(1, $data->created_by);
+        $this->AssertNotNull($data->modified_by_prop);
+        $this->AssertEquals(1, $data->modified_by);
     }
 
     /**
