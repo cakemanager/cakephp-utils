@@ -44,7 +44,7 @@ Example:
 The empty array of `avatar` will contain the configurations
 
 ### Fields
-The `fields` configuration contains an array with avaliable fields:
+The `fields` configuration contains an array with avaliable columns you want to set:
 
 - directory - this is the field who will contain the directory to your file.
 - type - this field will contain the type of the uplaoded file.
@@ -59,11 +59,13 @@ Example:
         'avatar' => [
           'fields' => [
             'size' => 'avatar_size',
-            'type' => 'avatar_type'
+            'type' => 'avatar_type',
+            'directory' => 'avatar_directory'
           ]
         ],
     ]);
 
+In this case the size of the file will be stored in the column `avatar_size`, the type will be stored in the column `avatar_type` and the directory will be stored in the `avatar_directory` column.
 
 ### Remove File On Update
 
