@@ -46,9 +46,9 @@ The empty array of `avatar` will contain the configurations
 ### Fields
 The `fields` configuration contains an array with avaliable columns you want to set:
 
-- directory - this is the field who will contain the directory to your file.
-- type - this field will contain the type of the uplaoded file.
-- size - this field contains the size of the uploaded file.
+- `directory` - this is the column who will contain the directory to your file.
+- `type` - this column will contain the type of the uplaoded file.
+- `size` - this column contains the size of the uploaded file.
 
 Note that all of the fields will be default set to false, so not used. Only the `directory` field will be automatically set to the name of your given field.
 So in the previous example it would be set to `avatar`.
