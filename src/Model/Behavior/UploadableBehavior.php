@@ -241,10 +241,10 @@ class UploadableBehavior extends Behavior
         $uploadPath = $this->_getPath($entity, $field, ['file' => false]);
         
         // creating the path if not exists
-        if (!is_dir($this->_getDir($entity, $field, ['file' => false]))){
-          $this->_mkdir($this->_getDir($entity, $field, ['file' => false]), 0777, true);
+        if (!is_dir($this->_getDir($entity, $field, ['file' => false]))) {
+            $this->_mkdir($this->_getDir($entity, $field, ['file' => false]), 0777, true);
         }
-		  
+
         // upload the file and return true
         if ($this->_moveUploadedFile($_upload['tmp_name'], $uploadPath)) {
             return true;
@@ -312,7 +312,7 @@ class UploadableBehavior extends Behavior
 
         $path = $config['path'];
 
-        $replacements = array(
+        $replacements = [
             '{ROOT}' => ROOT,
             '{WEBROOT}' => 'webroot',
             '{field}' => $entity->get($config['field']),
@@ -321,14 +321,14 @@ class UploadableBehavior extends Behavior
             '//' => DIRECTORY_SEPARATOR,
             '/' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
-        );
+        ];
 
         $builtPath = str_replace(array_keys($replacements), array_values($replacements), $path);
-        
+
         return $builtPath;
     }
 
-     /**
+    /**
      * _getPath
      *
      * Returns te path of the given field.
@@ -351,7 +351,7 @@ class UploadableBehavior extends Behavior
 
         $path = $config['path'];
 
-        $replacements = array(
+        $replacements = [
             '{ROOT}' => ROOT,
             '{WEBROOT}' => 'webroot',
             '{field}' => $entity->get($config['field']),
@@ -360,19 +360,19 @@ class UploadableBehavior extends Behavior
             '//' => DIRECTORY_SEPARATOR,
             '/' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
-        );
+        ];
 
         $builtPath = str_replace(array_keys($replacements), array_values($replacements), $path);
-		  
+
         if (!$options['root']) {
             $builtPath = str_replace(ROOT . DS . 'webroot' . DS, '', $builtPath);
         }
-		  
+
         if ($options['file']) {
             $builtPath = $builtPath . $entity[$field]['name'];
         } else {
             $builtPath = $builtPath . $this->_getFileName($entity, $field);
-        }
+}
 
         return $builtPath;
     }
@@ -398,11 +398,12 @@ class UploadableBehavior extends Behavior
 
         $_upload = $entity->get($field);
 
-        $file_info = explode('.', $_upload['name']);
-        $extension = end($file_info);
+        $fileInfo = explode('.', $_upload['name']);
+        $extension = end($fileInfo);
+
         $fileName = $config['fileName'];
 
-		$replacements = array(
+        $replacements = array(
             '{ORIGINAL}' => $_upload['name'],
             '{field}' => $entity->get($config['field']),
             '{extension}' => $extension,
@@ -413,7 +414,7 @@ class UploadableBehavior extends Behavior
         );
 
         $builtFileName = str_replace(array_keys($replacements), array_values($replacements), $fileName);
-		  
+
         return $builtFileName;
     }
 
