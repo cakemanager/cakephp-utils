@@ -34,7 +34,7 @@ class MenuHelper extends Helper
      * @param \Cake\View\View $View View.
      * @param array $config configurations.
      */
-    public function __construct(\Cake\View\View $View, array $config = array())
+    public function __construct(\Cake\View\View $View, array $config = [])
     {
         parent::__construct($View, $config);
     }

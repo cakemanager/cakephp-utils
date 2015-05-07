@@ -178,7 +178,7 @@ class MenuComponent extends Component
      * @param array $item Options for the item.
      * @return void
      */
-    public function add($title, $item = array())
+    public function add($title, $item = [])
     {
         $list = self::$data;
 
@@ -225,7 +225,7 @@ class MenuComponent extends Component
      * @param array $options Options.
      * @return void
      */
-    public function remove($id, $options = array())
+    public function remove($id, $options = [])
     {
         $_options = [
             'area' => false,
