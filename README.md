@@ -9,6 +9,8 @@
 Utils Plugin for Cake 3.x
 =========================
 
+[![Join the chat at https://gitter.im/cakemanager/cakephp-utils](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cakemanager/cakephp-utils?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 The Utils plugin offers you many components and behaviors to make developing easier. This plugin is required by the [Cak
 
 Installation
