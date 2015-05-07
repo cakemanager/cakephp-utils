@@ -39,7 +39,7 @@ class UploadableBehavior extends Behavior
             'removeFileOnUpdate' => false,
             'removeFileOnDelete' => true,
             'field' => 'id',
-            'path' => '{ROOT}/{WEBROOT}/uploads/{model}/{field}/',
+            'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}',
             'fileName' => '{ORIGINAL}',
         ]
     ];
@@ -238,12 +238,11 @@ class UploadableBehavior extends Behavior
     protected function _uploadFile($entity, $field, $options = [])
     {
         $_upload = $entity->get($field);
-
-        $uploadPath = $this->_getPath($entity, $field, ['file' => true]);
-
+        $uploadPath = $this->_getPath($entity, $field, ['file' => false]);
+        
         // creating the path if not exists
-        if (!file_exists($this->_getPath($entity, $field, ['file' => false]))) {
-            $this->_mkdir($this->_getPath($entity, $field, ['file' => false]), 0777, true);
+        if (!is_dir($this->_getDir($entity, $field, ['file' => false]))) {
+            $this->_mkdir($this->_getDir($entity, $field, ['file' => false]), 0777, true);
         }
 
         // upload the file and return true
@@ -291,6 +290,45 @@ class UploadableBehavior extends Behavior
     }
 
     /**
+     * _getDir
+     *
+     * Returns the folder path where the file must be uploaded
+     *
+     * @param \Cake\ORM\Entity $entity Entity to check on.
+     * @param string $field Field to check on.
+     * @param array $options Options.
+     * @return string
+     */
+    protected function _getDir($entity, $field, $options = [])
+    {
+        $_options = [
+            'root' => true,
+            'file' => false,
+        ];
+
+        $options = Hash::merge($_options, $options);
+
+        $config = $this->config($field);
+
+        $path = $config['path'];
+
+        $replacements = [
+            '{ROOT}' => ROOT,
+            '{WEBROOT}' => 'webroot',
+            '{field}' => $entity->get($config['field']),
+            '{model}' => Inflector::underscore($this->_Table->alias()),
+            '{DS}' => DIRECTORY_SEPARATOR,
+            '//' => DIRECTORY_SEPARATOR,
+            '/' => DIRECTORY_SEPARATOR,
+            '\\' => DIRECTORY_SEPARATOR,
+        ];
+
+        $builtPath = str_replace(array_keys($replacements), array_values($replacements), $path);
+
+        return $builtPath;
+    }
+
+    /**
      * _getPath
      *
      * Returns te path of the given field.
@@ -313,24 +351,27 @@ class UploadableBehavior extends Behavior
 
         $path = $config['path'];
 
-        $replacements = array(
+        $replacements = [
             '{ROOT}' => ROOT,
             '{WEBROOT}' => 'webroot',
             '{field}' => $entity->get($config['field']),
             '{model}' => Inflector::underscore($this->_Table->alias()),
             '{DS}' => DIRECTORY_SEPARATOR,
+            '//' => DIRECTORY_SEPARATOR,
+            '/' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
-        );
+        ];
 
         $builtPath = str_replace(array_keys($replacements), array_values($replacements), $path);
 
         if (!$options['root']) {
             $builtPath = str_replace(ROOT . DS . 'webroot' . DS, '', $builtPath);
-            $builtPath = str_replace(ROOT . '/webroot/', '', $builtPath);
         }
 
         if ($options['file']) {
             $builtPath = $builtPath . $entity[$field]['name'];
+        } else {
+            $builtPath = $builtPath . $this->_getFileName($entity, $field);
         }
 
         return $builtPath;
@@ -357,17 +398,20 @@ class UploadableBehavior extends Behavior
 
         $_upload = $entity->get($field);
 
+        $fileInfo = explode('.', $_upload['name']);
+        $extension = end($fileInfo);
+
         $fileName = $config['fileName'];
 
-        $replacements = array(
+        $replacements = [
             '{ORIGINAL}' => $_upload['name'],
             '{field}' => $entity->get($config['field']),
-            '{extension}' => end(explode('.', $_upload['name'])),
+            '{extension}' => $extension,
             '{DS}' => DIRECTORY_SEPARATOR,
             '//' => DIRECTORY_SEPARATOR,
             '/' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
-        );
+        ];
 
         $builtFileName = str_replace(array_keys($replacements), array_values($replacements), $fileName);
 

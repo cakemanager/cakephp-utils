@@ -59,7 +59,7 @@ class WhoDidItBehavior extends Behavior
      * @param \Cake\ORM\Table $table Table who requested the behavior.
      * @param array $config Options.
      */
-    public function __construct(Table $table, array $config = array())
+    public function __construct(Table $table, array $config = [])
     {
         parent::__construct($table, $config);
 

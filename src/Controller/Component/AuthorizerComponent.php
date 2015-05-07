@@ -77,7 +77,7 @@ class AuthorizerComponent extends Component
      * @param array $config Configurations.
      * @return void
      */
-    public function __construct(ComponentRegistry $registry, array $config = array())
+    public function __construct(ComponentRegistry $registry, array $config = [])
     {
         parent::__construct($registry, $config);
 
