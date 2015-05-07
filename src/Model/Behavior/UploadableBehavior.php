@@ -372,7 +372,7 @@ class UploadableBehavior extends Behavior
             $builtPath = $builtPath . $entity[$field]['name'];
         } else {
             $builtPath = $builtPath . $this->_getFileName($entity, $field);
-}
+        }
 
         return $builtPath;
     }
@@ -403,7 +403,7 @@ class UploadableBehavior extends Behavior
 
         $fileName = $config['fileName'];
 
-        $replacements = array(
+        $replacements = [
             '{ORIGINAL}' => $_upload['name'],
             '{field}' => $entity->get($config['field']),
             '{extension}' => $extension,
@@ -411,7 +411,7 @@ class UploadableBehavior extends Behavior
             '//' => DIRECTORY_SEPARATOR,
             '/' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
-        );
+        ];
 
         $builtFileName = str_replace(array_keys($replacements), array_values($replacements), $fileName);
 
