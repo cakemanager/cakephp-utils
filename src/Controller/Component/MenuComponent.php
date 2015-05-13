@@ -15,6 +15,7 @@
 namespace Utils\Controller\Component;
 
 use Cake\Controller\Component;
+use Cake\Core\Configure;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 
@@ -105,6 +106,8 @@ class MenuComponent extends Component
     public function beforeFilter($event)
     {
         $this->setController($event->subject());
+
+        $this->_addFromConfigure();
 
         if (method_exists($this->Controller, 'initMenuItems')) {
             $this->Controller->initMenuItems($event);
@@ -250,5 +253,30 @@ class MenuComponent extends Component
     public function beforeRender()
     {
         $this->Controller->set('menu', self::$data);
+    }
+
+    /**
+     * _registerFromConfigure
+     *
+     * This method gets the menuitems from the Configure: `PostTypes.register.*`.
+     *
+     * ### Adding menuitems via the `Configure`-class
+     * You can add a menuitem by:
+     *
+     * `Configure::write('Menu.Register.MyName', [*settings*]);`
+     *
+     * @return void
+     */
+    protected function _addFromConfigure()
+    {
+        $configure = Configure::read('Menu.Register');
+
+        if (!is_array($configure)) {
+            $configure = [];
+        }
+
+        foreach ($configure as $key => $item) {
+            $this->add($key, $item);
+        }
     }
 }

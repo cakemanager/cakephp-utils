@@ -1,6 +1,21 @@
-<?php namespace Utils\Test\TestCase\Controller\Component;
+<?php
+/**
+ * CakeManager (http://cakemanager.org)
+ * Copyright (c) http://cakemanager.org
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) http://cakemanager.org
+ * @link          http://cakemanager.org CakeManager Project
+ * @since         1.0
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
+namespace Utils\Test\TestCase\Controller\Component;
 
 use Cake\Controller\ComponentRegistry;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\TestSuite\TestCase;
 use Utils\Controller\Component\MenuComponent;
@@ -23,9 +38,23 @@ class MenuComponentTest extends TestCase
         // Setup our component and fake test controller
         $collection = new ComponentRegistry();
         $this->Menu = new MenuComponent($collection);
-        
+
         $this->Controller = $this->getMock('Cake\Controller\Controller', ['redirect', 'initMenuItems']);
         $this->Menu->setController($this->Controller);
+    }
+
+    /**
+     * tearDown method
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        $this->Menu->clear();
+
+        unset($this->Menu);
+
+        parent::tearDown();
     }
 
     /**
@@ -36,12 +65,12 @@ class MenuComponentTest extends TestCase
     public function testBeforeFilter()
     {
         $event = new Event('Controller.beforeFilter', $this->Controller);
-        
+
         $this->Controller->expects($this->once())->method('initMenuItems');
-        
+
         $this->Menu->beforeFilter($event);
     }
-        
+
     /**
      * testArea
      *
@@ -87,12 +116,46 @@ class MenuComponentTest extends TestCase
     }
 
     /**
+     * testAddFromConfigure
+     *
+     * @return void
+     */
+    public function testAddFromConfigure()
+    {
+        Configure::write('Menu.Register.ConfigureItem0', []);
+        Configure::write('Menu.Register.ConfigureItem1', []);
+        Configure::write('Menu.Register.ConfigureItem2', []);
+        Configure::write('Menu.Register.ConfigureItem3', []);
+
+        // Setup our component and fake test controller
+        $collection = new ComponentRegistry();
+        $this->Menu = new MenuComponent($collection);
+
+        $this->Controller = $this->getMock('Cake\Controller\Controller', ['redirect', 'initMenuItems']);
+        $this->Menu->setController($this->Controller);
+
+        $event = new Event('Component.beforeFilter', $this->Controller);
+
+        $this->Menu->beforeFilter($event);
+
+        $test01 = $this->Menu->getMenu();
+
+        // test main-area exists
+        $this->assertArrayHasKey('main', $test01);
+        // tests main-area counts 4 items
+        $this->assertCount(4, $test01['main']);
+    }
+
+    /**
      * testClear
      *
      * @return void
      */
     public function testClear()
     {
+        $this->Menu->add('Test01', []);
+        $this->Menu->add('Test02', []);
+
         $data = $this->Menu->getMenu();
 
         $this->assertCount(2, $data['main']);
@@ -139,15 +202,4 @@ class MenuComponentTest extends TestCase
         $this->assertCount(1, $data['main']);
     }
 
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        unset($this->Menu);
-
-        parent::tearDown();
-    }
 }
