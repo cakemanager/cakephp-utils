@@ -201,5 +201,4 @@ class MenuComponentTest extends TestCase
         // tests main-area counts 1 item
         $this->assertCount(1, $data['main']);
     }
-
 }
