@@ -275,7 +275,7 @@ class UploadableBehavior extends Behavior
         foreach ($fieldConfig['fields'] as $key => $column) {
             if ($column) {
                 if ($key == "directory") {
-                    $entity->set($column, $this->_getPath($entity, $field, ['root' => false, 'file' => true]));
+                    $entity->set($column, $this->_getPath($entity, $field, ['root' => false, 'file' => false]));
                 }
                 if ($key == "type") {
                     $entity->set($column, $_upload['type']);
