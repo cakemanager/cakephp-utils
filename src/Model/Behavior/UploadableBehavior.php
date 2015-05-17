@@ -275,6 +275,9 @@ class UploadableBehavior extends Behavior
         foreach ($fieldConfig['fields'] as $key => $column) {
             if ($column) {
                 if ($key == "directory") {
+                    if ($fieldConfig['removeFileOnUpdate']) {
+                        @unlink(ROOT . DS . 'webroot' . DS.$entity->get($column));
+                    }
                     $entity->set($column, $this->_getPath($entity, $field, ['root' => false, 'file' => true]));
                 }
                 if ($key == "type") {
