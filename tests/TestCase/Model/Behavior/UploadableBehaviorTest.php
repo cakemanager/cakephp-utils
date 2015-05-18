@@ -234,9 +234,11 @@ class UploadableBehaviorTest extends TestCase
         $behaviorOptions = [
             'file' => [
                 'fields' => [
-                    'directory' => 'file_path',
+                    'directory' => 'file_dir',
                     'type' => 'file_type',
                     'size' => 'file_size',
+                    'filePath' => 'file_path',
+                    'fileName' => 'file_name',
                 ],
             ]
         ];
@@ -274,6 +276,7 @@ class UploadableBehaviorTest extends TestCase
 
         $get = $table->get(3);
 
+        $this->assertContains('uploads/articles/3/', $get->get('file_dir'));
         $this->assertContains('uploads/articles/3/cakemanager.png', $get->get('file_path'));
         $this->assertEquals("image/png", $get->get('file_type'));
         $this->assertEquals(11501, $get->get('file_size'));
