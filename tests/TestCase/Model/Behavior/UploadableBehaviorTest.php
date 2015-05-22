@@ -95,7 +95,7 @@ class UploadableBehaviorTest extends TestCase
         $this->assertFalse($action['fieldWithoutSettings']['removeFileOnUpdate']);
         $this->assertTrue($action['fieldWithoutSettings']['removeFileOnDelete']);
         $this->assertEquals("id", $action['fieldWithoutSettings']['field']);
-        $this->assertEquals("{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}", $action['fieldWithoutSettings']['path']);
+        $this->assertEquals("{ROOT}/{WEBROOT}/uploads/{model}/{field}/", $action['fieldWithoutSettings']['path']);
         $this->assertEquals("{ORIGINAL}", $action['fieldWithoutSettings']['fileName']);
 
         // testing field 2
@@ -235,12 +235,14 @@ class UploadableBehaviorTest extends TestCase
             'file' => [
                 'fields' => [
                     'directory' => 'file_path',
+                    'fileName' => 'file_name',
+                    'filePath' => 'file_dir',
                     'type' => 'file_type',
                     'size' => 'file_size',
                 ],
             ]
         ];
-        
+
         $mocks = ['_mkdir', '_MoveUploadedFile'];
 
         $behaviorMock = $this->getMock('\Utils\Model\Behavior\UploadableBehavior', $mocks, [$table, $behaviorOptions]);
@@ -274,6 +276,7 @@ class UploadableBehaviorTest extends TestCase
 
         $get = $table->get(3);
 
+        $this->assertEquals('uploads\\articles\\3\\', $get->get('file_dir'));
         $this->assertContains('uploads/articles/3/cakemanager.png', $get->get('file_path'));
         $this->assertEquals("image/png", $get->get('file_type'));
         $this->assertEquals(11501, $get->get('file_size'));
