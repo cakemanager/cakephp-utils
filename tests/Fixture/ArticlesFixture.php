@@ -60,9 +60,9 @@ class ArticlesFixture extends TestFixture
      *
      * @var array
      */
-    public $records = array(
-        ['user_id' => 1, 'state' => 1, 'title' => 'First Article', 'body' => 'First Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1)],
-        ['user_id' => 3, 'state' => 0, 'title' => 'Second Article', 'body' => 'Second Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1)],
-        ['user_id' => 1, 'state' => -1, 'title' => 'Third Article', 'body' => 'Third Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1)]
-    );
+    public $records = [
+        ['user_id' => 1, 'state' => 1, 'title' => 'First Article', 'body' => 'First Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1],
+        ['user_id' => 3, 'state' => 0, 'title' => 'Second Article', 'body' => 'Second Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1],
+        ['user_id' => 1, 'state' => -1, 'title' => 'Third Article', 'body' => 'Third Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1]
+    ];
 }
