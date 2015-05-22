@@ -307,7 +307,7 @@ class UploadableBehavior extends Behavior
     protected function _getDir($entity, $field, $options = [])
     {
         $_options = [
-            'root' => true,
+            'root' => false,
             'file' => false,
         ];
 
