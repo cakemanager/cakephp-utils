@@ -360,14 +360,14 @@ class UploadableBehavior extends Behavior
 
         $path = $config['path'];
 
-        $replacements = array(
+        $replacements = [
             '{ROOT}' => ROOT,
             '{WEBROOT}' => 'webroot',
             '{field}' => $entity->get($config['field']),
             '{model}' => Inflector::underscore($this->_Table->alias()),
             '{DS}' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
-        );
+        ];
 
         $builtPath = str_replace(array_keys($replacements), array_values($replacements), $path);
 
@@ -410,7 +410,7 @@ class UploadableBehavior extends Behavior
 
         $fileName = $config['fileName'];
 
-        $replacements = array(
+        $replacements = [
             '{ORIGINAL}' => $_upload['name'],
             '{field}' => $entity->get($config['field']),
             '{extension}' => $extension,
@@ -418,7 +418,7 @@ class UploadableBehavior extends Behavior
             '//' => DIRECTORY_SEPARATOR,
             '/' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
-        );
+        ];
 
         $builtFileName = str_replace(array_keys($replacements), array_values($replacements), $fileName);
 

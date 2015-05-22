@@ -13,7 +13,7 @@ class ArticlesFixture extends TestFixture
      *
      * @var array
      */
-    public $fields = array(
+    public $fields = [
         'id' => [
             'type' => 'integer'
         ],
@@ -53,7 +53,7 @@ class ArticlesFixture extends TestFixture
             'type' => 'integer'
         ],
         '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]]
-    );
+    ];
 
     /**
      * records property
@@ -61,8 +61,8 @@ class ArticlesFixture extends TestFixture
      * @var array
      */
     public $records = array(
-        array('user_id' => 1, 'state' => 1, 'title' => 'First Article', 'body' => 'First Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1),
-        array('user_id' => 3, 'state' => 0, 'title' => 'Second Article', 'body' => 'Second Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1),
-        array('user_id' => 1, 'state' => -1, 'title' => 'Third Article', 'body' => 'Third Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1)
+        ['user_id' => 1, 'state' => 1, 'title' => 'First Article', 'body' => 'First Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1)],
+        ['user_id' => 3, 'state' => 0, 'title' => 'Second Article', 'body' => 'Second Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1)],
+        ['user_id' => 1, 'state' => -1, 'title' => 'Third Article', 'body' => 'Third Article Body', 'published' => 'Y', 'created_by' => 1, 'modified_by' => 1)]
     );
 }
