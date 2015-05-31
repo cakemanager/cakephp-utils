@@ -240,7 +240,7 @@ class UploadableBehaviorTest extends TestCase
                 ],
             ]
         ];
-        
+
         $mocks = ['_mkdir', '_MoveUploadedFile'];
 
         $behaviorMock = $this->getMock('\Utils\Model\Behavior\UploadableBehavior', $mocks, [$table, $behaviorOptions]);
@@ -274,7 +274,7 @@ class UploadableBehaviorTest extends TestCase
 
         $get = $table->get(3);
 
-        $this->assertContains('uploads/articles/3/cakemanager.png', $get->get('file_path'));
+        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS . 'cakemanager.png', $get->get('file_path'));
         $this->assertEquals("image/png", $get->get('file_type'));
         $this->assertEquals(11501, $get->get('file_size'));
     }

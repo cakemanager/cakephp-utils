@@ -8,3 +8,4 @@
   - [Metas](/docs/utils/1.0/behaviors/metas)
   - [Uploadable](/docs/utils/1.0/behaviors/uploadable)
   - [WhoDidIt](/docs/utils/1.0/behaviors/whodidit)
+  - [IsOwnedBy](/docs/utils/1.0/behaviors/isownedby)
