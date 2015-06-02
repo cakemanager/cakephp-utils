@@ -45,6 +45,7 @@ Usage
 - [Stateable](http://cakemanager.org/docs/utils/1.0/behaviors/stateable/) - Generates multiple states (like concept, deleted, active) and with save-method and finders.
 - [Uploadable](http://cakemanager.org/docs/utils/1.0/behaviors/uploadable/) - Great behavior to upload files automatically.
 - [WhoDidIt](http://cakemanager.org/docs/utils/1.0/behaviors/whodidit/) - Saves the user who created the row, and modified the row.
+- [IsOwnedBy](http://cakemanager.org/docs/utils/1.0/behaviors/isownedby/) - Checks if your entity is owned by the given (logged in) user.
 
 Documentation
 -------------
