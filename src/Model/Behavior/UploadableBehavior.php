@@ -35,6 +35,8 @@ class UploadableBehavior extends Behavior
                 'directory' => false,
                 'type' => false,
                 'size' => false,
+                'fileName' => false,
+                'filePath' => false,
             ],
             'removeFileOnUpdate' => false,
             'removeFileOnDelete' => true,
@@ -85,7 +87,6 @@ class UploadableBehavior extends Behavior
     public function afterSave($event, $entity, $options)
     {
         $fields = $this->getFieldList();
-
         foreach ($fields as $field => $data) {
             if ($this->_ifUploaded($entity, $field)) {
                 if ($this->_uploadFile($entity, $field)) {
@@ -239,7 +240,7 @@ class UploadableBehavior extends Behavior
     {
         $_upload = $entity->get($field);
         $uploadPath = $this->_getPath($entity, $field, ['file' => false]);
-        
+
         // creating the path if not exists
         if (!is_dir($this->_getDir($entity, $field, ['file' => false]))) {
             $this->_mkdir($this->_getDir($entity, $field, ['file' => false]), 0777, true);
@@ -283,6 +284,12 @@ class UploadableBehavior extends Behavior
                 if ($key == "size") {
                     $entity->set($column, $_upload['size']);
                 }
+                if ($key == "fileName") {
+                    $entity->set($column, $this->_getFileName($entity, $field, $options = []));
+                }
+                if ($key == "filePath") {
+                    $entity->set($column, $this->_getDir($entity, $field, ['root' => false, 'file' => false]));
+                }
             }
         }
 
@@ -302,7 +309,7 @@ class UploadableBehavior extends Behavior
     protected function _getDir($entity, $field, $options = [])
     {
         $_options = [
-            'root' => true,
+            'root' => false,
             'file' => false,
         ];
 
@@ -324,6 +331,10 @@ class UploadableBehavior extends Behavior
         ];
 
         $builtPath = str_replace(array_keys($replacements), array_values($replacements), $path);
+
+        if (!$options['root']) {
+            $builtPath = str_replace(ROOT . DS . 'webroot' . DS, '', $builtPath);
+        }
 
         return $builtPath;
     }
@@ -357,8 +368,6 @@ class UploadableBehavior extends Behavior
             '{field}' => $entity->get($config['field']),
             '{model}' => Inflector::underscore($this->_Table->alias()),
             '{DS}' => DIRECTORY_SEPARATOR,
-            '//' => DIRECTORY_SEPARATOR,
-            '/' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
         ];
 

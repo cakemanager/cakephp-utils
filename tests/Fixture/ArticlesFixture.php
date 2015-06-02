@@ -47,6 +47,8 @@ class ArticlesFixture extends TestFixture
         'file_path' => 'text',
         'file_size' => 'text',
         'file_type' => 'text',
+        'file_dir' => 'text',
+        'file_name' => 'text',
         'published' => [
             'type' => 'string',
             'length' => 1,
