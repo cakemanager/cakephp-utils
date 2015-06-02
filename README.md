@@ -57,7 +57,7 @@ Support
 
 - [CakeManager Website](http://cakemanager.org/) - Website of the CakeManager Team. Here you can find everything about us and our plugins.
 
-- [Gitter](https://gitter.im/cakemanager/cakephp-cakemanager) - Chat Tool for GitHub to talk about issues and new features.
+- [Gitter](https://gitter.im/cakemanager/cakephp-utils) - Chat Tool for GitHub to talk about issues and new features.
 
 - [GitHub](https://github.com/cakemanager/cakephp-utils/issues) - When there's something wrong, please open a new issue!
 
