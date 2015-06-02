@@ -49,6 +49,8 @@ The `fields` configuration contains an array with avaliable columns you want to 
 - `directory` - this is the column who will contain the directory to your file.
 - `type` - this column will contain the type of the uplaoded file.
 - `size` - this column contains the size of the uploaded file.
+- `fileName` - this column contains the name of the file.
+- `filePath` - this column contains the path to the file, including the file name.
 
 Note that all of the fields will be default set to false, so not used. Only the `directory` field will be automatically set to the name of your given field.
 So in the previous example it would be set to `avatar`.
@@ -58,14 +60,21 @@ Example:
     $this->addBehavior('Utils.Uploadable', [
         'avatar' => [
           'fields' => [
-            'size' => 'avatar_size',
+            'directory' => 'avatar_directory',
             'type' => 'avatar_type',
-            'directory' => 'avatar_directory'
+            'size' => 'avatar_size',
+            'fileName' => 'avatar_name',
+            'filePath' => 'avatar_path'
           ]
         ],
     ]);
 
-In this case the size of the file will be stored in the column `avatar_size`, the type will be stored in the column `avatar_type` and the directory will be stored in the `avatar_directory` column.
+In this case:
+- the directory will be stored in the `avatar_directory` column,
+- the type will be stored in the column `avatar_type`,
+- the size of the file will be stored in the column `avatar_size`,
+- the fileName will be stored in the column `avatar_name`,
+- the filePath (including the file name) will be stored in the column `avatar_path`,
 
 ### Remove File On Update
 
