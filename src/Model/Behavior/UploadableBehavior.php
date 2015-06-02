@@ -239,11 +239,11 @@ class UploadableBehavior extends Behavior
     protected function _uploadFile($entity, $field, $options = [])
     {
         $_upload = $entity->get($field);
-        $uploadPath = $this->_getPath($entity, $field, ['file' => true]);
+        $uploadPath = $this->_getPath($entity, $field, ['file' => false]);
 
         // creating the path if not exists
-        if (!file_exists($this->_getPath($entity, $field, ['file' => false]))) {
-            $this->_mkdir($this->_getPath($entity, $field, ['file' => false]), 0777, true);
+        if (!is_dir($this->_getDir($entity, $field, ['file' => false]))) {
+            $this->_mkdir($this->_getDir($entity, $field, ['file' => false]), 0777, true);
         }
 
         // upload the file and return true
