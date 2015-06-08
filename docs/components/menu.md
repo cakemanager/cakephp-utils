@@ -80,6 +80,12 @@ You can get the current menu-list by the `getMenu`-method:
     // get specific area
     $this->Menu->getMenu('main');
 
+### Activate items
+By using the `active`-method, you can make the used id active:
+
+    // makes the 'blogs' item active
+    $this->Menu->active('blogs');
+    
 ### Controller
 Adding menu-items can be done in your `AppController`. For that, the `MenuComponent` calls an `initMenuItems`-method. So, when you add 
 the following to your `AppController`, menu-items will be added:
@@ -96,13 +102,79 @@ Using the menu-data
 The component creates an variable `$menu` for your view. This variable is an array with the area's as keys.
 If you select a key, you have an array of all items with the ID as key and options as data.
 
-### Helpers
-There are no helpers available yet to easy generate menu's from its data.
+### Loading a helper
 
-### Admin-section
-For the Admin-section you can use the follwing in your view: 
-    
-    $this->Menu->menu('main');
 
+### Showing menu's
+With the following code you are able to generate a menu-list for the chosen area:
+
+    // the menu is generated for the area `main` and the helper `MainMenu` is used.
+    $this->Menu->menu('main', 'MainMenu');
+
+`MainMenu` is an helper wich is a template for the menu.
+
+### Custom menu templates
+Of course you want to create your own menu templates. For that, we added the `MenuBuilderInterface`. You can easily use
+the interface this way:
+
+
+    namespace App\View\Helper;
     
+    use Cake\View\Helper;
+    use Utils\View\Helper\MenuBuilderInterface;
+    
+    class MainMenuHelper extends Helper implements MenuBuilderInterface
+    {
+        /**
+         * Used helpers
+         *
+         * @var array
+         */
+        public $helpers = [
+            'Html'
+        ];
+    
+        /**
+         * Default configuration.
+         *
+         * @var array
+         */
+        protected $_defaultConfig = [];
+    
+        public function afterMenu($menu = [], $options = []) { return ''; }
+        
+        public function afterSubItem($item = [], $options = []) { return ''; }
+    
+        public function beforeMenu($menu = [], $options = []) { return ''; }
+    
+        public function beforeSubItem($item = [], $options = []) { return ''; }
+    
+        public function item($item = [], $options = []) { return ''; }
+    
+        public function subItem($item = [], $options = []) { return ''; }
+    }
+
+The interface `MenuBuilderInterface contains the following helper-methods:
+
+### beforeMenu
+Used to start a menu.
+
+### item
+An item itself.
+
+### subItem
+An subItem itself.
+
+### beforeSubItem
+Used to start a subItem.
+
+### afterSubItem
+Used after an subItem.
+
+#### afterMenu
+Used when all menu items are viewed, and the menu will be closed.
+
+
+All methods contain the attribute `$item`, with the current menuItem, and should return a string wich contains html.
+If a method is unused, let it return an empty string.
 

@@ -79,6 +79,9 @@ class MenuComponent extends Component
         parent::initialize($config);
 
         $this->Controller = $this->_registry->getController();
+
+        // set up the default helper
+        $this->Controller->helpers['Utils.Menu'] = [];
     }
 
     /**
@@ -132,6 +135,32 @@ class MenuComponent extends Component
             $this->area = $area;
         }
         return $this->area;
+    }
+
+    /**
+     * active
+     *
+     * Makes a menu item default active.
+     *
+     * ### Example:
+     * $this->Menu->active('bookmarks');
+     *
+     * In this example the menu-item with the id `bookmarks` will be set to active.
+     *
+     * @param string $id The id of the menu-item
+     * @return void
+     */
+    public function active($id)
+    {
+        $menu = $this->getMenu($this->area());
+        foreach($menu as $key => $item) {
+            if ($menu[$key]['id'] == $id) {
+                $menu[$key]['active'] = true;
+            }
+        }
+        $data = self::$data;
+        $data[$this->area] = $menu;
+        self::$data = $data;
     }
 
     /**
@@ -200,6 +229,7 @@ class MenuComponent extends Component
         $item = array_merge($_item, $item);
 
         $url = Router::url($item['url']);
+        $actives = $this->config('active');
 
         if ($url === "/" . $this->Controller->request->url) {
             $item['active'] = true;
@@ -224,7 +254,7 @@ class MenuComponent extends Component
      * ### OPTIONS
      * - area       The area to remove from.
      *
-     * @param string $id Idenitifier of the item.
+     * @param string $id Identifier of the item.
      * @param array $options Options.
      * @return void
      */

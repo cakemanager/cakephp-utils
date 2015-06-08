@@ -87,6 +87,23 @@ class MenuComponentTest extends TestCase
     }
 
     /**
+     * testActive
+     *
+     * @return void
+     */
+    public function testActive()
+    {
+        // test menu item active
+        $this->Menu->add('activeItem');
+        $this->Menu->active('activeItem');
+        $this->assertTrue($this->Menu->getMenu('main')['activeItem']['active']);
+
+        // test menu item non active
+        $this->Menu->add('nonActiveItem');
+        $this->assertFalse($this->Menu->getMenu('main')['nonActiveItem']['active']);
+    }
+
+    /**
      * testAdd
      *
      * @return void
