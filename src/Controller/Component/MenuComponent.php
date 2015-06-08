@@ -153,7 +153,7 @@ class MenuComponent extends Component
     public function active($id)
     {
         $menu = $this->getMenu($this->area());
-        foreach($menu as $key => $item) {
+        foreach ($menu as $key => $item) {
             if ($menu[$key]['id'] == $id) {
                 $menu[$key]['active'] = true;
             }
