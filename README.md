@@ -36,6 +36,7 @@ Usage
 ### Components
 
 - [Authorizer](http://cakemanager.org/docs/utils/1.0/components/authorizer/) - Component to work easily with authorization in your application-controllers.
+- [GlobalAuth](http://cakemanager.org/docs/utils/1.0/components/globalauth/) - Enables global access to user-data.
 - [Menu](http://cakemanager.org/docs/utils/1.0/components/menu/) - Adds menu-items in sections to pass to your view.
 - [Search](http://cakemanager.org/docs/utils/1.0/components/search/) - Creates filters for your queries so you are able to filter on your list with a generated form.
 
