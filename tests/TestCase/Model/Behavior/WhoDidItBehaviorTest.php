@@ -14,6 +14,7 @@
  */
 namespace Utils\Test\TestCase\Model\Behavior;
 
+use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -112,6 +113,8 @@ class WhoDidItBehaviorTest extends TestCase
             ]
         ];
 
+        Configure::write('GlobalAuth', $_SESSION['Auth']['User']);
+
         $_data = [
             'user_id' => 1,
             'title' => 'Fourth Article',
@@ -145,6 +148,8 @@ class WhoDidItBehaviorTest extends TestCase
                 'username' => 'testing account',
             ]
         ];
+
+        Configure::write('GlobalAuth', $_SESSION['Auth']['User']);
 
         $data = $this->Model->get(3);
 
