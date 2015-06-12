@@ -3,6 +3,7 @@
   - [Authorizer](/docs/utils/1.0/components/authorizer)
   - [Menu](/docs/utils/1.0/components/menu)
   - [Search](/docs/utils/1.0/components/search)
+  - [GlobalAuth](/docs/utils/1.0/components/globalauth)
 - Behaviors
   - [Stateable](/docs/utils/1.0/behaviors/stateable)
   - [Metas](/docs/utils/1.0/behaviors/metas)
