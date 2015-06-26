@@ -56,7 +56,7 @@ class SearchHelper extends Helper
         $html = '';
 
         // create
-        $html .= $this->Form->create(null, ['type' => 'GET']);
+        $html .= $this->Form->create(null, $options+['type' => 'GET']);
 
         foreach ($filters as $field) {
             // if field is select-box because of the options-key
