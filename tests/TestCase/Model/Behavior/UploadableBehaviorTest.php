@@ -89,10 +89,10 @@ class UploadableBehaviorTest extends TestCase
         $action = $behavior->getFieldList();
 
         // testing field 1
-        $this->assertEquals("fieldWithoutSettings", $action['fieldWithoutSettings']['fields']['directory']);
+        $this->assertEquals("fieldWithoutSettings", $action['fieldWithoutSettings']['fields']['filePath']);
         $this->assertFalse($action['fieldWithoutSettings']['fields']['type']);
         $this->assertFalse($action['fieldWithoutSettings']['fields']['size']);
-        $this->assertFalse($action['fieldWithoutSettings']['removeFileOnUpdate']);
+        $this->assertTrue($action['fieldWithoutSettings']['removeFileOnUpdate']);
         $this->assertTrue($action['fieldWithoutSettings']['removeFileOnDelete']);
         $this->assertEquals("id", $action['fieldWithoutSettings']['field']);
         $this->assertEquals("{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}", $action['fieldWithoutSettings']['path']);
@@ -109,63 +109,6 @@ class UploadableBehaviorTest extends TestCase
         $this->assertEquals("user_id", $action['fieldWithCustomSettings2']['field']);
         $this->assertEquals("{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}", $action['fieldWithCustomSettings2']['path']);
         $this->assertEquals("{field}.{extension}", $action['fieldWithCustomSettings2']['fileName']);
-    }
-
-    /**
-     * testNormalizeAll
-     *
-     * @return void
-     */
-    public function testNormalizeAll()
-    {
-        $options = [
-            'fieldWithoutSettings',
-            'fieldWithCustomSettings1' => [
-                'fields' => [
-                    'directory' => 'customDirectory',
-                    'type' => 'customType',
-                    'size' => 'customSize',
-                ],
-                'removeFileOnUpdate' => true,
-                'removeFileOnDelete' => false,
-            ],
-            'fieldWithCustomSettings2' => [
-                'field' => 'user_id',
-                'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
-                'fileName' => '{field}.{extension}',
-            ],
-        ];
-
-        // adding 3 different fields
-        $this->Articles->addBehavior('Utils.Uploadable', $options);
-
-        $behavior = $this->Articles->behaviors()->get('Uploadable');
-
-        $action = $behavior->getFieldList(['normalize' => false]);
-
-        $_options = [
-            'fieldWithoutSettings' => [],
-            'fieldWithCustomSettings1' => [
-                'fields' => [
-                    'directory' => 'customDirectory',
-                    'type' => 'customType',
-                    'size' => 'customSize',
-                ],
-                'removeFileOnUpdate' => true,
-                'removeFileOnDelete' => false,
-            ],
-            'fieldWithCustomSettings2' => [
-                'field' => 'user_id',
-                'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
-                'fileName' => '{field}.{extension}',
-            ],
-        ];
-
-        $this->assertEquals($_options, $action);
-
-        $action = $behavior->normalizeAll();
-
-        $this->assertNotEquals($_options, $action);
     }
 
     /**
@@ -234,11 +177,11 @@ class UploadableBehaviorTest extends TestCase
         $behaviorOptions = [
             'file' => [
                 'fields' => [
-                    'directory' => 'file_path',
+                    'directory' => 'directory',
                     'fileName' => 'file_name',
-                    'filePath' => 'file_dir',
-                    'type' => 'file_type',
-                    'size' => 'file_size',
+                    'filePath' => 'file_path',
+                    'type' => 'type',
+                    'size' => 'size',
                 ],
             ]
         ];
@@ -276,11 +219,10 @@ class UploadableBehaviorTest extends TestCase
 
         $get = $table->get(3);
 
-
+        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS, $get->get('directory'));
+        $this->assertEquals("image/png", $get->get('type'));
+        $this->assertEquals(11501, $get->get('size'));
+        $this->assertContains('cakemanager.png', $get->get('file_name'));
         $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS . 'cakemanager.png', $get->get('file_path'));
-        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS, $get->get('file_dir'));
-        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS . 'cakemanager.png', $get->get('file_path'));
-        $this->assertEquals("image/png", $get->get('file_type'));
-        $this->assertEquals(11501, $get->get('file_size'));
     }
 }

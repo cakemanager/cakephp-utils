@@ -14,7 +14,12 @@
  */
 namespace Utils\Model\Behavior;
 
+use ArrayObject;
+use Cake\Database\Type;
+use Cake\Event\Event;
 use Cake\ORM\Behavior;
+use Cake\ORM\Entity;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
@@ -38,7 +43,7 @@ class UploadableBehavior extends Behavior
                 'fileName' => false,
                 'filePath' => false,
             ],
-            'removeFileOnUpdate' => false,
+            'removeFileOnUpdate' => true,
             'removeFileOnDelete' => true,
             'field' => 'id',
             'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}',
@@ -54,30 +59,65 @@ class UploadableBehavior extends Behavior
     protected $_presetConfigKeys = [
         'defaultFieldConfig',
     ];
+
+    /**
+     * List of all uploaded data.
+     *
+     * @var array
+     */
+    protected $_uploads = [];
+
+    /**
+     * List of saved fields.
+     *
+     * @var array
+     */
     protected $_savedFields = [];
 
     /**
-     * Holder for the Table-Model
+     * __construct
      *
-     * @var type
+     * @param Table $table Table.
+     * @param array $config Config.
      */
-    protected $_Table = null;
+    public function __construct(Table $table, array $config = [])
+    {
+        parent::__construct($table, $config);
+
+        Type::map('Utils.File', 'Utils\Database\Type\FileType');
+
+        $schema = $table->schema();
+        foreach ($this->getFieldList() as $field => $settings) {
+            $schema->columnType($field, 'Utils.File');
+        }
+        $table->schema($schema);
+
+        $this->_Table = $table;
+    }
 
     /**
-     * BeforeSave Callback
+     * beforeSave callback
      *
      * @param \Cake\Event\Event $event Event.
-     * @param \Cake\ORM\Entity $entity The Entity who will be saved.
+     * @param \Cake\ORM\Entity $entity The Entity.
      * @param array $options Options.
      * @return void
      */
     public function beforeSave($event, $entity, $options)
     {
-        $this->_Table = $event->subject();
+        $uploads = [];
+        $fields = $this->getFieldList();
+        foreach ($fields as $field => $data) {
+            if (!is_string($entity->get($field))) {
+                $uploads[$field] = $entity->get($field);
+                $entity->set($field, null);
+            }
+        }
+        $this->_uploads = $uploads;
     }
 
     /**
-     * AfterSave Callback
+     * afterSave callback
      *
      * @param \Cake\Event\Event $event Event.
      * @param \Cake\ORM\Entity $entity The Entity who has been saved.
@@ -97,7 +137,6 @@ class UploadableBehavior extends Behavior
                 }
             }
         }
-
         $this->_savedFields = null;
     }
 
@@ -137,20 +176,95 @@ class UploadableBehavior extends Behavior
                 $list[$field] = $fieldConfig;
             }
         }
-
         return $list;
     }
 
     /**
-     * normalizeAll
+     * _ifUploaded
      *
-     * Method to normalize all fields.
+     * Checks if an file has been uploaded by user.
      *
-     * @return void
+     * @param \Cake\ORM\Entity $entity Entity to check on.
+     * @param string $field Field to check on.
+     * @return bool
      */
-    public function normalizeAll()
+    protected function _ifUploaded($entity, $field)
     {
-        $this->getFieldList();
+        if (array_key_exists($field, $this->_uploads)) {
+            $data = $this->_uploads[$field];
+
+            if (!empty($data['tmp_name'])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * _uploadFile
+     *
+     * Uploads the file to the directory
+     *
+     * @param \Cake\ORM\Entity $entity Entity to upload from.
+     * @param string $field Field to use.
+     * @param array $options Options.
+     * @return bool
+     */
+    protected function _uploadFile($entity, $field, $options = [])
+    {
+        $_upload = $this->_uploads[$field];
+        $uploadPath = $this->_getPath($entity, $field, ['file' => true]);
+
+        // creating the path if not exists
+        if (!is_dir($this->_getPath($entity, $field, ['root' => false, 'file' => false]))) {
+            $this->_mkdir($this->_getPath($entity, $field, ['root' => false, 'file' => false]), 0777, true);
+        }
+
+        // upload the file and return true
+        if ($this->_moveUploadedFile($_upload['tmp_name'], $uploadPath)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * _setUploadColumns
+     *
+     * Writes all data of the uplaod to the entity
+     *
+     * Returns the modified entity
+     *
+     * @param \Cake\ORM\Entity $entity Entity to check on.
+     * @param string $field Field to check on.
+     * @param array $options Options.
+     * @return \Cake\ORM\Entity
+     */
+    protected function _setUploadColumns($entity, $field, $options = [])
+    {
+        $fieldConfig = $this->config($field);
+        $_upload = $this->_uploads[$field];
+
+        // set all columns with values
+        foreach ($fieldConfig['fields'] as $key => $column) {
+            if ($column) {
+                if ($key == "directory") {
+                    $entity->set($column, $this->_getPath($entity, $field, ['root' => false, 'file' => false]));
+                }
+                if ($key == "type") {
+                    $entity->set($column, $_upload['type']);
+                }
+                if ($key == "size") {
+                    $entity->set($column, $_upload['size']);
+                }
+                if ($key == "fileName") {
+                    $entity->set($column, $this->_getFileName($entity, $field, $options = []));
+                }
+                if ($key == "filePath") {
+                    $entity->set($column, $this->_getPath($entity, $field, ['root' => false, 'file' => true]));
+                }
+            }
+        }
+        return $entity;
     }
 
     /**
@@ -191,8 +305,8 @@ class UploadableBehavior extends Behavior
         }
 
         // adding the default directory-field if not set
-        if (is_null(Hash::get($data, 'fields.directory'))) {
-            $data = Hash::insert($data, 'fields.directory', $field);
+        if (is_null(Hash::get($data, 'fields.filePath'))) {
+            $data = Hash::insert($data, 'fields.filePath', $field);
         }
 
         $data = Hash::merge($this->config('defaultFieldConfig'), $data);
@@ -205,144 +319,13 @@ class UploadableBehavior extends Behavior
     }
 
     /**
-     * _ifUploaded
-     *
-     * Checks if an file has been uploaded by user.
-     *
-     * @param \Cake\ORM\Entity $entity Entity to check on.
-     * @param string $field Field to check on.
-     * @return bool
-     */
-    protected function _ifUploaded($entity, $field)
-    {
-        if ($entity->get($field)) {
-            $data = $entity->get($field);
-
-            if (!empty($data['tmp_name'])) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * _uploadFile
-     *
-     * Uploads the file to the directory
-     *
-     * @param \Cake\ORM\Entity $entity Entity to upload from.
-     * @param string $field Field to use.
-     * @param array $options Options.
-     * @return bool
-     */
-    protected function _uploadFile($entity, $field, $options = [])
-    {
-        $_upload = $entity->get($field);
-        $uploadPath = $this->_getPath($entity, $field, ['file' => false]);
-
-        // creating the path if not exists
-        if (!is_dir($this->_getDir($entity, $field, ['file' => false]))) {
-            $this->_mkdir($this->_getDir($entity, $field, ['file' => false]), 0777, true);
-        }
-
-        // upload the file and return true
-        if ($this->_moveUploadedFile($_upload['tmp_name'], $uploadPath)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * _setUploadColumns
-     *
-     * Writes all data of the uplaod to the entity
-     *
-     * Returns the modified entity
-     *
-     * @param \Cake\ORM\Entity $entity Entity to check on.
-     * @param string $field Field to check on.
-     * @param array $options Options.
-     * @return \Cake\ORM\Entity
-     */
-    protected function _setUploadColumns($entity, $field, $options = [])
-    {
-        $fieldConfig = $this->config($field);
-
-        $_upload = $entity->get($field);
-
-        // set all columns with values
-        foreach ($fieldConfig['fields'] as $key => $column) {
-            if ($column) {
-                if ($key == "directory") {
-                    $entity->set($column, $this->_getPath($entity, $field, ['root' => false, 'file' => false]));
-                }
-                if ($key == "type") {
-                    $entity->set($column, $_upload['type']);
-                }
-                if ($key == "size") {
-                    $entity->set($column, $_upload['size']);
-                }
-                if ($key == "fileName") {
-                    $entity->set($column, $this->_getFileName($entity, $field, $options = []));
-                }
-                if ($key == "filePath") {
-                    $entity->set($column, $this->_getDir($entity, $field, ['root' => false, 'file' => false]));
-                }
-            }
-        }
-
-        return $entity;
-    }
-
-    /**
-     * _getDir
-     *
-     * Returns the folder path where the file must be uploaded
-     *
-     * @param \Cake\ORM\Entity $entity Entity to check on.
-     * @param string $field Field to check on.
-     * @param array $options Options.
-     * @return string
-     */
-    protected function _getDir($entity, $field, $options = [])
-    {
-        $_options = [
-            'root' => false,
-            'file' => false,
-        ];
-
-        $options = Hash::merge($_options, $options);
-
-        $config = $this->config($field);
-
-        $path = $config['path'];
-
-        $replacements = [
-            '{ROOT}' => ROOT,
-            '{WEBROOT}' => 'webroot',
-            '{field}' => $entity->get($config['field']),
-            '{model}' => Inflector::underscore($this->_Table->alias()),
-            '{DS}' => DIRECTORY_SEPARATOR,
-            '//' => DIRECTORY_SEPARATOR,
-            '/' => DIRECTORY_SEPARATOR,
-            '\\' => DIRECTORY_SEPARATOR,
-        ];
-
-        $builtPath = str_replace(array_keys($replacements), array_values($replacements), $path);
-
-        if (!$options['root']) {
-            $builtPath = str_replace(ROOT . DS . 'webroot' . DS, '', $builtPath);
-        }
-
-        return $builtPath;
-    }
-
-    /**
      * _getPath
      *
      * Returns te path of the given field.
+     *
+     * ### Options
+     * - `root` - If root should be added to the path.
+     * - `file` - If the file should be added to the path.
      *
      * @param \Cake\ORM\Entity $entity Entity to check on.
      * @param string $field Field to check on.
@@ -378,8 +361,6 @@ class UploadableBehavior extends Behavior
         }
 
         if ($options['file']) {
-            $builtPath = $builtPath . $entity[$field]['name'];
-        } else {
             $builtPath = $builtPath . $this->_getFileName($entity, $field);
         }
 
@@ -405,7 +386,7 @@ class UploadableBehavior extends Behavior
 
         $config = $this->config($field);
 
-        $_upload = $entity->get($field);
+        $_upload = $this->_uploads[$field];
 
         $fileInfo = explode('.', $_upload['name']);
         $extension = end($fileInfo);
@@ -430,7 +411,7 @@ class UploadableBehavior extends Behavior
     /**
      * _moveUploadedFile
      *
-     * Move Uploaded File Layer.
+     * moveUploadedFile Wrapper.
      *
      * @param string $source The source of the file (tmp).
      * @param string $path The path to save to.
@@ -444,7 +425,7 @@ class UploadableBehavior extends Behavior
     /**
      * _mkdir
      *
-     * Mk Dir Layer.
+     * mkdir Wrapper.
      *
      * @param string $pathname The path to save to.
      * @param int $mode Mode.

@@ -44,11 +44,11 @@ class ArticlesFixture extends TestFixture
             'type' => 'integer',
             'default' => 1
         ],
-        'file_path' => 'text',
-        'file_size' => 'text',
-        'file_type' => 'text',
-        'file_dir' => 'text',
+        'directory' => 'text',
+        'type' => 'text',
+        'size' => 'text',
         'file_name' => 'text',
+        'file_path' => 'text',
         'published' => [
             'type' => 'string',
             'length' => 1,
