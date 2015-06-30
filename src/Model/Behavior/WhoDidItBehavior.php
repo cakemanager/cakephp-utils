@@ -42,7 +42,8 @@ class WhoDidItBehavior extends Behavior
         'modified_by' => 'modified_by',
         'createdByPropertyName' => 'created_by',
         'modifiedByPropertyName' => 'modified_by',
-        'userModel' => 'CakeManager.Users',
+        'userModel' => 'Users',
+        'contain' => true,
         'fields' => [],
     ];
 
@@ -108,12 +109,14 @@ class WhoDidItBehavior extends Behavior
      */
     public function beforeFind($event, $query, $options, $primary)
     {
-        if ($this->config('created_by')) {
-            $query->contain(['CreatedBy' => ['fields' => $this->config('fields')]]);
-        }
+        if ($this->config('contain')) {
+            if ($this->config('created_by')) {
+                $query->contain(['CreatedBy' => ['fields' => $this->config('fields')]]);
+            }
 
-        if ($this->config('modified_by')) {
-            $query->contain(['ModifiedBy' => ['fields' => $this->config('fields')]]);
+            if ($this->config('modified_by')) {
+                $query->contain(['ModifiedBy' => ['fields' => $this->config('fields')]]);
+            }
         }
     }
 
