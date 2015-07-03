@@ -17,6 +17,7 @@ namespace Utils\Model\Behavior;
 use ArrayObject;
 use Cake\Database\Type;
 use Cake\Event\Event;
+use Cake\Filesystem\File;
 use Cake\ORM\Behavior;
 use Cake\ORM\Entity;
 use Cake\ORM\Table;
@@ -112,6 +113,20 @@ class UploadableBehavior extends Behavior
                 $uploads[$field] = $entity->get($field);
                 $entity->set($field, null);
             }
+
+            if (!$entity->isNew()) {
+                $dirtyField = $entity->dirty($field);
+                $originalField = $entity->getOriginal($field);
+                debug($originalField);
+                debug($entity);
+                if ($dirtyField && !is_null($originalField) && !is_array($originalField)) {
+                    $fieldConfig = $this->config($field);
+
+                    if ($fieldConfig['removeFileOnUpdate']) {
+                        $this->_removeFile($entity->getOriginal($field));
+                    }
+                }
+            }
         }
         $this->_uploads = $uploads;
     }
@@ -137,7 +152,26 @@ class UploadableBehavior extends Behavior
                 }
             }
         }
-        $this->_savedFields = null;
+        $this->_savedFields = [];
+    }
+
+    /**
+     * beforeDelete callback
+     *
+     * @param \Cake\Event\Event $event Event.
+     * @param \Cake\ORM\Entity $entity Entity.
+     * @param array $options Options.
+     * @return void
+     */
+    public function beforeDelete($event, $entity, $options)
+    {
+        $fields = $this->getFieldList();
+        foreach ($fields as $field => $data) {
+            $fieldConfig = $this->config($field);
+            if ($fieldConfig['removeFileOnDelete']) {
+                $this->_removeFile($entity->get($field));
+            }
+        }
     }
 
     /**
@@ -230,7 +264,7 @@ class UploadableBehavior extends Behavior
     /**
      * _setUploadColumns
      *
-     * Writes all data of the uplaod to the entity
+     * Writes all data of the upload to the entity
      *
      * Returns the modified entity
      *
@@ -435,5 +469,27 @@ class UploadableBehavior extends Behavior
     protected function _mkdir($pathname, $mode, $recursive)
     {
         return mkdir($pathname, $mode, $recursive);
+    }
+
+    /**
+     * _removeFile
+     *
+     * @param string $file Path of the file
+     * @return bool
+     */
+    protected function _removeFile($file)
+    {
+        $_file = new File($file);
+
+        if ($_file->exists()) {
+            $_file->delete();
+
+            $folder = $_file->folder();
+            if(count($folder->find()) === 0) {
+                $folder->delete();
+            }
+            return true;
+        }
+        return false;
     }
 }
