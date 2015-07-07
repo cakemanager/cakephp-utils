@@ -117,8 +117,6 @@ class UploadableBehavior extends Behavior
             if (!$entity->isNew()) {
                 $dirtyField = $entity->dirty($field);
                 $originalField = $entity->getOriginal($field);
-                debug($originalField);
-                debug($entity);
                 if ($dirtyField && !is_null($originalField) && !is_array($originalField)) {
                     $fieldConfig = $this->config($field);
 
