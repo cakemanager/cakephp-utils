@@ -80,6 +80,8 @@ class MenuComponent extends Component
 
         $this->Controller = $this->_registry->getController();
 
+        $this->_addFromConfigure();
+
         // set up the default helper
         $this->Controller->helpers['Utils.Menu'] = [];
     }
@@ -109,8 +111,6 @@ class MenuComponent extends Component
     public function beforeFilter($event)
     {
         $this->setController($event->subject());
-
-        $this->_addFromConfigure();
 
         if (method_exists($this->Controller, 'initMenuItems')) {
             $this->Controller->initMenuItems($event);
