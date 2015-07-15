@@ -223,7 +223,7 @@ class MenuComponent extends Component
             'area' => $this->area(),
             'active' => false,
             'weight' => 10,
-            ''
+            'children' => []
         ];
 
         $item = array_merge($_item, $item);
@@ -238,11 +238,20 @@ class MenuComponent extends Component
         $this->area = $item['area'];
 
         $data = self::$data;
-
-        $data[$this->area][$item['id']] = $item;
-
-        $data[$this->area] = Hash::sort($data[$this->area], '{s}.weight', 'asc');
-
+        if (array_key_exists($this->area, $data)) {
+            $menu = $data[$this->area];
+        } else {
+            $menu = [];
+        }
+        if ($item['parent']) {
+            if (array_key_exists($item['parent'], $menu)) {
+                $menu[$item['parent']]['children'][$item['id']] = $item;
+            }
+        } else {
+            $menu[$item['id']] = $item;
+        }
+        $menu = Hash::sort($menu, '{s}.weight', 'asc');
+        $data[$this->area] = $menu;
         self::$data = $data;
     }
 

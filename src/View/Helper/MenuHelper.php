@@ -38,7 +38,7 @@ class MenuHelper extends Helper
     {
         parent::__construct($View, $config);
     }
-    
+
     /**
      * Helpers
      *
@@ -83,7 +83,16 @@ class MenuHelper extends Helper
         $html .= $builder->beforeMenu($menu);
 
         foreach ($menu as $item) {
+            $html .= $builder->beforeItem($item);
             $html .= $builder->item($item);
+            if ($item['children']) {
+                $html .= $builder->beforeSubItem($item);
+                foreach ($item['children'] as $subItem) {
+                    $html .= $builder->subItem($subItem);
+                }
+                $html .= $builder->afterSubItem($item);
+            }
+            $html .= $builder->afterItem($item);
         }
 
         $html .= $builder->afterMenu($menu);
