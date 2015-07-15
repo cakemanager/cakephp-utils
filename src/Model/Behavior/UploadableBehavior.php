@@ -483,7 +483,7 @@ class UploadableBehavior extends Behavior
             $_file->delete();
 
             $folder = $_file->folder();
-            if(count($folder->find()) === 0) {
+            if (count($folder->find()) === 0) {
                 $folder->delete();
             }
             return true;
