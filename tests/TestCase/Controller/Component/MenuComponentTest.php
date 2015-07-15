@@ -17,6 +17,7 @@ namespace Utils\Test\TestCase\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Network\Request;
 use Cake\TestSuite\TestCase;
 use Utils\Controller\Component\MenuComponent;
 
@@ -144,11 +145,13 @@ class MenuComponentTest extends TestCase
         Configure::write('Menu.Register.ConfigureItem2', []);
         Configure::write('Menu.Register.ConfigureItem3', []);
 
+        $request = new Request();
+        $this->Controller = $this->getMock('Cake\Controller\Controller', ['redirect', 'initMenuItems'], [$request]);
+
         // Setup our component and fake test controller
-        $collection = new ComponentRegistry();
+        $collection = new ComponentRegistry($this->Controller);
         $this->Menu = new MenuComponent($collection);
 
-        $this->Controller = $this->getMock('Cake\Controller\Controller', ['redirect', 'initMenuItems']);
         $this->Menu->setController($this->Controller);
 
         $event = new Event('Component.beforeFilter', $this->Controller);
