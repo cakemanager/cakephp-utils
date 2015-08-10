@@ -414,16 +414,8 @@ class UploadableBehavior extends Behavior
      */
     protected function _getUrl($entity, $field)
     {
-        $config = $this->config($field);
-        $path = $config['path'];
-        $replacements = [
-            '{ROOT}{DS}{WEBROOT}' => '',
-            '{field}' => $entity->get($config['field']),
-            '{model}' => Inflector::underscore($this->_Table->alias()),
-            '{DS}' => '/',
-            '\\' => '/',
-        ];
-        return str_replace(array_keys($replacements), array_values($replacements), $path) . $this->_getFileName($entity, $field);
+        $path = '/' . $this->_getPath($entity, $field, ['root' => false, 'file' => true]);
+        return str_replace('\\', '/', $path);
     }
 
     /**
