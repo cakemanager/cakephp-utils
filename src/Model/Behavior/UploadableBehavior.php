@@ -38,6 +38,7 @@ class UploadableBehavior extends Behavior
     protected $_defaultConfig = [
         'defaultFieldConfig' => [
             'fields' => [
+                'URL' => false,
                 'directory' => false,
                 'type' => false,
                 'size' => false,
@@ -279,6 +280,9 @@ class UploadableBehavior extends Behavior
         // set all columns with values
         foreach ($fieldConfig['fields'] as $key => $column) {
             if ($column) {
+                if ($key == "url") {
+                    $entity->set($column, $this->_getUrl($entity, $field));
+                }
                 if ($key == "directory") {
                     $entity->set($column, $this->_getPath($entity, $field, ['root' => false, 'file' => false]));
                 }
@@ -353,7 +357,7 @@ class UploadableBehavior extends Behavior
     /**
      * _getPath
      *
-     * Returns te path of the given field.
+     * Returns the path of the given field.
      *
      * ### Options
      * - `root` - If root should be added to the path.
@@ -397,6 +401,29 @@ class UploadableBehavior extends Behavior
         }
 
         return $builtPath;
+    }
+
+    /**
+     * _getUrl
+     *
+     * Returns the URL of the given field.
+     *
+     * @param \Cake\ORM\Entity $entity Entity to check on.
+     * @param string $field Field to check on.
+     * @return string
+     */
+    protected function _getUrl($entity, $field)
+    {
+        $config = $this->config($field);
+        $path = $config['path'];
+        $replacements = [
+            '{ROOT}{DS}{WEBROOT}' => '',
+            '{field}' => $entity->get($config['field']),
+            '{model}' => Inflector::underscore($this->_Table->alias()),
+            '{DS}' => '/',
+            '\\' => '/',
+        ];
+        return str_replace(array_keys($replacements), array_values($replacements), $path) . $this->_getFileName($entity, $field);
     }
 
     /**
