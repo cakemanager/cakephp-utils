@@ -38,7 +38,7 @@ class UploadableBehavior extends Behavior
     protected $_defaultConfig = [
         'defaultFieldConfig' => [
             'fields' => [
-                'URL' => false,
+                'url' => false,
                 'directory' => false,
                 'type' => false,
                 'size' => false,
@@ -415,7 +415,7 @@ class UploadableBehavior extends Behavior
     protected function _getUrl($entity, $field)
     {
         $path = '/' . $this->_getPath($entity, $field, ['root' => false, 'file' => true]);
-        return str_replace('\\', '/', $path);
+        return str_replace(DS, '/', $path);
     }
 
     /**
