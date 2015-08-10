@@ -44,6 +44,7 @@ class ArticlesFixture extends TestFixture
             'type' => 'integer',
             'default' => 1
         ],
+        'url' => 'text',
         'directory' => 'text',
         'type' => 'text',
         'size' => 'text',
