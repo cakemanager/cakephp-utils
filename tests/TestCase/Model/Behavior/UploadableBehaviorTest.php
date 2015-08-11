@@ -70,6 +70,7 @@ class UploadableBehaviorTest extends TestCase
             'fieldWithoutSettings',
             'fieldWithCustomSettings1' => [
                 'fields' => [
+                    'url' => 'customUrl',
                     'directory' => 'customDirectory',
                     'type' => 'customType',
                     'size' => 'customSize',
@@ -99,6 +100,7 @@ class UploadableBehaviorTest extends TestCase
         $this->assertEquals("{ORIGINAL}", $action['fieldWithoutSettings']['fileName']);
 
         // testing field 2
+        $this->assertEquals("customUrl", $action['fieldWithCustomSettings1']['fields']['url']);
         $this->assertEquals("customDirectory", $action['fieldWithCustomSettings1']['fields']['directory']);
         $this->assertEquals("customType", $action['fieldWithCustomSettings1']['fields']['type']);
         $this->assertEquals("customSize", $action['fieldWithCustomSettings1']['fields']['size']);
@@ -177,6 +179,7 @@ class UploadableBehaviorTest extends TestCase
         $behaviorOptions = [
             'file' => [
                 'fields' => [
+                    'url' => 'url',
                     'directory' => 'directory',
                     'fileName' => 'file_name',
                     'filePath' => 'file_path',
@@ -219,6 +222,7 @@ class UploadableBehaviorTest extends TestCase
 
         $get = $table->get(3);
 
+        $this->assertContains('/uploads/articles/3/cakemanager.png', $get->get('url'));
         $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS, $get->get('directory'));
         $this->assertEquals("image/png", $get->get('type'));
         $this->assertEquals(11501, $get->get('size'));
