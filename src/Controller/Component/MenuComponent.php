@@ -231,7 +231,7 @@ class MenuComponent extends Component
         $url = Router::url($item['url']);
         $actives = $this->config('active');
 
-        if ($url === "/" . $this->Controller->request->url) {
+        if ($url === Router::url("/" . $this->Controller->request->url)) {
             $item['active'] = true;
         }
 
