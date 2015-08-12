@@ -80,7 +80,7 @@ class MenuHelper extends Helper
 
         $html = '';
 
-        $html .= $builder->beforeMenu($menu);
+        $html .= $builder->beforeMenu($menu, $options);
 
         foreach ($menu as $item) {
             $html .= $builder->beforeItem($item);
