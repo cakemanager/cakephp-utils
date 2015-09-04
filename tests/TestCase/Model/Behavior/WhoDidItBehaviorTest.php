@@ -47,18 +47,18 @@ class WhoDidItBehaviorTest extends TestCase
     }
 
     /**
-     * Test if the relations are added to 'created_by' and 'modified_by'
+     * Test if the relations are added to 'createdBy' and 'modifiedBy'
      *
      */
     public function testFind()
     {
         $data = $this->Model->get(1);
 
-        $this->AssertEquals(1, $data->created_by->id);
-        $this->AssertEquals(1, $data->modified_by->id);
+        $this->assertEquals(1, $data->createdBy->id);
+        $this->assertEquals(1, $data->modifiedBy->id);
 
-        $this->AssertEquals(8, count($data->created_by->toArray()));
-        $this->AssertEquals(8, count($data->modified_by->toArray()));
+        $this->assertEquals(8, count($data->createdBy->toArray()));
+        $this->assertEquals(8, count($data->modifiedBy->toArray()));
     }
 
     /**
@@ -72,9 +72,9 @@ class WhoDidItBehaviorTest extends TestCase
         $behavior->config('fields', ['id', 'email']);
 
         $data = $this->Model->get(1);
-        
-        $this->AssertEquals(2, count($data->created_by->toArray()));
-        $this->AssertEquals(2, count($data->modified_by->toArray()));
+
+        $this->assertEquals(2, count($data->createdBy->toArray()));
+        $this->assertEquals(2, count($data->modifiedBy->toArray()));
 
         $behavior->config('fields', null);
         $behavior->config('fields', []);
@@ -92,8 +92,8 @@ class WhoDidItBehaviorTest extends TestCase
 
         $data = $this->Model->get(1);
 
-        $this->AssertEquals(8, count($data->created_by->toArray()));
-        $this->AssertEquals(1, $data->modified_by);
+        $this->assertEquals(8, count($data->createdBy->toArray()));
+        $this->assertNull($data->modifiedBy);
 
         $behavior->config('modified_by', 'modified_by');
     }
@@ -104,7 +104,7 @@ class WhoDidItBehaviorTest extends TestCase
      */
     public function testAddArticle()
     {
-        $this->AssertEquals(3, $this->Model->find('all')->Count());
+        $this->assertEquals(3, $this->Model->find('all')->Count());
 
         $_SESSION['Auth'] = [
             'User' => [
@@ -126,13 +126,13 @@ class WhoDidItBehaviorTest extends TestCase
 
         $this->Model->save($entity);
 
-        $this->AssertEquals(4, $this->Model->find('all')->Count());
+        $this->assertEquals(4, $this->Model->find('all')->Count());
 
         $data = $this->Model->get(4);
 
-        $this->AssertEquals("Fourth Article", $data->title);
-        $this->AssertEquals(1, $data->created_by->id);
-        $this->AssertEquals(1, $data->modified_by->id);
+        $this->assertEquals("Fourth Article", $data->title);
+        $this->assertEquals(1, $data->createdBy->id);
+        $this->assertEquals(1, $data->modifiedBy->id);
     }
 
     /**
@@ -162,9 +162,9 @@ class WhoDidItBehaviorTest extends TestCase
 
         $result = $this->Model->get(3);
 
-        $this->AssertEquals("Thirth Article Edited", $result->title);
-        $this->AssertEquals(1, $result->created_by->id);
-        $this->AssertEquals(2, $result->modified_by->id);
+        $this->assertEquals("Thirth Article Edited", $result->title);
+        $this->assertEquals(1, $result->createdBy->id);
+        $this->assertEquals(2, $result->modifiedBy->id);
     }
 
     /**
@@ -174,16 +174,16 @@ class WhoDidItBehaviorTest extends TestCase
     {
         $this->Model->removeBehavior('WhoDidIt');
         $this->Model->addBehavior('Utils.WhoDidIt', [
-            'createdByPropertyName' => 'created_by_prop',
-            'modifiedByPropertyName' => 'modified_by_prop'
+            'createdByPropertyName' => 'createdBy_prop',
+            'modifiedByPropertyName' => 'modifiedBy_prop'
         ]);
 
         $data = $this->Model->get(1);
 
-        $this->AssertNotNull($data->created_by_prop);
-        $this->AssertEquals(1, $data->created_by);
-        $this->AssertNotNull($data->modified_by_prop);
-        $this->AssertEquals(1, $data->modified_by);
+        $this->assertNotNull($data->createdBy_prop);
+        $this->assertNull($data->createdBy);
+        $this->assertNotNull($data->modifiedBy_prop);
+        $this->assertNull($data->modifiedBy);
     }
 
     /**
