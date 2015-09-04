@@ -40,8 +40,8 @@ class WhoDidItBehavior extends Behavior
     protected $_defaultConfig = [
         'created_by' => 'created_by',
         'modified_by' => 'modified_by',
-        'createdByPropertyName' => 'created_by',
-        'modifiedByPropertyName' => 'modified_by',
+        'createdByPropertyName' => 'createdBy',
+        'modifiedByPropertyName' => 'modifiedBy',
         'userModel' => 'Users',
         'contain' => true,
         'fields' => [],
