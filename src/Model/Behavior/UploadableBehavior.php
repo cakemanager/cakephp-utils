@@ -141,19 +141,15 @@ class UploadableBehavior extends Behavior
     public function afterSave($event, $entity, $options)
     {
         $fields = $this->getFieldList();
-        $storedToSave = [];
         foreach ($fields as $field => $data) {
             if ($this->_ifUploaded($entity, $field)) {
                 if ($this->_uploadFile($entity, $field)) {
                     if (!key_exists($field, $this->_savedFields)) {
                         $this->_savedFields[$field] = true;
-                        $storedToSave[] = $this->_setUploadColumns($entity, $field);
+                        $event->subject()->save($this->_setUploadColumns($entity, $field));
                     }
                 }
             }
-        }
-        foreach ($storedToSave as $toSave) {
-            $event->subject()->save($toSave);
         }
         $this->_savedFields = [];
     }
