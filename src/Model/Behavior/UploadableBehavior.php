@@ -16,6 +16,7 @@ namespace Utils\Model\Behavior;
 
 use ArrayObject;
 use Cake\Database\Type;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Filesystem\File;
 use Cake\ORM\Behavior;
@@ -95,6 +96,12 @@ class UploadableBehavior extends Behavior
         $table->schema($schema);
 
         $this->_Table = $table;
+    }
+
+    public function remove(&$entity, $field)
+    {
+        $this->_removeFile($entity->get($field));
+        $entity->set($field, null);
     }
 
     /**
