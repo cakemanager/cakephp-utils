@@ -1,4 +1,18 @@
-<?php namespace Utils\Test\TestCase\View\Helper;
+<?php
+/**
+ * CakeManager (http://cakemanager.org)
+ * Copyright (c) http://cakemanager.org
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) http://cakemanager.org
+ * @link          http://cakemanager.org CakeManager Project
+ * @since         1.0
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
+namespace Utils\Test\TestCase\View\Helper;
 
 use Cake\TestSuite\TestCase;
 use Cake\View\View;
@@ -9,6 +23,8 @@ use Utils\View\Helper\SearchHelper;
  */
 class SearchHelperTest extends TestCase
 {
+
+    protected $data;
 
     /**
      * setUp method
@@ -71,7 +87,7 @@ class SearchHelperTest extends TestCase
         $result = $this->Search->filterForm($this->data);
         
         $this->assertContains('<form method="get" accept-charset="utf-8" action="/">', $result);
-        $this->assertContains('<input type="text" name="title" placeholder="title" id="title">', $result);
+        $this->assertContains('<input type="text" name="title" placeholder="title" id="title"/>', $result);
         $this->assertContains('<select name="category" placeholder="category">', $result);
         $this->assertContains('<option value=""></option>', $result);
         $this->assertContains('<option value="1">category 1</option>', $result);
