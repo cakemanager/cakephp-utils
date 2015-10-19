@@ -50,6 +50,7 @@ class UploadableBehavior extends Behavior
             'field' => 'id',
             'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}',
             'fileName' => '{ORIGINAL}',
+            'entityReplacements' => [],
         ]
     ];
 
@@ -114,7 +115,7 @@ class UploadableBehavior extends Behavior
                 $uploads[$field] = $entity->get($field);
                 $entity->set($field, null);
             }
-
+            
             if (!$entity->isNew()) {
                 $dirtyField = $entity->dirty($field);
                 $originalField = $entity->getOriginal($field);
@@ -394,6 +395,8 @@ class UploadableBehavior extends Behavior
             '\\' => DIRECTORY_SEPARATOR,
         ];
 
+        $replacements = $this->_setEntityReplacements($entity, $field, $replacements);
+
         $builtPath = str_replace(array_keys($replacements), array_values($replacements), $path);
 
         if (!$options['root']) {
@@ -405,6 +408,20 @@ class UploadableBehavior extends Behavior
         }
 
         return $builtPath;
+    }
+
+    /**
+     * _setEntityReplacements method
+     * @param array $entity Entity
+     * @param array $replacements List of current replacements
+     * @return array
+     */
+    protected function _setEntityReplacements($entity, $field, array $replacements)
+    {
+        foreach ($this->config($field . '.entityReplacements') as $key => $field) {
+            $replacements[$key] = $entity->get($field);
+        }
+        return $replacements;
     }
 
     /**
@@ -457,6 +474,8 @@ class UploadableBehavior extends Behavior
             '/' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
         ];
+        
+        $replacements = $this->_setEntityReplacements($entity, $field, $replacements);
 
         $builtFileName = str_replace(array_keys($replacements), array_values($replacements), $fileName);
 
