@@ -32,7 +32,7 @@ use Cake\ORM\Entity;
  *     ]
  * ]);
  *
-*/
+ */
 
 class SumCacheBehavior extends Behavior
 {
