@@ -44,7 +44,6 @@ class SearchHelperTest extends TestCase
                 'operator' => 'LIKE',
                 'attributes' => [
                     'label' => false,
-                    'type' => 'text',
                     'placeholder' => 'title'
                 ],
                 'options' => false
@@ -55,7 +54,6 @@ class SearchHelperTest extends TestCase
                 'operator' => '=',
                 'attributes' => [
                     'label' => false,
-                    'type' => 'text',
                     'placeholder' => 'category',
                     'empty' => true
                 ],
