@@ -61,10 +61,10 @@ class SearchHelper extends Helper
         foreach ($filters as $field) {
             // if field is select-box because of the options-key
             if ($field['options']) {
-                $html .= $this->Form->select($field['column'], $field['options'], $field['attributes']);
-            } else {
-                $html .= $this->Form->input($field['column'], $field['attributes']);
+                $field['attributes']['options'] = $field['options'];
             }
+            $html .= $this->Form->input($field['column'], $field['attributes']);
+            $html .= ' ';
         }
 
         // end
