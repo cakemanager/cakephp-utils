@@ -70,7 +70,7 @@ class SearchHelperTest extends TestCase
         
         $this->assertContains('<form method="get" accept-charset="utf-8" action="/">', $result);
         $this->assertContains('<input type="text" name="title" placeholder="title" id="title">', $result);
-        $this->assertContains('<select name="category" placeholder="category">', $result);
+        $this->assertContains('<select name="category" placeholder="category" id="category">', $result);
         $this->assertContains('<option value=""></option>', $result);
         $this->assertContains('<option value="1">category 1</option>', $result);
         $this->assertContains('<option value="2">category 2</option>', $result);
