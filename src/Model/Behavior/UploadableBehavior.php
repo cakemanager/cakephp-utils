@@ -50,7 +50,8 @@ class UploadableBehavior extends Behavior
             'field' => 'id',
             'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}',
             'fileName' => '{ORIGINAL}',
-            'entityReplacements' => [],
+            'entityReplacements' => [ ],
+            'accept_type' => null /* can be 'image'*/
         ]
     ];
 
@@ -110,12 +111,13 @@ class UploadableBehavior extends Behavior
     {
         $uploads = [];
         $fields = $this->getFieldList();
+
         foreach ($fields as $field => $data) {
             if (!is_string($entity->get($field))) {
                 $uploads[$field] = $entity->get($field);
                 $entity->set($field, null);
             }
-            
+
             if (!$entity->isNew()) {
                 $dirtyField = $entity->dirty($field);
                 $originalField = $entity->getOriginal($field);
@@ -153,9 +155,11 @@ class UploadableBehavior extends Behavior
                 }
             }
         }
+
         foreach ($storedToSave as $toSave) {
             $event->subject()->save($toSave);
         }
+
         $this->_savedFields = [];
     }
 
@@ -230,7 +234,6 @@ class UploadableBehavior extends Behavior
     {
         if (array_key_exists($field, $this->_uploads)) {
             $data = $this->_uploads[$field];
-
             if (!empty($data['tmp_name'])) {
                 return true;
             }
@@ -251,6 +254,13 @@ class UploadableBehavior extends Behavior
     protected function _uploadFile($entity, $field, $options = [])
     {
         $_upload = $this->_uploads[$field];
+
+        $fieldConfig = $this->config($field);
+
+        if ($fieldConfig['accept_type'] === 'image' && !$this->_IsImage($_upload)) {
+            return false;
+        }
+
         $uploadPath = $this->_getPath($entity, $field, ['file' => true]);
 
         // creating the path if not exists
@@ -396,7 +406,6 @@ class UploadableBehavior extends Behavior
         ];
 
         $replacements = $this->_setEntityReplacements($entity, $field, $replacements);
-
         $builtPath = str_replace(array_keys($replacements), array_values($replacements), $path);
 
         if (!$options['root']) {
@@ -474,7 +483,7 @@ class UploadableBehavior extends Behavior
             '/' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
         ];
-        
+
         $replacements = $this->_setEntityReplacements($entity, $field, $replacements);
 
         $builtFileName = str_replace(array_keys($replacements), array_values($replacements), $fileName);
@@ -530,6 +539,33 @@ class UploadableBehavior extends Behavior
             }
             return true;
         }
+        return false;
+    }
+
+    /**
+     * _IsImage
+     *
+     * @param string $data array data of file
+     * @return bool
+     */
+    public function _IsImage($data)
+    {
+
+        $fileMimeType = exif_imagetype($data['tmp_name']);
+        $filename = strtolower($data['name']);
+        $fileNameArray = explode('.', $filename);
+        $fileExt = array_pop($fileNameArray);
+
+        $allowedMimeTypes = [ IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG ];
+        $allowedExt = [ 'gif', 'jpg', 'png', 'jpeg' ];
+
+        /*
+         * if allowed mimetype and extention return true
+         */
+        if (in_array($fileMimeType, $allowedMimeTypes) && in_array($fileExt, $allowedExt)) {
+            return true;
+        }
+
         return false;
     }
 }
