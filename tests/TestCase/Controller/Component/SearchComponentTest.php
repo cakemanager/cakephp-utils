@@ -85,7 +85,6 @@ class SearchComponentTest extends TestCase
             'operator' => 'LIKE',
             'attributes' => [
                 'label' => false,
-                'type' => 'text',
                 'placeholder' => null
             ],
             'options' => false
