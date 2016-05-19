@@ -257,7 +257,7 @@ class UploadableBehavior extends Behavior
 
         $fieldConfig = $this->config($field);
 
-        if ($fieldConfig['accept_type'] === 'image' && !$this->_IsImage($_upload)) {
+        if ($fieldConfig['accept_type'] === 'image' && !$this->_isImage($_upload)) {
             return false;
         }
 
@@ -421,7 +421,8 @@ class UploadableBehavior extends Behavior
 
     /**
      * _setEntityReplacements method
-     * @param array $entity Entity
+     * @param \Cake\ORM\Entity $entity Entity to check on.
+     * @param string $field Field to check on.
      * @param array $replacements List of current replacements
      * @return array
      */
@@ -543,14 +544,13 @@ class UploadableBehavior extends Behavior
     }
 
     /**
-     * _IsImage
+     * _isImage
      *
      * @param string $data array data of file
      * @return bool
      */
-    public function _IsImage($data)
+    protected function _isImage($data)
     {
-
         $fileMimeType = exif_imagetype($data['tmp_name']);
         $filename = strtolower($data['name']);
         $fileNameArray = explode('.', $filename);
