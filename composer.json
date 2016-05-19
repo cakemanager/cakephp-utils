@@ -14,7 +14,8 @@
         "cakephp/cakephp": "~3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+        "nesbot/carbon": "~1.14"
     },
     "autoload": {
         "psr-4": {
