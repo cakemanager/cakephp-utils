@@ -10,12 +10,12 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
+        "php": ">=5.5.9",
         "cakephp/cakephp": "~3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
-        "nesbot/carbon": "~1.14"
+        "nesbot/carbon": "*"
     },
     "autoload": {
         "psr-4": {
