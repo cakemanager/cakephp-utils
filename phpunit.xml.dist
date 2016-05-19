@@ -29,6 +29,20 @@
         </listener>
     </listeners>
 
+    <filter>
+      <whitelist processUncoveredFilesFromWhitelist="true">
+        <directory suffix=".php">./</directory>
+        <directory suffix=".ctp">./</directory>
+        <exclude>
+            <directory suffix=".php">./vendor/</directory>
+            <directory suffix=".ctp">./vendor/</directory>
+
+            <directory suffix=".php">./tests/</directory>
+            <directory suffix=".ctp">./tests/</directory>
+        </exclude>
+      </whitelist>
+    </filter>
+
     <!-- Prevent coverage reports from looking in tests and vendors -->
     <filter>
         <blacklist>
@@ -39,5 +53,4 @@
             <directory suffix=".ctp">./tests/</directory>
         </blacklist>
     </filter>
-
 </phpunit>
