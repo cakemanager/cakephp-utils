@@ -61,7 +61,7 @@ class UploadableBehaviorTest extends TestCase
          * if created uploads by _mkdir, delete tree
          */
         if (is_dir($this->_uploadPath)) {
-            self::delTree($this->_uploadPath);
+            self::_delTree($this->_uploadPath);
         }
 
         parent::tearDown();
@@ -77,7 +77,7 @@ class UploadableBehaviorTest extends TestCase
     {
         $files = array_diff(scandir($dir), [ '.', '..' ]);
         foreach ($files as $file) {
-            (is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
+            (is_dir("$dir/$file")) ? self::_delTree("$dir/$file") : unlink("$dir/$file");
         }
         return rmdir($dir);
     }
