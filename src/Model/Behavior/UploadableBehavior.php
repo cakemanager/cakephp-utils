@@ -48,8 +48,10 @@ class UploadableBehavior extends Behavior
             'removeFileOnUpdate' => true,
             'removeFileOnDelete' => true,
             'field' => 'id',
-            'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}',
+            'path' => '{ROOT}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}',
             'fileName' => '{ORIGINAL}',
+            'entityReplacements' => [ ],
+            'accept_type' => null /* can be 'image'*/
         ]
     ];
 
@@ -109,6 +111,7 @@ class UploadableBehavior extends Behavior
     {
         $uploads = [];
         $fields = $this->getFieldList();
+
         foreach ($fields as $field => $data) {
             if (!is_string($entity->get($field))) {
                 $uploads[$field] = $entity->get($field);
@@ -122,7 +125,7 @@ class UploadableBehavior extends Behavior
                     $fieldConfig = $this->config($field);
 
                     if ($fieldConfig['removeFileOnUpdate']) {
-                        $this->_removeFile($entity->getOriginal($field));
+                        $this->_removeFile($entity, $field);
                     }
                 }
             }
@@ -152,9 +155,11 @@ class UploadableBehavior extends Behavior
                 }
             }
         }
+
         foreach ($storedToSave as $toSave) {
             $event->subject()->save($toSave);
         }
+
         $this->_savedFields = [];
     }
 
@@ -172,7 +177,7 @@ class UploadableBehavior extends Behavior
         foreach ($fields as $field => $data) {
             $fieldConfig = $this->config($field);
             if ($fieldConfig['removeFileOnDelete']) {
-                $this->_removeFile($entity->get($field));
+                $this->_removeFile($entity, $field);
             }
         }
     }
@@ -229,7 +234,6 @@ class UploadableBehavior extends Behavior
     {
         if (array_key_exists($field, $this->_uploads)) {
             $data = $this->_uploads[$field];
-
             if (!empty($data['tmp_name'])) {
                 return true;
             }
@@ -250,6 +254,13 @@ class UploadableBehavior extends Behavior
     protected function _uploadFile($entity, $field, $options = [])
     {
         $_upload = $this->_uploads[$field];
+
+        $fieldConfig = $this->config($field);
+
+        if ($fieldConfig['accept_type'] === 'image' && !$this->_isImage($_upload)) {
+            return false;
+        }
+
         $uploadPath = $this->_getPath($entity, $field, ['file' => true]);
 
         // creating the path if not exists
@@ -258,10 +269,7 @@ class UploadableBehavior extends Behavior
         }
 
         // upload the file and return true
-        if ($this->_moveUploadedFile($_upload['tmp_name'], $uploadPath)) {
-            return true;
-        }
-        return false;
+        return $this->_moveUploadedFile($_upload['tmp_name'], $uploadPath) ? true : false;
     }
 
     /**
@@ -394,6 +402,7 @@ class UploadableBehavior extends Behavior
             '\\' => DIRECTORY_SEPARATOR,
         ];
 
+        $replacements = $this->_setEntityReplacements($entity, $field, $replacements);
         $builtPath = str_replace(array_keys($replacements), array_values($replacements), $path);
 
         if (!$options['root']) {
@@ -408,6 +417,21 @@ class UploadableBehavior extends Behavior
     }
 
     /**
+     * _setEntityReplacements method
+     * @param \Cake\ORM\Entity $entity Entity to check on.
+     * @param string $field Field to check on.
+     * @param array $replacements List of current replacements
+     * @return array
+     */
+    protected function _setEntityReplacements($entity, $field, array $replacements)
+    {
+        foreach ($this->config($field . '.entityReplacements') as $key => $field) {
+            $replacements[$key] = $entity->get($field);
+        }
+        return $replacements;
+    }
+
+    /**
      * _getUrl
      *
      * Returns the URL of the given field.
@@ -419,7 +443,7 @@ class UploadableBehavior extends Behavior
     protected function _getUrl($entity, $field)
     {
         $path = '/' . $this->_getPath($entity, $field, ['root' => false, 'file' => true]);
-        return str_replace(DS, '/', $path);
+        return str_replace(DS, '/', str_replace('//', '/', $path));
     }
 
     /**
@@ -458,6 +482,8 @@ class UploadableBehavior extends Behavior
             '\\' => DIRECTORY_SEPARATOR,
         ];
 
+        $replacements = $this->_setEntityReplacements($entity, $field, $replacements);
+
         $builtFileName = str_replace(array_keys($replacements), array_values($replacements), $fileName);
 
         return $builtFileName;
@@ -495,11 +521,19 @@ class UploadableBehavior extends Behavior
     /**
      * _removeFile
      *
-     * @param string $file Path of the file
+     * @param \Cake\ORM\Entity $entity Entity to check on.
+     * @param string $field Field to check on.
      * @return bool
      */
-    protected function _removeFile($file)
+    protected function _removeFile($entity, $field)
     {
+        $file = $entity->getOriginal($field);
+
+        if (is_null($file)) {
+            $fieldConfig = $this->config($field);
+            $file = $entity->getOriginal($fieldConfig['fields']['filePath']);
+        }
+
         $_file = new File($file);
 
         if ($_file->exists()) {
@@ -511,6 +545,32 @@ class UploadableBehavior extends Behavior
             }
             return true;
         }
+        return false;
+    }
+
+    /**
+     * _isImage
+     *
+     * @param string $data array data of file
+     * @return bool
+     */
+    protected function _isImage($data)
+    {
+        $fileMimeType = exif_imagetype($data['tmp_name']);
+        $filename = strtolower($data['name']);
+        $fileNameArray = explode('.', $filename);
+        $fileExt = array_pop($fileNameArray);
+
+        $allowedMimeTypes = [ IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG ];
+        $allowedExt = [ 'gif', 'jpg', 'png', 'jpeg' ];
+
+        /*
+         * if allowed mimetype and extention return true
+         */
+        if (in_array($fileMimeType, $allowedMimeTypes) && in_array($fileExt, $allowedExt)) {
+            return true;
+        }
+
         return false;
     }
 }

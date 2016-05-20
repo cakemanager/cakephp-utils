@@ -14,13 +14,13 @@
  */
 namespace Utils\Controller;
 
-use App\Controller\AppController as BaseController;
+use Cake\Controller\Controller;
 
 /**
  * AppController Class for Utils Plugin
  *
  */
-class AppController extends BaseController
+class AppController extends Controller
 {
 
 }

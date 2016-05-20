@@ -1,3 +1,5 @@
 api/
 vendor/
 composer.lock
+build/
+*.DS_Store

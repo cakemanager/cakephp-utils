@@ -44,6 +44,8 @@ class UploadableBehaviorTest extends TestCase
         $this->Articles = $this->getMock('Cake\ORM\Table', ['_mkdir', '_moveUploadedFile'], [
             ['table' => 'articles', 'connection' => $connection]
         ]);
+
+        $this->_uploadPath = ROOT . 'webroot' . DS . 'uploads';
     }
 
     /**
@@ -55,7 +57,29 @@ class UploadableBehaviorTest extends TestCase
     {
         unset($this->Articles);
 
+        /*
+         * if created uploads by _mkdir, delete tree
+         */
+        if (is_dir($this->_uploadPath)) {
+            self::_delTree($this->_uploadPath);
+        }
+
         parent::tearDown();
+    }
+
+    /**
+     * delTree method
+     *
+     * @param string $dir of directory
+     * @return bool
+     */
+    protected static function _delTree($dir)
+    {
+        $files = array_diff(scandir($dir), [ '.', '..' ]);
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? self::_delTree("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
     }
 
     /**
@@ -80,7 +104,7 @@ class UploadableBehaviorTest extends TestCase
             ],
             'fieldWithCustomSettings2' => [
                 'field' => 'user_id',
-                'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}',
+                'path' => '{ROOT}{WEBROOT}{DS}uploads{DS}{model}{DS}',
                 'fileName' => '{field}.{extension}',
             ],
         ]);
@@ -96,7 +120,7 @@ class UploadableBehaviorTest extends TestCase
         $this->assertTrue($action['fieldWithoutSettings']['removeFileOnUpdate']);
         $this->assertTrue($action['fieldWithoutSettings']['removeFileOnDelete']);
         $this->assertEquals("id", $action['fieldWithoutSettings']['field']);
-        $this->assertEquals("{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}", $action['fieldWithoutSettings']['path']);
+        $this->assertEquals("{ROOT}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}", $action['fieldWithoutSettings']['path']);
         $this->assertEquals("{ORIGINAL}", $action['fieldWithoutSettings']['fileName']);
 
         // testing field 2
@@ -109,7 +133,7 @@ class UploadableBehaviorTest extends TestCase
 
         // testing field 3
         $this->assertEquals("user_id", $action['fieldWithCustomSettings2']['field']);
-        $this->assertEquals("{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}", $action['fieldWithCustomSettings2']['path']);
+        $this->assertEquals("{ROOT}{WEBROOT}{DS}uploads{DS}{model}{DS}", $action['fieldWithCustomSettings2']['path']);
         $this->assertEquals("{field}.{extension}", $action['fieldWithCustomSettings2']['fileName']);
     }
 
@@ -186,26 +210,27 @@ class UploadableBehaviorTest extends TestCase
                     'type' => 'type',
                     'size' => 'size',
                 ],
+                'fileName' => '{primaryKey}_article_{userId}.{extension}',
+                'entityReplacements' => [
+                    '{primaryKey}' => 'id',
+                    '{userId}' => 'user_id'
+                ],
             ]
         ];
 
-        $mocks = ['_mkdir', '_MoveUploadedFile'];
+        $mocks = [ '_moveUploadedFile' ];
 
         $behaviorMock = $this->getMock('\Utils\Model\Behavior\UploadableBehavior', $mocks, [$table, $behaviorOptions]);
 
         $behaviorMock->expects($this->any())
-            ->method('_mkdir')
-            ->will($this->returnValue(true));
-        $behaviorMock->expects($this->any())
-            ->method('_MoveUploadedFile')
+            ->method('_moveUploadedFile')
             ->will($this->returnValue(true));
 
         $table->behaviors()->set('Uploadable', $behaviorMock);
 
-
         $data = [
             'id' => 3,
-            'user_id' => 3,
+            'user_id' => 5,
             'title' => 'My first article',
             'body' => 'Content',
             'file' => [
@@ -222,11 +247,238 @@ class UploadableBehaviorTest extends TestCase
 
         $get = $table->get(3);
 
-        $this->assertContains('/uploads/articles/3/cakemanager.png', $get->get('url'));
+        $this->assertContains('/uploads/articles/3/3_article_5.png', $get->get('url'));
         $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS, $get->get('directory'));
         $this->assertEquals("image/png", $get->get('type'));
         $this->assertEquals(11501, $get->get('size'));
-        $this->assertContains('cakemanager.png', $get->get('file_name'));
-        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS . 'cakemanager.png', $get->get('file_path'));
+        $this->assertContains('3_article_5.png', $get->get('file_name'));
+        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS . '3_article_5.png', $get->get('file_path'));
+    }
+
+    /**
+     * testRemoveFileOnUpdate
+     *
+     * @return void
+     */
+    public function testRemoveFileOnUpdate()
+    {
+        $connection = ConnectionManager::get('test');
+
+        $table = $this->getMock('Cake\ORM\Table', ['_nonExistingMethodElseTheMockWillMockAllMethods'], [
+            ['table' => 'articles', 'connection' => $connection]
+        ]);
+
+        $table->alias("Articles");
+
+        $behaviorOptions = [
+            'file' => [
+                'fields' => [
+                    'url' => 'url',
+                    'directory' => 'directory',
+                    'fileName' => 'file_name',
+                    'filePath' => 'file_path',
+                    'type' => 'type',
+                    'size' => 'size',
+                ],
+                'removeFileOnUpdate' => true
+            ]
+        ];
+
+        $mocks = [ '_moveUploadedFile' ];
+
+        $behaviorMock = $this->getMock('\Utils\Model\Behavior\UploadableBehavior', $mocks, [$table, $behaviorOptions]);
+
+        $behaviorMock->expects($this->any())
+            ->method('_moveUploadedFile')
+            ->will($this->returnValue(true));
+
+        $table->behaviors()->set('Uploadable', $behaviorMock);
+
+        $tmpName = ROOT . 'README.md';
+        $data = [
+            'id' => 3,
+            'user_id' => 5,
+            'title' => 'My first article',
+            'body' => 'Content',
+            'file' => [
+                'name' => 'README.md',
+                'type' => 'text/x-markdown',
+                'tmp_name' => $tmpName,
+                'error' => 0,
+                'size' => 11501
+            ]
+        ];
+
+        $entity = $table->newEntity($data);
+        $save = $table->save($entity);
+
+        $get = $table->get(3);
+
+        copy($tmpName, $this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md');
+
+        $this->assertTrue(file_exists($this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md'));
+        $this->assertContains('/uploads/articles/3/README.md', $get->get('url'));
+        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS, $get->get('directory'));
+        $this->assertContains('README.md', $get->get('file_name'));
+        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS . 'README.md', $get->get('file_path'));
+
+        // $behaviorMock->expects($this->any())
+        //     ->method('_moveUploadedFile')
+        //     ->will($this->returnValue(false));
+
+        // $table->behaviors()->set('Uploadable', $behaviorMock);
+
+        $data = [
+            'id' => 3,
+            'user_id' => 5,
+            'title' => 'My first article',
+            'body' => 'Content',
+            'file' => [
+                'name' => 'README2.md',
+                'type' => 'text/x-markdown',
+                'tmp_name' => $tmpName,
+                'error' => 0,
+                'size' => 11501
+            ]
+        ];
+        $entity = $table->newEntity($data);
+        $save = $table->save($entity);
+
+        $get = $table->get(3);
+        $this->assertFalse(file_exists('uploads' . DS . 'articles' . DS . '3' . DS . 'README.md'));
+        $this->assertContains('/uploads/articles/3/README2.md', $get->get('url'));
+        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS, $get->get('directory'));
+        $this->assertContains('README2.md', $get->get('file_name'));
+        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS . 'README2.md', $get->get('file_path'));
+    }
+
+    /**
+     * testRemoveFileOnDelete
+     *
+     * @return void
+     */
+    public function testRemoveFileOnDelete()
+    {
+        $connection = ConnectionManager::get('test');
+
+        $table = $this->getMock('Cake\ORM\Table', ['_nonExistingMethodElseTheMockWillMockAllMethods'], [
+            ['table' => 'articles', 'connection' => $connection]
+        ]);
+
+        $table->alias("Articles");
+
+        $behaviorOptions = [
+            'file' => [
+                'fields' => [
+                    'url' => 'url',
+                    'directory' => 'directory',
+                    'fileName' => 'file_name',
+                    'filePath' => 'file_path',
+                    'type' => 'type',
+                    'size' => 'size',
+                ],
+            ]
+        ];
+
+        $mocks = [ '_moveUploadedFile' ];
+
+        $behaviorMock = $this->getMock('\Utils\Model\Behavior\UploadableBehavior', $mocks, [$table, $behaviorOptions]);
+
+        $behaviorMock->expects($this->any())
+            ->method('_moveUploadedFile')
+            ->will($this->returnValue(true));
+
+        $table->behaviors()->set('Uploadable', $behaviorMock);
+
+        $tmpName = ROOT . 'README.md';
+        $data = [
+            'id' => 3,
+            'user_id' => 5,
+            'title' => 'My first article',
+            'body' => 'Content',
+            'file' => [
+                'name' => 'README.md',
+                'type' => 'text/x-markdown',
+                'tmp_name' => $tmpName,
+                'error' => 0,
+                'size' => 11501
+            ]
+        ];
+
+        $entity = $table->newEntity($data);
+        $save = $table->save($entity);
+
+        $get = $table->get(3);
+
+        copy($tmpName, $this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md');
+
+        $this->assertTrue(file_exists($this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md'));
+        $this->assertContains('/uploads/articles/3/README.md', $get->get('url'));
+        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS, $get->get('directory'));
+        $this->assertContains('README.md', $get->get('file_name'));
+        // $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS . 'README.md', $get->get('file_path'));
+
+        $table->delete($get);
+        $this->assertFalse(file_exists($this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md'));
+    }
+
+    /**
+     * testSaveWithWrongType
+     *
+     * @return void
+     */
+    public function testSaveWithWrongType()
+    {
+        $connection = ConnectionManager::get('test');
+
+        $table = $this->getMock('Cake\ORM\Table', ['_nonExistingMethodElseTheMockWillMockAllMethods'], [
+            ['table' => 'articles', 'connection' => $connection]
+        ]);
+
+        $table->alias("Articles");
+
+        $behaviorOptions = [
+            'file' => [
+                'fields' => [
+                    'url' => 'url',
+                    'directory' => 'directory',
+                    'fileName' => 'file_name',
+                    'filePath' => 'file_path',
+                    'type' => 'type',
+                    'size' => 'size',
+                ],
+                'accept_type' => 'image'
+            ]
+        ];
+
+        $behaviorMock = $this->getMock('\Utils\Model\Behavior\UploadableBehavior', null, [$table, $behaviorOptions]);
+
+        $table->behaviors()->set('Uploadable', $behaviorMock);
+
+        $data = [
+            'id' => 3,
+            'user_id' => 3,
+            'title' => 'My first article',
+            'body' => 'Content',
+            'file' => [
+                'name' => 'README.md',
+                'type' => 'text/x-markdown',
+                'tmp_name' => ROOT . 'README.md',
+                'error' => 0,
+                'size' => 11501
+            ]
+        ];
+
+        $entity = $table->newEntity($data);
+        $save = $table->save($entity);
+
+        $get = $table->get(3);
+
+        $this->assertEmpty($get->get('url'));
+        $this->assertEmpty($get->get('type'));
+        $this->assertEmpty($get->get('size'));
+        $this->assertEmpty($get->get('file_name'));
+        $this->assertEmpty($get->get('file_path'));
+        $this->assertFalse(file_exists($this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md'));
     }
 }
