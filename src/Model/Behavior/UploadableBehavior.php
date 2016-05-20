@@ -125,7 +125,7 @@ class UploadableBehavior extends Behavior
                     $fieldConfig = $this->config($field);
 
                     if ($fieldConfig['removeFileOnUpdate']) {
-                        $this->_removeFile($entity->getOriginal($field));
+                        $this->_removeFile($entity, $field);
                     }
                 }
             }
@@ -177,16 +177,7 @@ class UploadableBehavior extends Behavior
         foreach ($fields as $field => $data) {
             $fieldConfig = $this->config($field);
             if ($fieldConfig['removeFileOnDelete']) {
-                $file = $entity->get($field);
-
-                if (empty($file)) {
-                    $fieldConfig = $this->config($field);
-                    $file = $entity->get($fieldConfig['fields']['filePath']);
-                }
-
-                if (!empty($file)) {
-                    $this->_removeFile($file);
-                }
+                $this->_removeFile($entity, $field);
             }
         }
     }
@@ -530,11 +521,19 @@ class UploadableBehavior extends Behavior
     /**
      * _removeFile
      *
-     * @param string $file Path of the file
+     * @param \Cake\ORM\Entity $entity Entity to check on.
+     * @param string $field Field to check on.
      * @return bool
      */
-    protected function _removeFile($file)
+    protected function _removeFile($entity, $field)
     {
+        $file = $entity->getOriginal($field);
+
+        if (is_null($file)) {
+            $fieldConfig = $this->config($field);
+            $file = $entity->getOriginal($fieldConfig['fields']['filePath']);
+        }
+
         $_file = new File($file);
 
         if ($_file->exists()) {
