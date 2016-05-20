@@ -48,7 +48,7 @@ class UploadableBehavior extends Behavior
             'removeFileOnUpdate' => true,
             'removeFileOnDelete' => true,
             'field' => 'id',
-            'path' => '{ROOT}{DS}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}',
+            'path' => '{ROOT}{WEBROOT}{DS}uploads{DS}{model}{DS}{field}{DS}',
             'fileName' => '{ORIGINAL}',
             'entityReplacements' => [ ],
             'accept_type' => null /* can be 'image'*/
@@ -452,7 +452,7 @@ class UploadableBehavior extends Behavior
     protected function _getUrl($entity, $field)
     {
         $path = '/' . $this->_getPath($entity, $field, ['root' => false, 'file' => true]);
-        return str_replace(DS, '/', $path);
+        return str_replace(DS, '/', str_replace('//', '/', $path));
     }
 
     /**
