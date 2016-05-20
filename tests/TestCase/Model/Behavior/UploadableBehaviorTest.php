@@ -70,10 +70,12 @@ class UploadableBehaviorTest extends TestCase
     /**
      * delTree method
      *
+     * @param string $dir of directory
      * @return bool
      */
-    private static function delTree($dir) {
-        $files = array_diff(scandir($dir), array('.','..'));
+    protected static function _delTree($dir)
+    {
+        $files = array_diff(scandir($dir), [ '.', '..' ]);
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
         }
@@ -292,7 +294,7 @@ class UploadableBehaviorTest extends TestCase
 
         $table->behaviors()->set('Uploadable', $behaviorMock);
 
-        $tmp_name = ROOT . 'README.md';
+        $tmpName = ROOT . 'README.md';
         $data = [
             'id' => 3,
             'user_id' => 5,
@@ -301,7 +303,7 @@ class UploadableBehaviorTest extends TestCase
             'file' => [
                 'name' => 'README.md',
                 'type' => 'text/x-markdown',
-                'tmp_name' => $tmp_name,
+                'tmp_name' => $tmpName,
                 'error' => 0,
                 'size' => 11501
             ]
@@ -312,7 +314,7 @@ class UploadableBehaviorTest extends TestCase
 
         $get = $table->get(3);
 
-        copy($tmp_name, $this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md');
+        copy($tmpName, $this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md');
 
         $this->assertTrue(file_exists($this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md'));
         $this->assertContains('/uploads/articles/3/README.md', $get->get('url'));
@@ -334,7 +336,7 @@ class UploadableBehaviorTest extends TestCase
             'file' => [
                 'name' => 'README2.md',
                 'type' => 'text/x-markdown',
-                'tmp_name' => $tmp_name,
+                'tmp_name' => $tmpName,
                 'error' => 0,
                 'size' => 11501
             ]
@@ -388,7 +390,7 @@ class UploadableBehaviorTest extends TestCase
 
         $table->behaviors()->set('Uploadable', $behaviorMock);
 
-        $tmp_name = ROOT . 'README.md';
+        $tmpName = ROOT . 'README.md';
         $data = [
             'id' => 3,
             'user_id' => 5,
@@ -397,7 +399,7 @@ class UploadableBehaviorTest extends TestCase
             'file' => [
                 'name' => 'README.md',
                 'type' => 'text/x-markdown',
-                'tmp_name' => $tmp_name,
+                'tmp_name' => $tmpName,
                 'error' => 0,
                 'size' => 11501
             ]
@@ -408,7 +410,7 @@ class UploadableBehaviorTest extends TestCase
 
         $get = $table->get(3);
 
-        copy($tmp_name, $this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md');
+        copy($tmpName, $this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md');
 
         $this->assertTrue(file_exists($this->_uploadPath . DS . 'articles' . DS . '3' . DS . 'README.md'));
         $this->assertContains('/uploads/articles/3/README.md', $get->get('url'));
