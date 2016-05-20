@@ -269,10 +269,7 @@ class UploadableBehavior extends Behavior
         }
 
         // upload the file and return true
-        if ($this->_moveUploadedFile($_upload['tmp_name'], $uploadPath)) {
-            return true;
-        }
-        return false;
+        return $this->_moveUploadedFile($_upload['tmp_name'], $uploadPath) ? true : false;
     }
 
     /**
