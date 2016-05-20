@@ -177,7 +177,16 @@ class UploadableBehavior extends Behavior
         foreach ($fields as $field => $data) {
             $fieldConfig = $this->config($field);
             if ($fieldConfig['removeFileOnDelete']) {
-                $this->_removeFile($entity->get($field));
+                $file = $entity->get($field);
+
+                if (empty($file)) {
+                    $fieldConfig = $this->config($field);
+                    $file = $entity->get($fieldConfig['fields']['filePath']);
+                }
+
+                if (!empty($file)) {
+                    $this->_removeFile($file);
+                }
             }
         }
     }
