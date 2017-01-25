@@ -86,11 +86,13 @@ class MenuHelper extends Helper
             $html .= $builder->beforeItem($item);
             $html .= $builder->item($item);
             if ($item['children']) {
-                $html .= $builder->beforeSubItem($item);
+                $html .= $builder->beforeSubMenu($item);
                 foreach ($item['children'] as $subItem) {
+                    $html .= $builder->beforeSubItem($subItem);
                     $html .= $builder->subItem($subItem);
+                    $html .= $builder->afterSubItem($subItem);
                 }
-                $html .= $builder->afterSubItem($item);
+                $html .= $builder->afterSubMenu($item);
             }
             $html .= $builder->afterItem($item);
         }

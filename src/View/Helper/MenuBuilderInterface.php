@@ -50,6 +50,17 @@ interface MenuBuilderInterface
     public function beforeMenu($menu = [], $options = []);
 
     /**
+     * beforeSubMenu
+     *
+     * Method before the submenu has been build.
+     *
+     * @param array $submenu The submenu items.
+     * @param array $options Options.
+     * @return string
+     */
+    public function beforeSubMenu($submenu = [], $options = []);
+
+    /**
      * beforeItem
      *
      * Method before an item has been build.
@@ -125,4 +136,15 @@ interface MenuBuilderInterface
      * @return string
      */
     public function afterMenu($menu = [], $options = []);
+
+    /**
+     * afterSubMenu
+     *
+     * Method after the submenu has been build.
+     *
+     * @param array $submenu The submenu items.
+     * @param array $options Options.
+     * @return string
+     */
+    public function afterSubMenu($submenu = [], $options = []);
 }
