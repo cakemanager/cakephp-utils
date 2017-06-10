@@ -70,6 +70,7 @@ class MenuHelper extends Helper
     public function menu($area, $helper, $options = [])
     {
         $_options = [
+            'showChildren' => false
         ];
 
         $options = Hash::merge($_options, $options);
@@ -78,14 +79,17 @@ class MenuHelper extends Helper
 
         $menu = $this->_View->viewVars['menu'][$area];
 
+        $showChildren = $options['showChildren'];
+        unset($options['showChildren']);
+
         $html = '';
 
-        $html .= $builder->beforeMenu($menu);
+        $html .= $builder->beforeMenu($menu, $options);
 
         foreach ($menu as $item) {
             $html .= $builder->beforeItem($item);
             $html .= $builder->item($item);
-            if ($item['children']) {
+            if ($showChildren && $item['children']) {
                 $html .= $builder->beforeSubItem($item);
                 foreach ($item['children'] as $subItem) {
                     $html .= $builder->subItem($subItem);
