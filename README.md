@@ -35,36 +35,28 @@ Usage
 
 ### Components
 
-- [Authorizer](http://cakemanager.org/docs/utils/1.0/components/authorizer/) - Component to work easily with authorization in your application-controllers.
-- [GlobalAuth](http://cakemanager.org/docs/utils/1.0/components/globalauth/) - Enables global access to user-data.
-- [Menu](http://cakemanager.org/docs/utils/1.0/components/menu/) - Adds menu-items in sections to pass to your view.
-- [Search](http://cakemanager.org/docs/utils/1.0/components/search/) - Creates filters for your queries so you are able to filter on your list with a generated form.
+- [Authorizer](https://github.com/cakemanager/cakephp-utils/wiki/authorizer) - Component to work easily with authorization in your application-controllers.
+- [GlobalAuth](https://github.com/cakemanager/cakephp-utils/wiki/globalauth/) - Enables global access to user-data.
+- [Menu](https://github.com/cakemanager/cakephp-utils/wiki/menu/) - Adds menu-items in sections to pass to your view.
+- [Search](https://github.com/cakemanager/cakephp-utils/wiki/search/) - Creates filters for your queries so you are able to filter on your list with a generated form.
 
 ### Behaviors
 
-- [Metas](http://cakemanager.org/docs/utils/1.0/behaviors/metas/) - Behavior to add meta-data to your current model.
-- [Stateable](http://cakemanager.org/docs/utils/1.0/behaviors/stateable/) - Generates multiple states (like concept, deleted, active) and with save-method and finders.
-- [Uploadable](http://cakemanager.org/docs/utils/1.0/behaviors/uploadable/) - Great behavior to upload files automatically.
-- [WhoDidIt](http://cakemanager.org/docs/utils/1.0/behaviors/whodidit/) - Saves the user who created the row, and modified the row.
-- [IsOwnedBy](http://cakemanager.org/docs/utils/1.0/behaviors/isownedby/) - Checks if your entity is owned by the given (logged in) user.
+- [Metas](https://github.com/cakemanager/cakephp-utils/wiki/metas/) - Behavior to add meta-data to your current model.
+- [Stateable](https://github.com/cakemanager/cakephp-utils/wiki/stateable/) - Generates multiple states (like concept, deleted, active) and with save-method and finders.
+- [Uploadable](https://github.com/cakemanager/cakephp-utils/wiki/uploadable/) - Great behavior to upload files automatically.
+- [WhoDidIt](https://github.com/cakemanager/cakephp-utils/wiki/whodidit/) - Saves the user who created the row, and modified the row.
+- [IsOwnedBy](https://github.com/cakemanager/cakephp-utils/wiki/isownedby/) - Checks if your entity is owned by the given (logged in) user.
 
-Documentation
--------------
-
-For documentation, as well as tutorials, see the [documentation](http://cakemanager.org/docs/utils/1.0/) on [cakemanager.org](http://cakemanager.org).
 
 Support
 -------
-
-- [CakeManager Website](http://cakemanager.org/) - Website of the CakeManager Team. Here you can find everything about us and our plugins.
 
 - [Gitter](https://gitter.im/cakemanager/cakephp-utils) - Chat Tool for GitHub to talk about issues and new features.
 
 - [GitHub](https://github.com/cakemanager/cakephp-utils/issues) - When there's something wrong, please open a new issue!
 
-- [CakeManager Docs](http://cakemanager.org/docs/1.0/) - Documentation about the CakeManager Plugin.
-
-- [CakePHP Utils Plugin Docs](http://cakemanager.org/docs/utils/1.0/) - Documentation about the Utils Plugin.
+- [CakePHP Utils Plugin Docs](https://github.com/cakemanager/cakephp-utils/wiki/) - Documentation about the Utils Plugin.
 
 
 Contributing
