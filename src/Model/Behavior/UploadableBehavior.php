@@ -88,11 +88,11 @@ class UploadableBehavior extends Behavior
 
         Type::map('Utils.File', 'Utils\Database\Type\FileType');
 
-        $schema = $table->schema();
+        $schema = $table->getSchema();
         foreach ($this->getFieldList() as $field => $settings) {
-            $schema->columnType($field, 'Utils.File');
+            $schema->setColumnType($field, 'Utils.File');
         }
-        $table->schema($schema);
+        $table->setSchema($schema);
 
         $this->_Table = $table;
     }
@@ -116,10 +116,10 @@ class UploadableBehavior extends Behavior
             }
 
             if (!$entity->isNew()) {
-                $dirtyField = $entity->dirty($field);
+                $dirtyField = $entity->setDirty($field);
                 $originalField = $entity->getOriginal($field);
                 if ($dirtyField && !is_null($originalField) && !is_array($originalField)) {
-                    $fieldConfig = $this->config($field);
+                    $fieldConfig = $this->getConfig($field);
 
                     if ($fieldConfig['removeFileOnUpdate']) {
                         $this->_removeFile($entity->getOriginal($field));
@@ -153,7 +153,7 @@ class UploadableBehavior extends Behavior
             }
         }
         foreach ($storedToSave as $toSave) {
-            $event->subject()->save($toSave);
+            $event->getSubject()->save($toSave);
         }
         $this->_savedFields = [];
     }
@@ -170,7 +170,7 @@ class UploadableBehavior extends Behavior
     {
         $fields = $this->getFieldList();
         foreach ($fields as $field => $data) {
-            $fieldConfig = $this->config($field);
+            $fieldConfig = $this->getConfig($field);
             if ($fieldConfig['removeFileOnDelete']) {
                 $this->_removeFile($entity->get($field));
             }
@@ -196,7 +196,7 @@ class UploadableBehavior extends Behavior
 
         $list = [];
 
-        foreach ($this->config() as $key => $value) {
+        foreach ($this->getConfig() as $key => $value) {
             if (!in_array($key, $this->_presetConfigKeys) || is_integer($key)) {
                 if (is_integer($key)) {
                     $field = $value;
@@ -207,12 +207,13 @@ class UploadableBehavior extends Behavior
                 if ($options['normalize']) {
                     $fieldConfig = $this->_normalizeField($field);
                 } else {
-                    $fieldConfig = (($this->config($field) == null) ? [] : $this->config($field));
+                    $fieldConfig = (($this->getConfig($field) == null) ? [] : $this->getConfig($field));
                 }
 
                 $list[$field] = $fieldConfig;
             }
         }
+
         return $list;
     }
 
@@ -234,6 +235,7 @@ class UploadableBehavior extends Behavior
                 return true;
             }
         }
+
         return false;
     }
 
@@ -261,6 +263,7 @@ class UploadableBehavior extends Behavior
         if ($this->_moveUploadedFile($_upload['tmp_name'], $uploadPath)) {
             return true;
         }
+
         return false;
     }
 
@@ -278,7 +281,7 @@ class UploadableBehavior extends Behavior
      */
     protected function _setUploadColumns($entity, $field, $options = [])
     {
-        $fieldConfig = $this->config($field);
+        $fieldConfig = $this->getConfig($field);
         $_upload = $this->_uploads[$field];
 
         // set all columns with values
@@ -304,6 +307,7 @@ class UploadableBehavior extends Behavior
                 }
             }
         }
+
         return $entity;
     }
 
@@ -328,13 +332,13 @@ class UploadableBehavior extends Behavior
 
         $options = Hash::merge($_options, $options);
 
-        $data = $this->config($field);
+        $data = $this->getConfig($field);
 
         if (is_null($data)) {
-            foreach ($this->config() as $key => $config) {
+            foreach ($this->getConfig() as $key => $config) {
                 if ($config == $field) {
                     if ($options['save']) {
-                        $this->config($field, []);
+                        $this->setConfig($field, []);
 
                         $this->_configDelete($key);
                     }
@@ -349,10 +353,10 @@ class UploadableBehavior extends Behavior
             $data = Hash::insert($data, 'fields.filePath', $field);
         }
 
-        $data = Hash::merge($this->config('defaultFieldConfig'), $data);
+        $data = Hash::merge($this->getConfig('defaultFieldConfig'), $data);
 
         if ($options['save']) {
-            $this->config($field, $data);
+            $this->setConfig($field, $data);
         }
 
         return $data;
@@ -381,7 +385,7 @@ class UploadableBehavior extends Behavior
 
         $options = Hash::merge($_options, $options);
 
-        $config = $this->config($field);
+        $config = $this->getConfig($field);
 
         $path = $config['path'];
 
@@ -389,7 +393,7 @@ class UploadableBehavior extends Behavior
             '{ROOT}' => ROOT,
             '{WEBROOT}' => 'webroot',
             '{field}' => $entity->get($config['field']),
-            '{model}' => Inflector::underscore($this->_Table->alias()),
+            '{model}' => Inflector::underscore($this->_Table->getAlias()),
             '{DS}' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
         ];
@@ -419,6 +423,7 @@ class UploadableBehavior extends Behavior
     protected function _getUrl($entity, $field)
     {
         $path = '/' . $this->_getPath($entity, $field, ['root' => false, 'file' => true]);
+
         return str_replace(DS, '/', $path);
     }
 
@@ -439,7 +444,7 @@ class UploadableBehavior extends Behavior
 
         $options = Hash::merge($_options, $options);
 
-        $config = $this->config($field);
+        $config = $this->getConfig($field);
 
         $_upload = $this->_uploads[$field];
 
@@ -509,8 +514,10 @@ class UploadableBehavior extends Behavior
             if (count($folder->find()) === 0) {
                 $folder->delete();
             }
+
             return true;
         }
+
         return false;
     }
 }

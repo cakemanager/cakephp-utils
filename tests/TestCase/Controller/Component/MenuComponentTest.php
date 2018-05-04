@@ -17,7 +17,9 @@ namespace Utils\Test\TestCase\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\Network\Request;
+use Cake\Event\EventManager;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use Utils\Controller\Component\MenuComponent;
 
@@ -40,7 +42,12 @@ class MenuComponentTest extends TestCase
         $collection = new ComponentRegistry();
         $this->Menu = new MenuComponent($collection);
 
-        $this->Controller = $this->getMock('Cake\Controller\Controller', ['redirect', 'initMenuItems']);
+        // Setup our component and fake test controller
+        $this->Controller = $this->getMockBuilder('Cake\Controller\Controller')
+            ->setConstructorArgs([new ServerRequest(), new Response()])
+            ->setMethods(['redirect', 'initMenuItems'])
+            ->getMock();
+        $this->Controller->request = new ServerRequest();
         $this->Menu->setController($this->Controller);
     }
 
@@ -123,7 +130,6 @@ class MenuComponentTest extends TestCase
         $this->Menu->add('Test01', []);
         $this->Menu->add('Test02', []);
 
-
         // get menu
         $test01 = $this->Menu->getMenu();
 
@@ -145,12 +151,14 @@ class MenuComponentTest extends TestCase
         Configure::write('Menu.Register.ConfigureItem2', []);
         Configure::write('Menu.Register.ConfigureItem3', []);
 
-        $request = new Request();
-        $this->Controller = $this->getMock('Cake\Controller\Controller', ['redirect', 'initMenuItems'], [$request]);
-
-        // Setup our component and fake test controller
-        $collection = new ComponentRegistry($this->Controller);
-        $this->Menu = new MenuComponent($collection);
+        $request = new ServerRequest();
+        $response = new Response();
+        $this->Controller = $this->getMockBuilder('Cake\Controller\Controller')
+            ->setConstructorArgs([$request, $response])
+            ->setMethods(null)
+            ->getMock();
+        $registry = new ComponentRegistry($this->Controller);
+        $this->Menu = new MenuComponent($registry);
 
         $this->Menu->setController($this->Controller);
 

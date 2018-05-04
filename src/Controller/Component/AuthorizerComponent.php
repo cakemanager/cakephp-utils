@@ -94,7 +94,7 @@ class AuthorizerComponent extends Component
      */
     public function beforeFilter($event)
     {
-        $this->setController($event->subject());
+        $this->setController($event->getSubject());
 
         $this->setCurrentParams();
     }
@@ -108,9 +108,9 @@ class AuthorizerComponent extends Component
      */
     public function setCurrentParams()
     {
-        $this->_current['plugin'] = $this->Controller->request->params['plugin'];
-        $this->_current['controller'] = $this->Controller->request->params['controller'];
-        $this->_current['action'] = $this->Controller->request->params['action'];
+        $this->_current['plugin'] = $this->Controller->request->getParam('plugin');
+        $this->_current['controller'] = $this->Controller->request->getParam('controller');
+        $this->_current['action'] = $this->Controller->request->getParam('action');
 
         return $this->_current;
     }
@@ -147,7 +147,6 @@ class AuthorizerComponent extends Component
         if (!is_array($actions)) {
             $actions = [$actions];
         }
-
 
         $controller = $this->_current['controller'];
 
@@ -285,7 +284,7 @@ class AuthorizerComponent extends Component
     public function authorize()
     {
         $user = $this->Controller->Auth->user();
-        $role = $user[$this->config('roleField')];
+        $role = $user[$this->getConfig('roleField')];
 
         $controller = $this->_current['controller'];
         $action = $this->_current['action'];
@@ -347,7 +346,6 @@ class AuthorizerComponent extends Component
         if (!is_bool($state)) {
             $state = false;
         }
-
 
         return $state;
     }

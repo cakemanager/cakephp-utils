@@ -110,7 +110,7 @@ class MenuComponent extends Component
      */
     public function beforeFilter($event)
     {
-        $this->setController($event->subject());
+        $this->setController($event->getSubject());
 
         if (method_exists($this->Controller, 'initMenuItems')) {
             $this->Controller->initMenuItems($event);
@@ -134,6 +134,7 @@ class MenuComponent extends Component
         if ($area !== null) {
             $this->area = $area;
         }
+
         return $this->area;
     }
 
@@ -229,9 +230,8 @@ class MenuComponent extends Component
         $item = array_merge($_item, $item);
 
         $url = Router::url($item['url']);
-        $actives = $this->config('active');
-
-        if ($url === Router::url("/" . $this->Controller->request->url)) {
+        $actives = $this->getConfig('active');
+        if ($url === Router::url("/" . $this->Controller->request->getPath())) {
             $item['active'] = true;
         }
 
