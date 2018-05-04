@@ -119,7 +119,7 @@ class UploadableBehavior extends Behavior
                 $dirtyField = $entity->dirty($field);
                 $originalField = $entity->getOriginal($field);
                 if ($dirtyField && !is_null($originalField) && !is_array($originalField)) {
-                    $fieldConfig = $this->config($field);
+                    $fieldConfig = $this->getConfig($field);
 
                     if ($fieldConfig['removeFileOnUpdate']) {
                         $this->_removeFile($entity->getOriginal($field));
@@ -170,7 +170,7 @@ class UploadableBehavior extends Behavior
     {
         $fields = $this->getFieldList();
         foreach ($fields as $field => $data) {
-            $fieldConfig = $this->config($field);
+            $fieldConfig = $this->getConfig($field);
             if ($fieldConfig['removeFileOnDelete']) {
                 $this->_removeFile($entity->get($field));
             }
@@ -196,7 +196,7 @@ class UploadableBehavior extends Behavior
 
         $list = [];
 
-        foreach ($this->config() as $key => $value) {
+        foreach ($this->getConfig() as $key => $value) {
             if (!in_array($key, $this->_presetConfigKeys) || is_integer($key)) {
                 if (is_integer($key)) {
                     $field = $value;
@@ -207,7 +207,7 @@ class UploadableBehavior extends Behavior
                 if ($options['normalize']) {
                     $fieldConfig = $this->_normalizeField($field);
                 } else {
-                    $fieldConfig = (($this->config($field) == null) ? [] : $this->config($field));
+                    $fieldConfig = (($this->getConfig($field) == null) ? [] : $this->getConfig($field));
                 }
 
                 $list[$field] = $fieldConfig;
@@ -278,7 +278,7 @@ class UploadableBehavior extends Behavior
      */
     protected function _setUploadColumns($entity, $field, $options = [])
     {
-        $fieldConfig = $this->config($field);
+        $fieldConfig = $this->getConfig($field);
         $_upload = $this->_uploads[$field];
 
         // set all columns with values
@@ -328,13 +328,13 @@ class UploadableBehavior extends Behavior
 
         $options = Hash::merge($_options, $options);
 
-        $data = $this->config($field);
+        $data = $this->getConfig($field);
 
         if (is_null($data)) {
-            foreach ($this->config() as $key => $config) {
+            foreach ($this->getConfig() as $key => $config) {
                 if ($config == $field) {
                     if ($options['save']) {
-                        $this->config($field, []);
+                        $this->setConfig($field, []);
 
                         $this->_configDelete($key);
                     }
@@ -349,10 +349,10 @@ class UploadableBehavior extends Behavior
             $data = Hash::insert($data, 'fields.filePath', $field);
         }
 
-        $data = Hash::merge($this->config('defaultFieldConfig'), $data);
+        $data = Hash::merge($this->getConfig('defaultFieldConfig'), $data);
 
         if ($options['save']) {
-            $this->config($field, $data);
+            $this->setConfig($field, $data);
         }
 
         return $data;
@@ -381,7 +381,7 @@ class UploadableBehavior extends Behavior
 
         $options = Hash::merge($_options, $options);
 
-        $config = $this->config($field);
+        $config = $this->getConfig($field);
 
         $path = $config['path'];
 
@@ -389,7 +389,7 @@ class UploadableBehavior extends Behavior
             '{ROOT}' => ROOT,
             '{WEBROOT}' => 'webroot',
             '{field}' => $entity->get($config['field']),
-            '{model}' => Inflector::underscore($this->_Table->alias()),
+            '{model}' => Inflector::underscore($this->_Table->getAlias()),
             '{DS}' => DIRECTORY_SEPARATOR,
             '\\' => DIRECTORY_SEPARATOR,
         ];
@@ -439,7 +439,7 @@ class UploadableBehavior extends Behavior
 
         $options = Hash::merge($_options, $options);
 
-        $config = $this->config($field);
+        $config = $this->getConfig($field);
 
         $_upload = $this->_uploads[$field];
 

@@ -50,7 +50,7 @@ class StateableBehavior extends Behavior
      */
     public function stateList()
     {
-        return array_flip($this->config('states'));
+        return array_flip($this->getConfig('states'));
     }
 
     /**
@@ -65,7 +65,7 @@ class StateableBehavior extends Behavior
     public function findConcept($query, $options)
     {
         $query->where([
-            $this->config('field') => $this->config('states.concept'),
+            $this->getConfig('field') => $this->getConfig('states.concept'),
         ]);
 
         return $query;
@@ -83,7 +83,7 @@ class StateableBehavior extends Behavior
     public function findActive($query, $options)
     {
         $query->where([
-            $this->config('field') => $this->config('states.active'),
+            $this->getConfig('field') => $this->getConfig('states.active'),
         ]);
 
         return $query;
@@ -101,7 +101,7 @@ class StateableBehavior extends Behavior
     public function findDeleted($query, $options)
     {
         $query->where([
-            $this->config('field') => $this->config('states.deleted'),
+            $this->getConfig('field') => $this->getConfig('states.deleted'),
         ]);
 
         return $query;

@@ -85,7 +85,7 @@ class SearchComponent extends Component
      */
     public function beforeRender($event)
     {
-        $this->Controller->set('searchFilters', $this->_normalize($this->config('filters')));
+        $this->Controller->set('searchFilters', $this->_normalize($this->getConfig('filters')));
     }
 
     /**
@@ -106,14 +106,14 @@ class SearchComponent extends Component
      */
     public function addFilter($name, $options = [])
     {
-        $_options = $this->config('_default');
+        $_options = $this->getConfig('_default');
 
         $_options['field'] = $name;
         $_options['column'] = $name;
 
         $options = array_merge($_options, $options);
 
-        $this->config('filters.' . $name, $options, true);
+        $this->setConfig('filters.' . $name, $options, true);
     }
 
     /**
@@ -126,10 +126,10 @@ class SearchComponent extends Component
      */
     public function removeFilter($name)
     {
-        $filters = $this->config('filters');
+        $filters = $this->getConfig('filters');
         unset($filters[$name]);
 
-        $this->config('filters', $filters, false);
+        $this->setConfig('filters', $filters, false);
     }
 
     /**
@@ -158,7 +158,7 @@ class SearchComponent extends Component
         $this->Controller->request->data = $_query;
 
         $params = $_query;
-        $filters = $this->_normalize($this->config('filters'));
+        $filters = $this->_normalize($this->getConfig('filters'));
 
         foreach ($filters as $field => $options) {
             $hash = Hash::get($params, $options['column']);
@@ -235,7 +235,7 @@ class SearchComponent extends Component
         $key = 'filters.' . $field . '.attributes.value';
         $value = Hash::get($params, $options['column']);
 
-        $this->config($key, $value);
+        $this->setConfig($key, $value);
     }
 
     /**

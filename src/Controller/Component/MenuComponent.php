@@ -229,7 +229,7 @@ class MenuComponent extends Component
         $item = array_merge($_item, $item);
 
         $url = Router::url($item['url']);
-        $actives = $this->config('active');
+        $actives = $this->getConfig('active');
 
         if ($url === Router::url("/" . $this->Controller->request->url)) {
             $item['active'] = true;
