@@ -94,7 +94,7 @@ class AuthorizerComponent extends Component
      */
     public function beforeFilter($event)
     {
-        $this->setController($event->subject());
+        $this->setController($event->getSubject());
 
         $this->setCurrentParams();
     }
