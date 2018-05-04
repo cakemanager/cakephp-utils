@@ -41,7 +41,7 @@ class UploadableBehaviorTest extends TestCase
 
         $connection = ConnectionManager::get('test');
 
-        $this->Articles = $this->getMock('Cake\ORM\Table', ['_mkdir', '_moveUploadedFile'], [
+        $this->Articles = $this->createMock('Cake\ORM\Table', ['_mkdir', '_moveUploadedFile'], [
             ['table' => 'articles', 'connection' => $connection]
         ]);
     }
@@ -170,7 +170,7 @@ class UploadableBehaviorTest extends TestCase
     {
         $connection = ConnectionManager::get('test');
 
-        $table = $this->getMock('Cake\ORM\Table', ['_nonExistingMethodElseTheMockWillMockAllMethods'], [
+        $table = $this->createMock('Cake\ORM\Table', ['_nonExistingMethodElseTheMockWillMockAllMethods'], [
             ['table' => 'articles', 'connection' => $connection]
         ]);
 
@@ -191,7 +191,7 @@ class UploadableBehaviorTest extends TestCase
 
         $mocks = ['_mkdir', '_MoveUploadedFile'];
 
-        $behaviorMock = $this->getMock('\Utils\Model\Behavior\UploadableBehavior', $mocks, [$table, $behaviorOptions]);
+        $behaviorMock = $this->createMock('\Utils\Model\Behavior\UploadableBehavior', $mocks, [$table, $behaviorOptions]);
 
         $behaviorMock->expects($this->any())
             ->method('_mkdir')

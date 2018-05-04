@@ -69,7 +69,7 @@ class StateableBehaviorTest extends TestCase
             'deleted' => -1,
         ];
 
-        $this->assertEquals($_list, $this->Model->behaviors()->get('Stateable')->config('states'));
+        $this->assertEquals($_list, $this->Model->getBehavior('Stateable')->getConfig('states'));
 
         $_list = [
             0 => 'concept',

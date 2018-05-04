@@ -15,8 +15,8 @@
 namespace Utils\Test\TestCase\Controller\Component;
 
 use Cake\Controller\ComponentRegistry;
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Cake\Http\ServerRequest;
+use Cake\Http\Response;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Utils\Controller\Component\AuthorizerComponent;
@@ -87,14 +87,14 @@ class AuthorizerComponentTest extends TestCase
         $this->assertEquals("index", $set['action']);
 
         // Setup our component and fake test controller
-        $request = new Request(['params' => [
+        $request = new ServerRequest(['params' => [
                 'plugin' => 'utils',
                 'controller' => 'bookmarks',
                 'action' => 'view'
         ]]);
         $response = new Response();
 
-        $controller = $this->getMock('Cake\Controller\Controller', ['redirect'], [$request, $response]);
+        $controller = $this->createMock('Cake\Controller\Controller', ['redirect'], [$request, $response]);
 
         $this->Authorizer->setController($controller);
 
@@ -229,10 +229,10 @@ class AuthorizerComponentTest extends TestCase
     public function setUpRequest($params)
     {
         // Setup our component and fake test controller
-        $request = new Request(['params' => $params]);
+        $request = new ServerRequest(['params' => $params]);
         $response = new Response();
 
-        $this->controller = $this->getMock('Cake\Controller\Controller', ['redirect'], [$request, $response]);
+        $this->controller = $this->createMock('Cake\Controller\Controller', ['redirect'], [$request, $response]);
 
         $this->controller->loadComponent('Auth');
 

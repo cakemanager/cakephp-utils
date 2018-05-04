@@ -47,7 +47,7 @@ class SearchComponentTest extends TestCase
         $collection = new ComponentRegistry();
         $this->Search = new SearchComponent($collection);
 
-        $this->Controller = $this->getMock('Cake\Controller\Controller', ['redirect']);
+        $this->Controller = $this->createMock('Cake\Controller\Controller', ['redirect']);
         $this->Search->setController($this->Controller);
     }
 
@@ -73,11 +73,11 @@ class SearchComponentTest extends TestCase
      */
     public function testAddFilter()
     {
-        $this->assertEmpty($this->Search->config('filters'));
+        $this->assertEmpty($this->Search->getConfig('filters'));
 
         $this->Search->addFilter('TestFilter1');
 
-        $this->assertArrayHasKey('TestFilter1', $this->Search->config('filters'));
+        $this->assertArrayHasKey('TestFilter1', $this->Search->getConfig('filters'));
 
         $_settings = [
             'field' => 'TestFilter1',
@@ -90,7 +90,7 @@ class SearchComponentTest extends TestCase
             'options' => false
         ];
 
-        $this->assertEquals($_settings, $this->Search->config('filters.TestFilter1'));
+        $this->assertEquals($_settings, $this->Search->getConfig('filters.TestFilter1'));
 
         $this->Search->addFilter('TestFilter2', [
             'field' => 'customField',
@@ -118,7 +118,7 @@ class SearchComponentTest extends TestCase
             ]
         ];
 
-        $this->assertEquals($_settings, $this->Search->config('filters.TestFilter2'));
+        $this->assertEquals($_settings, $this->Search->getConfig('filters.TestFilter2'));
     }
 
     public function testRemoveFilter()
@@ -127,21 +127,21 @@ class SearchComponentTest extends TestCase
         $this->Search->addFilter('TestFilter2');
         $this->Search->addFilter('TestFilter3');
 
-        $this->assertArrayHasKey('TestFilter1', $this->Search->config('filters'));
-        $this->assertArrayHasKey('TestFilter2', $this->Search->config('filters'));
-        $this->assertArrayHasKey('TestFilter3', $this->Search->config('filters'));
+        $this->assertArrayHasKey('TestFilter1', $this->Search->getConfig('filters'));
+        $this->assertArrayHasKey('TestFilter2', $this->Search->getConfig('filters'));
+        $this->assertArrayHasKey('TestFilter3', $this->Search->getConfig('filters'));
 
         $this->Search->removeFilter('TestFilter3');
 
-        $this->assertArrayHasKey('TestFilter1', $this->Search->config('filters'));
-        $this->assertArrayHasKey('TestFilter2', $this->Search->config('filters'));
-        $this->assertArrayNotHasKey('TestFilter3', $this->Search->config('filters'));
+        $this->assertArrayHasKey('TestFilter1', $this->Search->getConfig('filters'));
+        $this->assertArrayHasKey('TestFilter2', $this->Search->getConfig('filters'));
+        $this->assertArrayNotHasKey('TestFilter3', $this->Search->getConfig('filters'));
 
         $this->Search->removeFilter('TestFilter2');
 
-        $this->assertArrayHasKey('TestFilter1', $this->Search->config('filters'));
-        $this->assertArrayNotHasKey('TestFilter2', $this->Search->config('filters'));
-        $this->assertArrayNotHasKey('TestFilter3', $this->Search->config('filters'));
+        $this->assertArrayHasKey('TestFilter1', $this->Search->getConfig('filters'));
+        $this->assertArrayNotHasKey('TestFilter2', $this->Search->getConfig('filters'));
+        $this->assertArrayNotHasKey('TestFilter3', $this->Search->getConfig('filters'));
     }
 
     /**
