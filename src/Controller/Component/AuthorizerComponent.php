@@ -108,9 +108,9 @@ class AuthorizerComponent extends Component
      */
     public function setCurrentParams()
     {
-        $this->_current['plugin'] = $this->Controller->request->params['plugin'];
-        $this->_current['controller'] = $this->Controller->request->params['controller'];
-        $this->_current['action'] = $this->Controller->request->params['action'];
+        $this->_current['plugin'] = $this->Controller->request->getParam('plugin');
+        $this->_current['controller'] = $this->Controller->request->getParam('controller');
+        $this->_current['action'] = $this->Controller->request->getParam('action');
 
         return $this->_current;
     }
