@@ -285,7 +285,7 @@ class AuthorizerComponent extends Component
     public function authorize()
     {
         $user = $this->Controller->Auth->user();
-        $role = $user[$this->config('roleField')];
+        $role = $user[$this->getConfig('roleField')];
 
         $controller = $this->_current['controller'];
         $action = $this->_current['action'];
