@@ -66,19 +66,19 @@ class WhoDidItBehavior extends Behavior
 
         $this->Table = $table;
 
-        if ($this->config('created_by')) {
+        if ($this->getConfig('created_by')) {
             $this->Table->belongsTo('CreatedBy', [
-                'foreignKey' => $this->config('created_by'),
-                'className' => $this->config('userModel'),
-                'propertyName' => $this->config('createdByPropertyName')
+                'foreignKey' => $this->getConfig('created_by'),
+                'className' => $this->getConfig('userModel'),
+                'propertyName' => $this->getConfig('createdByPropertyName')
             ]);
         }
 
-        if ($this->config('modified_by')) {
+        if ($this->getConfig('modified_by')) {
             $this->Table->belongsTo('ModifiedBy', [
-                'foreignKey' => $this->config('modified_by'),
-                'className' => $this->config('userModel'),
-                'propertyName' => $this->config('modifiedByPropertyName')
+                'foreignKey' => $this->getConfig('modified_by'),
+                'className' => $this->getConfig('userModel'),
+                'propertyName' => $this->getConfig('modifiedByPropertyName')
             ]);
         }
     }
@@ -109,13 +109,13 @@ class WhoDidItBehavior extends Behavior
      */
     public function beforeFind($event, $query, $options, $primary)
     {
-        if ($this->config('contain')) {
-            if ($this->config('created_by')) {
-                $query->contain(['CreatedBy' => ['fields' => $this->config('fields')]]);
+        if ($this->getConfig('contain')) {
+            if ($this->getConfig('created_by')) {
+                $query->contain(['CreatedBy' => ['fields' => $this->getConfig('fields')]]);
             }
 
-            if ($this->config('modified_by')) {
-                $query->contain(['ModifiedBy' => ['fields' => $this->config('fields')]]);
+            if ($this->getConfig('modified_by')) {
+                $query->contain(['ModifiedBy' => ['fields' => $this->getConfig('fields')]]);
             }
         }
     }
@@ -136,13 +136,13 @@ class WhoDidItBehavior extends Behavior
         $id = $auth['id'];
 
         if ($entity->isNew()) {
-            if ($this->config('created_by')) {
-                $entity->set($this->config('created_by'), $id);
+            if ($this->getConfig('created_by')) {
+                $entity->set($this->getConfig('created_by'), $id);
             }
         }
 
         if ($this->config('modified_by')) {
-            $entity->set($this->config('modified_by'), $id);
+            $entity->set($this->getConfig('modified_by'), $id);
         }
     }
 }
