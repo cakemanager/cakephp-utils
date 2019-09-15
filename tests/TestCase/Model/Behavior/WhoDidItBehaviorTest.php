@@ -29,8 +29,8 @@ class WhoDidItBehaviorTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.utils.articles',
-        'plugin.utils.users'
+        'plugin.Utils.Articles',
+        'plugin.Utils.Users',
     ];
 
     /**
@@ -69,15 +69,15 @@ class WhoDidItBehaviorTest extends TestCase
     {
         $behavior = $this->Model->behaviors()->get('WhoDidIt');
 
-        $behavior->config('fields', ['id', 'email']);
+        $behavior->setConfig('fields', ['id', 'email']);
 
         $data = $this->Model->get(1);
 
         $this->assertEquals(2, count($data->createdBy->toArray()));
         $this->assertEquals(2, count($data->modifiedBy->toArray()));
 
-        $behavior->config('fields', null);
-        $behavior->config('fields', []);
+        $behavior->setConfig('fields', null);
+        $behavior->setConfig('fields', []);
     }
 
     /**
@@ -88,14 +88,14 @@ class WhoDidItBehaviorTest extends TestCase
     {
         $behavior = $this->Model->behaviors()->get('WhoDidIt');
 
-        $behavior->config('modified_by', false);
+        $behavior->setConfig('modified_by', false);
 
         $data = $this->Model->get(1);
 
         $this->assertEquals(8, count($data->createdBy->toArray()));
         $this->assertNull($data->modifiedBy);
 
-        $behavior->config('modified_by', 'modified_by');
+        $behavior->setConfig('modified_by', 'modified_by');
     }
 
     /**

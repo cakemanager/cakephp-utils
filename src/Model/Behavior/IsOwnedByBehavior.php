@@ -53,7 +53,7 @@ class IsOwnedByBehavior extends Behavior
             return false;
         }
 
-        $itemUserId = $item[$this->config('column')];
+        $itemUserId = $item[$this->getConfig('column')];
         $userId = $user['id'];
 
         if ($itemUserId === $userId) {

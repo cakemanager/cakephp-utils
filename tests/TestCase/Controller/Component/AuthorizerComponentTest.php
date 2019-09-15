@@ -15,8 +15,8 @@
 namespace Utils\Test\TestCase\Controller\Component;
 
 use Cake\Controller\ComponentRegistry;
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Utils\Controller\Component\AuthorizerComponent;
@@ -87,14 +87,17 @@ class AuthorizerComponentTest extends TestCase
         $this->assertEquals("index", $set['action']);
 
         // Setup our component and fake test controller
-        $request = new Request(['params' => [
-                'plugin' => 'utils',
-                'controller' => 'bookmarks',
-                'action' => 'view'
+        $request = new ServerRequest(['params' => [
+            'plugin' => 'utils',
+            'controller' => 'bookmarks',
+            'action' => 'view',
         ]]);
         $response = new Response();
 
-        $controller = $this->getMock('Cake\Controller\Controller', ['redirect'], [$request, $response]);
+        $controller = $this->getMockBuilder('Cake\Controller\Controller')
+            ->setConstructorArgs([$request, $response])
+            ->setMethods(['redirect'])
+            ->getMock();
 
         $this->Authorizer->setController($controller);
 
@@ -115,7 +118,6 @@ class AuthorizerComponentTest extends TestCase
         $this->assertEmpty($this->Authorizer->getData());
 
         $this->Authorizer->action('index', function ($auth) {
-            
         });
 
         $this->assertNotEmpty($this->Authorizer->getData());
@@ -229,11 +231,13 @@ class AuthorizerComponentTest extends TestCase
     public function setUpRequest($params)
     {
         // Setup our component and fake test controller
-        $request = new Request(['params' => $params]);
+        $request = new ServerRequest(['params' => $params]);
         $response = new Response();
 
-        $this->controller = $this->getMock('Cake\Controller\Controller', ['redirect'], [$request, $response]);
-
+        $this->controller = $this->getMockBuilder('Cake\Controller\Controller')
+            ->setConstructorArgs([$request, $response])
+            ->setMethods(['redirect'])
+            ->getMock();
         $this->controller->loadComponent('Auth');
 
         $this->controller->Auth->setUser([

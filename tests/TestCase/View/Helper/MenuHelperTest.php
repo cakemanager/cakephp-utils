@@ -55,5 +55,6 @@ class MenuHelperTest extends TestCase
      */
     public function testInitialization()
     {
+        $this->markTestIncomplete();
     }
 }

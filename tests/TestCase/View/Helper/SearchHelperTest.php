@@ -79,11 +79,10 @@ class SearchHelperTest extends TestCase
 
         parent::tearDown();
     }
-    
+
     public function testFilterForm()
     {
         $result = $this->Search->filterForm($this->data);
-        
         $this->assertContains('<form method="get" accept-charset="utf-8" action="/">', $result);
         $this->assertContains('<input type="text" name="title" placeholder="title" id="title"/>', $result);
         $this->assertContains('<select name="category" placeholder="category" id="category">', $result);

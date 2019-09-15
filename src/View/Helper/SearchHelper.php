@@ -63,7 +63,7 @@ class SearchHelper extends Helper
             if ($field['options']) {
                 $field['attributes']['options'] = $field['options'];
             }
-            $html .= $this->Form->input($field['column'], $field['attributes']);
+            $html .= $this->Form->control($field['column'], $field['attributes']);
             $html .= ' ';
         }
 
