@@ -29,8 +29,8 @@ class WhoDidItBehaviorTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.utils.articles',
-        'plugin.utils.users'
+        'plugin.Utils.Articles',
+        'plugin.Utils.Users',
     ];
 
     /**

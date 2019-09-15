@@ -28,7 +28,7 @@ class UploadableBehaviorTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = ['plugin.utils.articles'];
+    public $fixtures = ['plugin.Utils.Articles'];
 
     /**
      * setUp method

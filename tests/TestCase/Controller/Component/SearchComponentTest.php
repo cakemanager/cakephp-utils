@@ -31,7 +31,7 @@ class SearchComponentTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'Articles' => 'plugin.utils.articles'
+        'Articles' => 'plugin.Utils.Articles',
     ];
 
     /**
