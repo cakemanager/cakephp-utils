@@ -148,7 +148,6 @@ class AuthorizerComponent extends Component
             $actions = [$actions];
         }
 
-
         $controller = $this->_current['controller'];
 
         foreach ($actions as $action) {
@@ -347,7 +346,6 @@ class AuthorizerComponent extends Component
         if (!is_bool($state)) {
             $state = false;
         }
-
 
         return $state;
     }

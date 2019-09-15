@@ -115,7 +115,6 @@ class AuthorizerComponentTest extends TestCase
         $this->assertEmpty($this->Authorizer->getData());
 
         $this->Authorizer->action('index', function ($auth) {
-            
         });
 
         $this->assertNotEmpty($this->Authorizer->getData());

@@ -123,7 +123,6 @@ class MenuComponentTest extends TestCase
         $this->Menu->add('Test01', []);
         $this->Menu->add('Test02', []);
 
-
         // get menu
         $test01 = $this->Menu->getMenu();
 

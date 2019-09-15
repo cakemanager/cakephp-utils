@@ -202,7 +202,6 @@ class UploadableBehaviorTest extends TestCase
 
         $table->behaviors()->set('Uploadable', $behaviorMock);
 
-
         $data = [
             'id' => 3,
             'user_id' => 3,

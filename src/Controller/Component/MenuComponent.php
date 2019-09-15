@@ -134,6 +134,7 @@ class MenuComponent extends Component
         if ($area !== null) {
             $this->area = $area;
         }
+
         return $this->area;
     }
 

@@ -213,6 +213,7 @@ class UploadableBehavior extends Behavior
                 $list[$field] = $fieldConfig;
             }
         }
+
         return $list;
     }
 
@@ -234,6 +235,7 @@ class UploadableBehavior extends Behavior
                 return true;
             }
         }
+
         return false;
     }
 
@@ -261,6 +263,7 @@ class UploadableBehavior extends Behavior
         if ($this->_moveUploadedFile($_upload['tmp_name'], $uploadPath)) {
             return true;
         }
+
         return false;
     }
 
@@ -304,6 +307,7 @@ class UploadableBehavior extends Behavior
                 }
             }
         }
+
         return $entity;
     }
 
@@ -419,6 +423,7 @@ class UploadableBehavior extends Behavior
     protected function _getUrl($entity, $field)
     {
         $path = '/' . $this->_getPath($entity, $field, ['root' => false, 'file' => true]);
+
         return str_replace(DS, '/', $path);
     }
 
@@ -509,8 +514,10 @@ class UploadableBehavior extends Behavior
             if (count($folder->find()) === 0) {
                 $folder->delete();
             }
+
             return true;
         }
+
         return false;
     }
 }
