@@ -16,6 +16,7 @@ namespace Utils\Test\TestCase\Controller\Component;
 
 use Cake\Controller\ComponentRegistry;
 use Cake\Event\Event;
+use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Utils\Controller\Component\SearchComponent;
@@ -47,7 +48,9 @@ class SearchComponentTest extends TestCase
         $collection = new ComponentRegistry();
         $this->Search = new SearchComponent($collection);
 
-        $this->Controller = $this->getMock('Cake\Controller\Controller', ['redirect']);
+        $this->Controller = $this->getMockBuilder('Cake\Controller\Controller')
+            ->setMethods(['redirect'])
+            ->getMock();
         $this->Search->setController($this->Controller);
     }
 
@@ -73,11 +76,11 @@ class SearchComponentTest extends TestCase
      */
     public function testAddFilter()
     {
-        $this->assertEmpty($this->Search->config('filters'));
+        $this->assertEmpty($this->Search->getConfig('filters'));
 
         $this->Search->addFilter('TestFilter1');
 
-        $this->assertArrayHasKey('TestFilter1', $this->Search->config('filters'));
+        $this->assertArrayHasKey('TestFilter1', $this->Search->getConfig('filters'));
 
         $_settings = [
             'field' => 'TestFilter1',
@@ -90,7 +93,7 @@ class SearchComponentTest extends TestCase
             'options' => false
         ];
 
-        $this->assertEquals($_settings, $this->Search->config('filters.TestFilter1'));
+        $this->assertEquals($_settings, $this->Search->getConfig('filters.TestFilter1'));
 
         $this->Search->addFilter('TestFilter2', [
             'field' => 'customField',
@@ -118,7 +121,7 @@ class SearchComponentTest extends TestCase
             ]
         ];
 
-        $this->assertEquals($_settings, $this->Search->config('filters.TestFilter2'));
+        $this->assertEquals($_settings, $this->Search->getConfig('filters.TestFilter2'));
     }
 
     public function testRemoveFilter()
@@ -127,21 +130,21 @@ class SearchComponentTest extends TestCase
         $this->Search->addFilter('TestFilter2');
         $this->Search->addFilter('TestFilter3');
 
-        $this->assertArrayHasKey('TestFilter1', $this->Search->config('filters'));
-        $this->assertArrayHasKey('TestFilter2', $this->Search->config('filters'));
-        $this->assertArrayHasKey('TestFilter3', $this->Search->config('filters'));
+        $this->assertArrayHasKey('TestFilter1', $this->Search->getConfig('filters'));
+        $this->assertArrayHasKey('TestFilter2', $this->Search->getConfig('filters'));
+        $this->assertArrayHasKey('TestFilter3', $this->Search->getConfig('filters'));
 
         $this->Search->removeFilter('TestFilter3');
 
-        $this->assertArrayHasKey('TestFilter1', $this->Search->config('filters'));
-        $this->assertArrayHasKey('TestFilter2', $this->Search->config('filters'));
-        $this->assertArrayNotHasKey('TestFilter3', $this->Search->config('filters'));
+        $this->assertArrayHasKey('TestFilter1', $this->Search->getConfig('filters'));
+        $this->assertArrayHasKey('TestFilter2', $this->Search->getConfig('filters'));
+        $this->assertArrayNotHasKey('TestFilter3', $this->Search->getConfig('filters'));
 
         $this->Search->removeFilter('TestFilter2');
 
-        $this->assertArrayHasKey('TestFilter1', $this->Search->config('filters'));
-        $this->assertArrayNotHasKey('TestFilter2', $this->Search->config('filters'));
-        $this->assertArrayNotHasKey('TestFilter3', $this->Search->config('filters'));
+        $this->assertArrayHasKey('TestFilter1', $this->Search->getConfig('filters'));
+        $this->assertArrayNotHasKey('TestFilter2', $this->Search->getConfig('filters'));
+        $this->assertArrayNotHasKey('TestFilter3', $this->Search->getConfig('filters'));
     }
 
     /**
@@ -183,7 +186,16 @@ class SearchComponentTest extends TestCase
         $this->Search->addFilter('Title');
 
         // adding search querys
-        $this->Controller->request->query['Title'] = 'First Article';
+        $request = new ServerRequest([
+            'query' => [
+                'Title' => 'First Article',
+            ],
+        ]);
+        $this->Controller = $this->getMockBuilder('Cake\Controller\Controller')
+            ->setConstructorArgs([$request])
+            ->setMethods(['redirect'])
+            ->getMock();
+        $this->Search->setController($this->Controller);
 
         $search = $this->Search->search($query);
 
@@ -211,7 +223,16 @@ class SearchComponentTest extends TestCase
         $this->Search->addFilter('Title');
 
         // adding search querys
-        $this->Controller->request->query['Title'] = 'Article';
+        $request = new ServerRequest([
+            'query' => [
+                'Title' => 'Article',
+            ],
+        ]);
+        $this->Controller = $this->getMockBuilder('Cake\Controller\Controller')
+            ->setConstructorArgs([$request])
+            ->setMethods(['redirect'])
+            ->getMock();
+        $this->Search->setController($this->Controller);
 
         $search = $this->Search->search($query);
 

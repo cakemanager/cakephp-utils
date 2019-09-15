@@ -40,7 +40,9 @@ class MenuComponentTest extends TestCase
         $collection = new ComponentRegistry();
         $this->Menu = new MenuComponent($collection);
 
-        $this->Controller = $this->getMock('Cake\Controller\Controller', ['redirect', 'initMenuItems']);
+        $this->Controller = $this->getMockBuilder('Cake\Controller\Controller')
+            ->setMethods(['redirect', 'initMenuItems'])
+            ->getMock();
         $this->Menu->setController($this->Controller);
     }
 
@@ -145,7 +147,10 @@ class MenuComponentTest extends TestCase
         Configure::write('Menu.Register.ConfigureItem3', []);
 
         $request = new Request();
-        $this->Controller = $this->getMock('Cake\Controller\Controller', ['redirect', 'initMenuItems'], [$request]);
+        $this->Controller = $this->getMockBuilder('Cake\Controller\Controller')
+            ->setConstructorArgs([$request])
+            ->setMethods(['redirect', 'initMenuItems'])
+            ->getMock();
 
         // Setup our component and fake test controller
         $collection = new ComponentRegistry($this->Controller);
