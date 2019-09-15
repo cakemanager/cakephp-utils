@@ -16,6 +16,7 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
+use Cake\I18n\Time;
 use Cake\Log\Log;
 use Cake\Routing\DispatcherFactory;
 
@@ -114,9 +115,9 @@ Log::setConfig([
     ]
 ]);
 
-Plugin::load('Utils', ['path' => ROOT, 'bootstrap' => true, 'routes' => true]);
+//Plugin::load('Utils', ['path' => ROOT, 'bootstrap' => true, 'routes' => true]);
 
-Carbon\Carbon::setTestNow(Carbon\Carbon::now());
+Time::setTestNow();
 
 DispatcherFactory::add('Routing');
 DispatcherFactory::add('ControllerFactory');
