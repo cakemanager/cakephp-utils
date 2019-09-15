@@ -15,8 +15,8 @@
 namespace Utils\Test\TestCase\Controller\Component;
 
 use Cake\Controller\ComponentRegistry;
-use Cake\Http\ServerRequest;
 use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Utils\Controller\Component\AuthorizerComponent;
