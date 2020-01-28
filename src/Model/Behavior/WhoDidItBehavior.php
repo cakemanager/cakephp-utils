@@ -110,13 +110,21 @@ class WhoDidItBehavior extends Behavior
     public function beforeFind($event, $query, $options, $primary)
     {
         $contain = $query->getContain();
-        if ($this->getConfig('contain') || isset($contain['CreatedBy']) || isset($contain['ModifiedBy'])) {
+        $fields = $this->getConfig('fields');
+        if ($this->getConfig('contain') || isset($contain['CreatedBy'])) {
             if ($this->getConfig('created_by')) {
-                $query->contain(['CreatedBy' => ['fields' => $this->getConfig('fields')]]);
+                if (isset($contain['CreatedBy']['fields'])) {
+                    $fields = $contain['CreatedBy']['fields'];
+                }
+                $query->contain(['CreatedBy' => ['fields' => $fields]]);
             }
-
+        }
+        if ($this->getConfig('contain') || isset($contain['ModifiedBy'])) {
             if ($this->getConfig('modified_by')) {
-                $query->contain(['ModifiedBy' => ['fields' => $this->getConfig('fields')]]);
+                if (isset($contain['ModifiedBy']['fields'])) {
+                    $fields = $contain['ModifiedBy']['fields'];
+                }
+                $query->contain(['ModifiedBy' => ['fields' => $fields]]);
             }
         }
     }
