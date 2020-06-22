@@ -16,6 +16,7 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
+use Cake\I18n\Time;
 use Cake\Log\Log;
 use Cake\Routing\DispatcherFactory;
 
@@ -68,7 +69,7 @@ Configure::write('App', [
     ]
 ]);
 
-Cache::config([
+Cache::setConfig([
     '_cake_core_' => [
         'engine' => 'File',
         'prefix' => 'cake_core_',
@@ -87,7 +88,7 @@ if (!getenv('db_class')) {
     putenv('db_dsn=sqlite::memory:');
 }
 
-ConnectionManager::config('test', [
+ConnectionManager::setConfig('test', [
     'className' => 'Cake\Database\Connection',
     'driver' => getenv('db_class'),
     'dsn' => getenv('db_dsn'),
@@ -101,7 +102,7 @@ Configure::write('Session', [
     'defaults' => 'php'
 ]);
 
-Log::config([
+Log::setConfig([
     'debug' => [
         'engine' => 'Cake\Log\Engine\FileLog',
         'levels' => ['notice', 'info', 'debug'],
@@ -114,9 +115,9 @@ Log::config([
     ]
 ]);
 
-Plugin::load('Utils', ['path' => ROOT, 'bootstrap' => true, 'routes' => true]);
+//Plugin::load('Utils', ['path' => ROOT, 'bootstrap' => true, 'routes' => true]);
 
-Carbon\Carbon::setTestNow(Carbon\Carbon::now());
+Time::setTestNow();
 
 DispatcherFactory::add('Routing');
 DispatcherFactory::add('ControllerFactory');

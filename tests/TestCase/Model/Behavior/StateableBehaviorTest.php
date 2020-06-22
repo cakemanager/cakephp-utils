@@ -28,7 +28,7 @@ class StateableBehaviorTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = ['plugin.utils.articles'];
+    public $fixtures = ['plugin.Utils.Articles'];
 
     /**
      * setUp method
@@ -68,8 +68,8 @@ class StateableBehaviorTest extends TestCase
             'active' => 1,
             'deleted' => -1,
         ];
-
-        $this->assertEquals($_list, $this->Model->behaviors()->get('Stateable')->config('states'));
+        $this->Model->addBehavior('Utils.Stateable');
+        $this->assertEquals($_list, $this->Model->behaviors()->get('Stateable')->getConfig('states'));
 
         $_list = [
             0 => 'concept',
@@ -87,6 +87,7 @@ class StateableBehaviorTest extends TestCase
      */
     public function testFindConcept()
     {
+        $this->Model->addBehavior('Utils.Stateable');
         $data = $this->Model->find('concept')->toArray();
 
         $this->assertEquals(2, $data[0]['id']);
@@ -100,6 +101,7 @@ class StateableBehaviorTest extends TestCase
      */
     public function testFindActive()
     {
+        $this->Model->addBehavior('Utils.Stateable');
         $data = $this->Model->find('active')->toArray();
 
         $this->assertEquals(1, $data[0]['id']);
@@ -113,6 +115,7 @@ class StateableBehaviorTest extends TestCase
      */
     public function testFindDeleted()
     {
+        $this->Model->addBehavior('Utils.Stateable');
         $data = $this->Model->find('deleted')->toArray();
 
         $this->assertEquals(3, $data[0]['id']);
