@@ -134,6 +134,9 @@ class WhoDidItBehavior extends Behavior
     public function beforeSave($event, $entity, $options)
     {
         $auth = Configure::read('GlobalAuth');
+        if (empty($auth)) {
+            return;
+        }
         $id = $auth['id'];
 
         if ($entity->isNew()) {
