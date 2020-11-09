@@ -12,12 +12,12 @@
  * @since         1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Utils\Model\Behavior;
 
 use Cake\Core\Configure;
 use Cake\ORM\Behavior;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 
 /**
  * WhoDidIt behavior
@@ -57,8 +57,8 @@ class WhoDidItBehavior extends Behavior
     /**
      * Constructor
      *
-     * @param \Cake\ORM\Table $table Table who requested the behavior.
-     * @param array $config Options.
+     * @param  \Cake\ORM\Table  $table  Table who requested the behavior.
+     * @param  array  $config  Options.
      */
     public function __construct(Table $table, array $config = [])
     {
@@ -70,7 +70,7 @@ class WhoDidItBehavior extends Behavior
             $this->Table->belongsTo('CreatedBy', [
                 'foreignKey' => $this->getConfig('created_by'),
                 'className' => $this->getConfig('userModel'),
-                'propertyName' => $this->getConfig('createdByPropertyName')
+                'propertyName' => $this->getConfig('createdByPropertyName'),
             ]);
         }
 
@@ -78,7 +78,7 @@ class WhoDidItBehavior extends Behavior
             $this->Table->belongsTo('ModifiedBy', [
                 'foreignKey' => $this->getConfig('modified_by'),
                 'className' => $this->getConfig('userModel'),
-                'propertyName' => $this->getConfig('modifiedByPropertyName')
+                'propertyName' => $this->getConfig('modifiedByPropertyName'),
             ]);
         }
     }
@@ -88,10 +88,11 @@ class WhoDidItBehavior extends Behavior
      *
      * Initialize callback for Behaviors.
      *
-     * @param array $config Options.
+     * @param  array  $config  Options.
+     *
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
     }
@@ -101,10 +102,11 @@ class WhoDidItBehavior extends Behavior
      *
      * Used to add CreatedBy and ModifiedBy to the contain of the query.
      *
-     * @param \Cake\Event\Event $event Event.
-     * @param \Cake\ORM\Query $query The Query object.
-     * @param array $options Options.
-     * @param bool $primary Root Query or not.
+     * @param  \Cake\Event\Event  $event  Event.
+     * @param  \Cake\ORM\Query  $query  The Query object.
+     * @param  array  $options  Options.
+     * @param  bool  $primary  Root Query or not.
+     *
      * @return void
      */
     public function beforeFind($event, $query, $options, $primary)
@@ -134,9 +136,10 @@ class WhoDidItBehavior extends Behavior
      *
      * Used to add the user to the `created_by` and `modified_by` fields.
      *
-     * @param \Cake\Event\Event $event Event.
-     * @param \Cake\ORM\Entity $entity The Entity to save on.
-     * @param array $options Options.
+     * @param  \Cake\Event\Event  $event  Event.
+     * @param  \Cake\ORM\Entity  $entity  The Entity to save on.
+     * @param  array  $options  Options.
+     *
      * @return void
      */
     public function beforeSave($event, $entity, $options)

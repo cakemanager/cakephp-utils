@@ -31,7 +31,7 @@ class IsOwnedByBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -41,7 +41,7 @@ class IsOwnedByBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->Articles->removeBehavior('IsOwnedBy');
         unset($this->Articles);

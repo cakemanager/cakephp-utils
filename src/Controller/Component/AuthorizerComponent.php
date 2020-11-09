@@ -12,6 +12,7 @@
  * @since         1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Utils\Controller\Component;
 
 use Cake\Controller\Component;
@@ -25,6 +26,12 @@ use Cake\Utility\Hash;
 class AuthorizerComponent extends Component
 {
     /**
+     * Data holder.
+     *
+     * @var array
+     */
+    protected static $_data = [];
+    /**
      * Default configuration.
      *
      * @var array
@@ -32,14 +39,12 @@ class AuthorizerComponent extends Component
     protected $_defaultConfig = [
         'roleField' => 'role_id',
     ];
-
     /**
      * Holder for the Controller.
      *
      * @var \Cake\Controller\Controller
      */
     protected $Controller = null;
-
     /**
      * Holds all current request-info.
      *
@@ -51,7 +56,6 @@ class AuthorizerComponent extends Component
         'action' => null,
         'roles' => [],
     ];
-
     /**
      * Holds the selected action-data.
      *
@@ -62,19 +66,13 @@ class AuthorizerComponent extends Component
     ];
 
     /**
-     * Data holder.
-     *
-     * @var array
-     */
-    protected static $_data = [];
-
-    /**
      * Constructor
      *
      * Constructor for AuthorizerComponent.
      *
-     * @param ComponentRegistry $registry ComponentRegistry.
-     * @param array $config Configurations.
+     * @param  ComponentRegistry  $registry  ComponentRegistry.
+     * @param  array  $config  Configurations.
+     *
      * @return void
      */
     public function __construct(ComponentRegistry $registry, array $config = [])
@@ -87,16 +85,17 @@ class AuthorizerComponent extends Component
     }
 
     /**
-     * BeforeFilter Event
+     * setController
      *
-     * @param \Cake\Event\Event $event Event.
+     * Setter for the Controller.
+     *
+     * @param  \Cake\Controller\Controller|object  $controller  Controller.
+     *
      * @return void
      */
-    public function beforeFilter($event)
+    public function setController($controller)
     {
-        $this->setController($event->subject());
-
-        $this->setCurrentParams();
+        $this->Controller = $controller;
     }
 
     /**
@@ -108,24 +107,25 @@ class AuthorizerComponent extends Component
      */
     public function setCurrentParams()
     {
-        $this->_current['plugin'] = $this->Controller->request->getParam('plugin');
-        $this->_current['controller'] = $this->Controller->request->getParam('controller');
-        $this->_current['action'] = $this->Controller->request->getParam('action');
+        $this->_current['plugin'] = $this->Controller->getRequest()->getParam('plugin');
+        $this->_current['controller'] = $this->Controller->getRequest()->getParam('controller');
+        $this->_current['action'] = $this->Controller->getRequest()->getParam('action');
 
         return $this->_current;
     }
 
     /**
-     * setController
+     * BeforeFilter Event
      *
-     * Setter for the Controller.
+     * @param  \Cake\Event\Event  $event  Event.
      *
-     * @param type $controller Controller.
      * @return void
      */
-    public function setController($controller)
+    public function beforeFilter($event)
     {
-        $this->Controller = $controller;
+        $this->setController($event->getSubject());
+
+        $this->setCurrentParams();
     }
 
     /**
@@ -138,8 +138,9 @@ class AuthorizerComponent extends Component
      * });
      * ```
      *
-     * @param string|array $actions An array or string to run the function on.
-     * @param callable $function Function to authorize with.
+     * @param  string|array  $actions  An array or string to run the function on.
+     * @param  callable  $function  Function to authorize with.
+     *
      * @return void
      */
     public function action($actions, $function)
@@ -151,14 +152,38 @@ class AuthorizerComponent extends Component
         $controller = $this->_current['controller'];
 
         foreach ($actions as $action) {
-            $path = $controller . '.' . $action;
+            $path = $controller.'.'.$action;
 
             self::$_data = Hash::insert(self::$_data, $path, [
-                        'function' => $function,
-                        'roles' => [],
+                'function' => $function,
+                'roles' => [],
             ]);
 
             $this->_runFunction($action);
+        }
+    }
+
+    /**
+     * _runFunction
+     *
+     * Runs the given function from the action-method.
+     *
+     * @param  string  $action  Action name.
+     *
+     * @return void
+     */
+    protected function _runFunction($action)
+    {
+        $controller = $this->_current['controller'];
+
+        $path = $controller.'.'.$action.'.function';
+
+        $function = Hash::get(self::$_data, $path);
+
+        $this->_selected['action'] = $action;
+
+        if ($function) {
+            $function($this, $this->Controller);
         }
     }
 
@@ -176,7 +201,8 @@ class AuthorizerComponent extends Component
      *
      * The role-variable can be an integer or array with integers.
      *
-     * @param int|array $roles Array or integer with the roles to allow.
+     * @param  int|array  $roles  Array or integer with the roles to allow.
+     *
      * @return void
      */
     public function allowRole($roles)
@@ -188,10 +214,10 @@ class AuthorizerComponent extends Component
         $controller = $this->_current['controller'];
         $action = $this->_selected['action'];
 
-        $path = $controller . '.' . $action . '.roles.';
+        $path = $controller.'.'.$action.'.roles.';
 
         foreach ($roles as $role) {
-            self::$_data = Hash::insert(self::$_data, $path . $role, true);
+            self::$_data = Hash::insert(self::$_data, $path.$role, true);
         }
     }
 
@@ -209,7 +235,8 @@ class AuthorizerComponent extends Component
      *
      * The role-variable can be an integer or array with integers.
      *
-     * @param int|array $roles Array or integer with the roles to allow.
+     * @param  int|array  $roles  Array or integer with the roles to allow.
+     *
      * @return void
      */
     public function denyRole($roles)
@@ -221,10 +248,10 @@ class AuthorizerComponent extends Component
         $controller = $this->_current['controller'];
         $action = $this->_selected['action'];
 
-        $path = $controller . '.' . $action . '.roles.';
+        $path = $controller.'.'.$action.'.roles.';
 
         foreach ($roles as $role) {
-            self::$_data = Hash::insert(self::$_data, $path . $role, false);
+            self::$_data = Hash::insert(self::$_data, $path.$role, false);
         }
     }
 
@@ -244,8 +271,9 @@ class AuthorizerComponent extends Component
      *
      * The value is an boolean.
      *
-     * @param int|array $roles Array or integer with the roles to allow.
-     * @param boole $value The value to set to the selected role(s).
+     * @param  int|array  $roles  Array or integer with the roles to allow.
+     * @param  boole  $value  The value to set to the selected role(s).
+     *
      * @return void
      */
     public function setRole($roles, $value)
@@ -257,10 +285,10 @@ class AuthorizerComponent extends Component
         $controller = $this->_current['controller'];
         $action = $this->_selected['action'];
 
-        $path = $controller . '.' . $action . '.roles.';
+        $path = $controller.'.'.$action.'.roles.';
 
         foreach ($roles as $role) {
-            self::$_data = Hash::insert(self::$_data, $path . $role, $value);
+            self::$_data = Hash::insert(self::$_data, $path.$role, $value);
         }
     }
 
@@ -289,9 +317,38 @@ class AuthorizerComponent extends Component
         $controller = $this->_current['controller'];
         $action = $this->_current['action'];
 
-        $path = $controller . '.' . $action . '.roles.' . $role;
+        $path = $controller.'.'.$action.'.roles.'.$role;
 
-        $state = $this->_getState($action, $role);
+        return $this->_getState($action, $role);
+    }
+
+    /**
+     * _getState
+     *
+     * Checks if the role is allowed to the action.
+     *
+     * @param  string  $action  Is the action-name.
+     * @param  int  $role  Is the role-id.
+     *
+     * @return bool
+     */
+    protected function _getState($action, $role)
+    {
+        $controller = $this->_current['controller'];
+
+        $path = $controller.'.'.$action.'.roles.'.$role;
+
+        $state = Hash::get(self::$_data, $path);
+
+        if ($state == null) {
+            $action = '*';
+            $path = $controller.'.'.$action.'.roles.'.$role;
+            $state = Hash::get(self::$_data, $path);
+        }
+
+        if (!is_bool($state)) {
+            $state = false;
+        }
 
         return $state;
     }
@@ -318,58 +375,5 @@ class AuthorizerComponent extends Component
     public function clearData()
     {
         self::$_data = [];
-    }
-
-    /**
-     * _getState
-     *
-     * Checks if the role is allowed to the action.
-     *
-     * @param string $action Is the action-name.
-     * @param int $role Is the role-id.
-     * @return bool
-     */
-    protected function _getState($action, $role)
-    {
-        $controller = $this->_current['controller'];
-
-        $path = $controller . '.' . $action . '.roles.' . $role;
-
-        $state = Hash::get(self::$_data, $path);
-
-        if ($state == null) {
-            $action = '*';
-            $path = $controller . '.' . $action . '.roles.' . $role;
-            $state = Hash::get(self::$_data, $path);
-        }
-
-        if (!is_bool($state)) {
-            $state = false;
-        }
-
-        return $state;
-    }
-
-    /**
-     * _runFunction
-     *
-     * Runs the given function from the action-method.
-     *
-     * @param string $action Action name.
-     * @return void
-     */
-    protected function _runFunction($action)
-    {
-        $controller = $this->_current['controller'];
-
-        $path = $controller . '.' . $action . '.function';
-
-        $function = Hash::get(self::$_data, $path);
-
-        $this->_selected['action'] = $action;
-
-        if ($function) {
-            $function($this, $this->Controller);
-        }
     }
 }

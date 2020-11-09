@@ -38,7 +38,7 @@ class WhoDidItBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -50,15 +50,15 @@ class WhoDidItBehaviorTest extends TestCase
      * Test if the relations are added to 'createdBy' and 'modifiedBy'
      *
      */
-    public function testFind()
+    public function testFind(): void
     {
         $data = $this->Model->get(1);
 
         $this->assertEquals(1, $data->createdBy->id);
         $this->assertEquals(1, $data->modifiedBy->id);
 
-        $this->assertEquals(8, count($data->createdBy->toArray()));
-        $this->assertEquals(8, count($data->modifiedBy->toArray()));
+        $this->assertCount(8, $data->createdBy->toArray());
+        $this->assertCount(8, $data->modifiedBy->toArray());
     }
 
     /**
@@ -73,8 +73,8 @@ class WhoDidItBehaviorTest extends TestCase
 
         $data = $this->Model->get(1);
 
-        $this->assertEquals(2, count($data->createdBy->toArray()));
-        $this->assertEquals(2, count($data->modifiedBy->toArray()));
+        $this->assertCount(2, $data->createdBy->toArray());
+        $this->assertCount(2, $data->modifiedBy->toArray());
 
         $behavior->setConfig('fields', null);
         $behavior->setConfig('fields', []);
@@ -92,7 +92,7 @@ class WhoDidItBehaviorTest extends TestCase
 
         $data = $this->Model->get(1);
 
-        $this->assertEquals(8, count($data->createdBy->toArray()));
+        $this->assertCount(8, $data->createdBy->toArray());
         $this->assertNull($data->modifiedBy);
 
         $behavior->setConfig('modified_by', 'modified_by');
@@ -191,7 +191,7 @@ class WhoDidItBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->Model = null;
 

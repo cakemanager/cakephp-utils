@@ -35,7 +35,7 @@ class UploadableBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -52,7 +52,7 @@ class UploadableBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Articles);
 
@@ -171,6 +171,7 @@ class UploadableBehaviorTest extends TestCase
     {
         $connection = ConnectionManager::get('test');
 
+        /** @var \Cake\ORM\Table $table */
         $table = $this->getMockBuilder('Cake\ORM\Table')
             ->setConstructorArgs([['table' => 'articles', 'connection' => $connection]])
             ->setMethods(['_nonExistingMethodElseTheMockWillMockAllMethods'])
@@ -226,11 +227,11 @@ class UploadableBehaviorTest extends TestCase
 
         $get = $table->get(3);
 
-        $this->assertContains('/uploads/articles/3/cakemanager.png', $get->get('url'));
-        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS, $get->get('directory'));
+        $this->assertStringContainsString('/uploads/articles/3/cakemanager.png', $get->get('url'));
+        $this->assertStringContainsString('uploads' . DS . 'articles' . DS . '3' . DS, $get->get('directory'));
         $this->assertEquals("image/png", $get->get('type'));
         $this->assertEquals(11501, $get->get('size'));
-        $this->assertContains('cakemanager.png', $get->get('file_name'));
-        $this->assertContains('uploads' . DS . 'articles' . DS . '3' . DS . 'cakemanager.png', $get->get('file_path'));
+        $this->assertStringContainsString('cakemanager.png', $get->get('file_name'));
+        $this->assertStringContainsString('uploads' . DS . 'articles' . DS . '3' . DS . 'cakemanager.png', $get->get('file_path'));
     }
 }

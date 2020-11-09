@@ -18,7 +18,6 @@ use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
 use Cake\I18n\Time;
 use Cake\Log\Log;
-use Cake\Routing\DispatcherFactory;
 
 require_once 'vendor/autoload.php';
 
@@ -87,15 +86,13 @@ if (!getenv('db_class')) {
     putenv('db_class=Cake\Database\Driver\Sqlite');
     putenv('db_dsn=sqlite::memory:');
 }
-
 ConnectionManager::setConfig('test', [
     'className' => 'Cake\Database\Connection',
-    'driver' => getenv('db_class'),
-    'dsn' => getenv('db_dsn'),
-    'database' => getenv('db_database'),
-    'username' => getenv('db_login'),
-    'password' => getenv('db_password'),
-    'timezone' => 'UTC'
+    'driver' => 'Cake\Database\Driver\Sqlite',
+    'database' => TMP . 'test.sqlite',
+    'encoding' => 'utf8',
+    'cacheMetadata' => true,
+    'quoteIdentifiers' => false,
 ]);
 
 Configure::write('Session', [
@@ -119,5 +116,3 @@ Log::setConfig([
 
 Time::setTestNow();
 
-DispatcherFactory::add('Routing');
-DispatcherFactory::add('ControllerFactory');

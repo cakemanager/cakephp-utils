@@ -40,18 +40,16 @@ class SearchComponentTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         // Setup our component and fake test controller
-        $collection = new ComponentRegistry();
-        $this->Search = new SearchComponent($collection);
-
         $this->Controller = $this->getMockBuilder('Cake\Controller\Controller')
             ->setMethods(['redirect'])
             ->getMock();
-        $this->Search->setController($this->Controller);
+        $collection = new ComponentRegistry($this->Controller);
+        $this->Search = new SearchComponent($collection);
     }
 
     /**
@@ -59,7 +57,7 @@ class SearchComponentTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Search);
         unset($this->Controller);
@@ -158,15 +156,15 @@ class SearchComponentTest extends TestCase
     {
         $event = new Event('Controller.beforeFilter', $this->Controller);
 
-        $this->assertEmpty($this->Controller->viewVars);
+        $this->assertEmpty($this->Controller->viewBuilder()->getVars());
 
         $this->Search->addFilter('TestFilter1');
         $this->Search->addFilter('TestFilter2');
 
         $this->Search->beforeRender($event);
 
-        $this->assertArrayHasKey('TestFilter1', $this->Controller->viewVars['searchFilters']);
-        $this->assertArrayHasKey('TestFilter2', $this->Controller->viewVars['searchFilters']);
+        $this->assertArrayHasKey('TestFilter1', $this->Controller->viewBuilder()->getVars()['searchFilters']);
+        $this->assertArrayHasKey('TestFilter2', $this->Controller->viewBuilder()->getVars()['searchFilters']);
     }
 
     /**

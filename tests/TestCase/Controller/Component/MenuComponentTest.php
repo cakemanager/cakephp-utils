@@ -12,12 +12,13 @@
  * @since         1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Utils\Test\TestCase\Controller\Component;
 
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest as Request;
 use Cake\TestSuite\TestCase;
 use Utils\Controller\Component\MenuComponent;
 
@@ -32,18 +33,16 @@ class MenuComponentTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         // Setup our component and fake test controller
-        $collection = new ComponentRegistry();
-        $this->Menu = new MenuComponent($collection);
-
         $this->Controller = $this->getMockBuilder('Cake\Controller\Controller')
             ->setMethods(['redirect', 'initMenuItems'])
             ->getMock();
-        $this->Menu->setController($this->Controller);
+        $collection = new ComponentRegistry($this->Controller);
+        $this->Menu = new MenuComponent($collection);
     }
 
     /**
@@ -51,7 +50,7 @@ class MenuComponentTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->Menu->clear();
 

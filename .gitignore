@@ -1,6 +1,10 @@
 /.buildpath
 /.project
+/.idea
 /.settings/
 /vendor/
 /composer.lock
 /nbproject/
+/phpunit.xml
+/tmp
+/.phpunit.result.cache
