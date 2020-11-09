@@ -12,6 +12,7 @@
  * @since         1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Utils\View\Helper;
 
 use Cake\Utility\Hash;
@@ -29,25 +30,13 @@ class MenuHelper extends Helper
 {
 
     /**
-     * __construct
-     *
-     * @param \Cake\View\View $View View.
-     * @param array $config configurations.
-     */
-    public function __construct(\Cake\View\View $View, array $config = [])
-    {
-        parent::__construct($View, $config);
-    }
-
-    /**
      * Helpers
      *
      * @var array
      */
     public $helpers = [
-        'Html'
+        'Html',
     ];
-
     /**
      * Default configuration.
      *
@@ -57,27 +46,40 @@ class MenuHelper extends Helper
     ];
 
     /**
+     * __construct
+     *
+     * @param  \Cake\View\View  $View  View.
+     * @param  array  $config  configurations.
+     */
+    public function __construct(\Cake\View\View $View, array $config = [])
+    {
+        parent::__construct($View, $config);
+    }
+
+    /**
      * menu
      *
      * The menu method who builds up the menu. This method will return html code.
      * The binded template to an area is used to style the menu.
      *
-     * @param string $area Area to build.
-     * @param string $helper Helper to use.
-     * @param array $options Options.
+     * @param  string  $area  Area to build.
+     * @param  string  $helper  Helper to use.
+     * @param  array  $options  Options.
+     *
      * @return string
      */
-    public function menu($area, $helper, $options = [])
+    public function menu(string $area, string $helper, array $options = [])
     {
         $_options = [
-            'showChildren' => false
+            'showChildren' => false,
         ];
 
         $options = Hash::merge($_options, $options);
 
         $builder = $this->_View->helpers()->load($helper);
 
-        $menu = $this->_View->viewVars['menu'][$area];
+        /** @var array $menu */
+        $menu = $this->_View->getVars()['menu'][$area];
 
         $showChildren = $options['showChildren'];
         unset($options['showChildren']);

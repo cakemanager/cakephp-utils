@@ -119,7 +119,7 @@ class UploadableBehavior extends Behavior
                 $dirtyField = $entity->isDirty($field);
                 $originalField = $entity->getOriginal($field);
                 if ($dirtyField && !is_null($originalField) && !is_array($originalField)) {
-                    $fieldConfig = $this->config($field);
+                    $fieldConfig = $this->getConfig($field);
 
                     if ($fieldConfig['removeFileOnUpdate']) {
                         $this->_removeFile($entity->getOriginal($field));
@@ -170,7 +170,7 @@ class UploadableBehavior extends Behavior
     {
         $fields = $this->getFieldList();
         foreach ($fields as $field => $data) {
-            $fieldConfig = $this->config($field);
+            $fieldConfig = $this->getConfig($field);
             if ($fieldConfig['removeFileOnDelete']) {
                 $this->_removeFile($entity->get($field));
             }
@@ -207,7 +207,7 @@ class UploadableBehavior extends Behavior
                 if ($options['normalize']) {
                     $fieldConfig = $this->_normalizeField($field);
                 } else {
-                    $fieldConfig = (($this->config($field) == null) ? [] : $this->config($field));
+                    $fieldConfig = (($this->getConfig($field) == null) ? [] : $this->getConfig($field));
                 }
 
                 $list[$field] = $fieldConfig;

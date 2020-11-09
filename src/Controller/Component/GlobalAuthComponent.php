@@ -12,10 +12,10 @@
  * @since         1.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Utils\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Controller\ComponentRegistry;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 
@@ -35,10 +35,11 @@ class GlobalAuthComponent extends Component
     /**
      * initialize
      *
-     * @param array $options Options.
+     * @param  array  $options  Options.
+     *
      * @return void
      */
-    public function initialize(array $options)
+    public function initialize(array $options): void
     {
         $controller = $this->_registry->getController();
 
@@ -49,8 +50,9 @@ class GlobalAuthComponent extends Component
     /**
      * afterIdentify
      *
-     * @param Event $event Event.
-     * @param array $user User.
+     * @param  Event  $event  Event.
+     * @param  array  $user  User.
+     *
      * @return void
      */
     public function afterIdentify(Event $event, $user)
@@ -61,8 +63,9 @@ class GlobalAuthComponent extends Component
     /**
      * logout
      *
-     * @param Event $event Event.
-     * @param array $user User.
+     * @param  Event  $event  Event.
+     * @param  array  $user  User.
+     *
      * @return void
      */
     public function logout(Event $event, $user)
@@ -75,11 +78,11 @@ class GlobalAuthComponent extends Component
      *
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         return [
             'Auth.afterIdentify' => 'afterIdentify',
-            'Auth.logout' => 'logout'
+            'Auth.logout' => 'logout',
         ];
     }
 }

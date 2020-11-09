@@ -1,31 +1,31 @@
 {
-    "name": "cakemanager/cakephp-utils",
-    "description": "Plugin for CakePHP 3.x with useful components and behaviors",
-    "type": "cakephp-plugin",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Bob Mulder",
-            "email": "bobmulder@outlook.com"
-        }
-    ],
-    "require": {
-        "php": ">=5.4",
-        "cakephp/cakephp": "~3.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^5|^6"
-    },
-    "autoload": {
-        "psr-4": {
-            "Utils\\": "src"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Utils\\Test\\": "tests",
-            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests",
-            "App\\": "tests/App"
-        }
+  "name": "cakemanager/cakephp-utils",
+  "description": "Plugin for CakePHP 3.x with useful components and behaviors",
+  "type": "cakephp-plugin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Bob Mulder",
+      "email": "bobmulder@outlook.com"
     }
+  ],
+  "require": {
+    "php": "^5.4|^7.2",
+    "cakephp/cakephp": "^3.0|^4.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.0|^6.0|^8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Utils\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Utils\\Test\\": "tests",
+      "Cake\\Test\\": "./vendor/cakephp/cakephp/tests",
+      "App\\": "tests/App"
+    }
+  }
 }

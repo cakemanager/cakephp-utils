@@ -31,7 +31,7 @@ class SearchHelperTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $view = new View();
@@ -72,7 +72,7 @@ class SearchHelperTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->Search);
         unset($this->data);
@@ -83,14 +83,14 @@ class SearchHelperTest extends TestCase
     public function testFilterForm()
     {
         $result = $this->Search->filterForm($this->data);
-        $this->assertContains('<form method="get" accept-charset="utf-8" action="/">', $result);
-        $this->assertContains('<input type="text" name="title" placeholder="title" id="title"/>', $result);
-        $this->assertContains('<select name="category" placeholder="category" id="category">', $result);
-        $this->assertContains('<option value=""></option>', $result);
-        $this->assertContains('<option value="1">category 1</option>', $result);
-        $this->assertContains('<option value="2">category 2</option>', $result);
-        $this->assertContains('<option value="3">category 3</option>', $result);
-        $this->assertContains('<option value="4">category 4</option>', $result);
-        $this->assertContains('<button type="submit">Filter</button></form>', $result);
+        $this->assertStringContainsString('<form method="get" accept-charset="utf-8" action="/">', $result);
+        $this->assertStringContainsString('<input type="text" name="title" placeholder="title" id="title"/>', $result);
+        $this->assertStringContainsString('<select name="category" placeholder="category" id="category">', $result);
+        $this->assertStringContainsString('<option value=""></option>', $result);
+        $this->assertStringContainsString('<option value="1">category 1</option>', $result);
+        $this->assertStringContainsString('<option value="2">category 2</option>', $result);
+        $this->assertStringContainsString('<option value="3">category 3</option>', $result);
+        $this->assertStringContainsString('<option value="4">category 4</option>', $result);
+        $this->assertStringContainsString('<button type="submit">Filter</button></form>', $result);
     }
 }
